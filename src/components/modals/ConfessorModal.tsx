@@ -36,7 +36,12 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   // Initialize form data
   useEffect(() => {
     if (confessor) {
-      setFormData({ ...confessor, customFields: confessor.customFields || {} });
+      setFormData({ 
+        ...confessor, 
+        customFields: confessor.customFields || {},
+        spouseId: confessor.spouseId || '',
+        childrenIds: confessor.childrenIds || []
+      });
       
       // Load existing image previews
       const previews: Record<string, string> = {};
@@ -53,7 +58,12 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       setImagePreview(previews);
     } else {
       // Initialize with default values from form settings
-      const initialData: any = { customFields: {} };
+      const initialData: any = { 
+        customFields: {},
+        spouseId: '',
+        childrenIds: [],
+        socialStatus: 'أعزب' // Default value
+      };
       formSettings.fields.forEach(field => {
         if (field.defaultValue !== undefined) {
           if (field.name.includes('.')) {
@@ -91,6 +101,21 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       }));
     } else {
       setFormData((prev: any) => ({ ...prev, [fieldName]: value }));
+    }
+
+    // Special handling for social status change
+    if (fieldName === 'socialStatus') {
+      if (value !== 'متزوج') {
+        // Clear spouse and children when not married
+        setFormData((prev: any) => ({
+          ...prev,
+          spouseId: '',
+          childrenIds: [],
+          marriageDate: ''
+        }));
+        setSpouseSearch('');
+        setChildSearch('');
+      }
     }
   };
 
@@ -450,6 +475,24 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     });
   }, [childSearch, allConfessors, confessor, formData.spouseId, formData.childrenIds]);
 
+  const handleSetSpouse = (spouseId: string) => {
+    handleChange('spouseId', spouseId);
+    setSpouseSearch('');
+  };
+
+  const handleAddChild = (childId: string) => {
+    if (!formData.childrenIds?.includes(childId)) {
+      const newChildren = [...(formData.childrenIds || []), childId];
+      handleChange('childrenIds', newChildren);
+    }
+    setChildSearch('');
+  };
+  
+  const handleRemoveChild = (childId: string) => {
+    const newChildren = (formData.childrenIds || []).filter((id: string) => id !== childId);
+    handleChange('childrenIds', newChildren);
+  };
+
   if (formLoading) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4">
@@ -479,53 +522,77 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {sortedGroups.map(renderGroup)}
 
-          {/* Special Family Relationships Section */}
+          {/* Dynamic Family Relationships Section - Shows when married */}
           {formData.socialStatus === 'متزوج' && (
-            <div className="border border-gray-300 dark:border-gray-600 rounded-lg">
-              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-t-lg">
-                <h3 className="font-semibold text-blue-600 dark:text-blue-400">العلاقات الأسرية</h3>
+            <div className="border border-purple-300 dark:border-purple-600 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+              <div className="p-4 bg-purple-100 dark:bg-purple-800 rounded-t-lg">
+                <h3 className="font-semibold text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                  <Icon name="users" className="w-5 h-5" />
+                  العلاقات الأسرية
+                  <span className="text-xs bg-purple-200 dark:bg-purple-700 px-2 py-1 rounded-full">
+                    يظهر تلقائياً عند اختيار "متزوج"
+                  </span>
+                </h3>
               </div>
-              <div className="p-4 space-y-4">
+              <div className="p-6 space-y-6">
                 {/* Spouse Selection */}
-                <div>
-                  <label className="block font-semibold mb-2">الزوج / الزوجة</label>
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
+                  <label className="block font-semibold mb-3 text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                    <Icon name="users" className="w-5 h-5" />
+                    الزوج / الزوجة
+                  </label>
                   {formData.spouseId ? (
-                    <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
-                      <span className="font-bold text-green-600">
-                        {getConfessorNameById(formData.spouseId)}
-                      </span>
+                    <div className="flex items-center justify-between bg-green-50 dark:bg-green-900 p-3 rounded-lg border border-green-200 dark:border-green-700">
+                      <div className="flex items-center gap-2">
+                        <Icon name="users" className="w-5 h-5 text-green-600" />
+                        <span className="font-bold text-green-700 dark:text-green-300">
+                          {getConfessorNameById(formData.spouseId)}
+                        </span>
+                      </div>
                       <button 
                         type="button" 
                         onClick={() => handleChange('spouseId', '')} 
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
+                        title="إزالة الزوج/الزوجة"
                       >
                         <Icon name="close" className="w-5 h-5" />
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <input 
-                        type="text" 
-                        placeholder="ابحث عن الزوج/الزوجة..." 
-                        value={spouseSearch} 
-                        onChange={e => setSpouseSearch(e.target.value)} 
-                        className="p-2 border rounded dark:bg-gray-700 w-full mb-2" 
-                      />
+                      <div className="relative">
+                        <input 
+                          type="text" 
+                          placeholder="ابحث عن الزوج/الزوجة بالاسم..." 
+                          value={spouseSearch} 
+                          onChange={e => setSpouseSearch(e.target.value)} 
+                          className="w-full p-3 pr-10 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500" 
+                        />
+                        <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
+                      </div>
                       {spouseSearchResults.length > 0 && (
-                        <div className="max-h-32 overflow-y-auto border rounded dark:border-gray-600">
+                        <div className="mt-2 max-h-40 overflow-y-auto border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700">
                           {spouseSearchResults.map(c => (
                             <button 
                               type="button" 
                               key={c.id} 
-                              onClick={() => {
-                                handleChange('spouseId', c.id);
-                                setSpouseSearch('');
-                              }} 
-                              className="block w-full text-right p-2 hover:bg-blue-100 dark:hover:bg-blue-800"
+                              onClick={() => handleSetSpouse(c.id!)} 
+                              className="block w-full text-right p-3 hover:bg-purple-100 dark:hover:bg-purple-800 transition-colors border-b last:border-b-0 dark:border-gray-600"
                             >
-                              {getConfessorNameById(c.id!)}
+                              <div className="flex items-center gap-2">
+                                <Icon name="users" className="w-4 h-4 text-purple-500" />
+                                <span className="font-medium">{getConfessorNameById(c.id!)}</span>
+                                <span className="text-sm text-gray-500">({c.gender})</span>
+                              </div>
                             </button>
                           ))}
+                        </div>
+                      )}
+                      {spouseSearch && spouseSearchResults.length === 0 && (
+                        <div className="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                          <p className="text-yellow-800 dark:text-yellow-200 text-sm">
+                            لم يتم العثور على نتائج. تأكد من إضافة الزوج/الزوجة كمعترف منفصل أولاً.
+                          </p>
                         </div>
                       )}
                     </div>
@@ -533,52 +600,95 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 </div>
                 
                 {/* Children Selection */}
-                <div>
-                  <label className="block font-semibold mb-2">الأبناء</label>
-                  <div className="space-y-2 mb-2">
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
+                  <label className="block font-semibold mb-3 text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                    <Icon name="users" className="w-5 h-5" />
+                    الأبناء
+                    <span className="text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">
+                      {formData.childrenIds?.length || 0} أطفال
+                    </span>
+                  </label>
+                  
+                  {/* Current Children */}
+                  <div className="space-y-2 mb-4">
                     {(formData.childrenIds || []).map((childId: string) => (
-                      <div key={childId} className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
-                        <span className="font-bold">{getConfessorNameById(childId)}</span>
+                      <div key={childId} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900 p-3 rounded-lg border border-blue-200 dark:border-blue-700">
+                        <div className="flex items-center gap-2">
+                          <Icon name="users" className="w-4 h-4 text-blue-600" />
+                          <span className="font-medium text-blue-700 dark:text-blue-300">
+                            {getConfessorNameById(childId)}
+                          </span>
+                        </div>
                         <button 
                           type="button" 
-                          onClick={() => {
-                            const newChildren = formData.childrenIds.filter((id: string) => id !== childId);
-                            handleChange('childrenIds', newChildren);
-                          }} 
-                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleRemoveChild(childId)} 
+                          className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
+                          title="إزالة من قائمة الأطفال"
                         >
-                          <Icon name="close" className="w-5 h-5" />
+                          <Icon name="close" className="w-4 h-4" />
                         </button>
                       </div>
                     ))}
+                    {(!formData.childrenIds || formData.childrenIds.length === 0) && (
+                      <div className="text-center py-4 text-gray-500 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <Icon name="users" className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">لم يتم إضافة أطفال بعد</p>
+                      </div>
+                    )}
                   </div>
+                  
+                  {/* Add Children */}
                   <div>
-                    <input 
-                      type="text" 
-                      placeholder="ابحث عن ابن/ابنة للإضافة..." 
-                      value={childSearch} 
-                      onChange={e => setChildSearch(e.target.value)} 
-                      className="p-2 border rounded dark:bg-gray-700 w-full mb-2" 
-                    />
+                    <div className="relative">
+                      <input 
+                        type="text" 
+                        placeholder="ابحث عن ابن/ابنة للإضافة..." 
+                        value={childSearch} 
+                        onChange={e => setChildSearch(e.target.value)} 
+                        className="w-full p-3 pr-10 border rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500" 
+                      />
+                      <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
+                    </div>
                     {childSearchResults.length > 0 && (
-                      <div className="max-h-32 overflow-y-auto border rounded dark:border-gray-600">
+                      <div className="mt-2 max-h-40 overflow-y-auto border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700">
                         {childSearchResults.map(c => (
                           <button 
                             type="button" 
                             key={c.id} 
-                            onClick={() => {
-                              const newChildren = [...(formData.childrenIds || []), c.id];
-                              handleChange('childrenIds', newChildren);
-                              setChildSearch('');
-                            }} 
-                            className="block w-full text-right p-2 hover:bg-blue-100 dark:hover:bg-blue-800"
+                            onClick={() => handleAddChild(c.id!)} 
+                            className="block w-full text-right p-3 hover:bg-purple-100 dark:hover:bg-purple-800 transition-colors border-b last:border-b-0 dark:border-gray-600"
                           >
-                            {getConfessorNameById(c.id!)}
+                            <div className="flex items-center gap-2">
+                              <Icon name="add" className="w-4 h-4 text-green-500" />
+                              <span className="font-medium">{getConfessorNameById(c.id!)}</span>
+                              <span className="text-sm text-gray-500">({c.gender})</span>
+                            </div>
                           </button>
                         ))}
                       </div>
                     )}
+                    {childSearch && childSearchResults.length === 0 && (
+                      <div className="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                        <p className="text-yellow-800 dark:text-yellow-200 text-sm">
+                          لم يتم العثور على نتائج. تأكد من إضافة الأطفال كمعترفين منفصلين أولاً.
+                        </p>
+                      </div>
+                    )}
                   </div>
+                </div>
+
+                {/* Family Tips */}
+                <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                    <Icon name="birthday" className="w-5 h-5" />
+                    نصائح إدارة الأسرة
+                  </h4>
+                  <ul className="text-blue-700 dark:text-blue-300 text-sm space-y-1">
+                    <li>• يجب إضافة الزوج/الزوجة والأطفال كمعترفين منفصلين أولاً</li>
+                    <li>• سيتم ربط العلاقات الأسرية تلقائياً في كلا الاتجاهين</li>
+                    <li>• يمكن تعديل العلاقات الأسرية في أي وقت</li>
+                    <li>• ستظهر أعياد الميلاد والزواج للأسرة في التقويم</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -588,14 +698,15 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
             <button 
               type="button" 
               onClick={onClose} 
-              className="px-6 py-2 rounded bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500"
+              className="px-6 py-2 rounded bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
             >
               إلغاء
             </button>
             <button 
               type="submit" 
-              className="px-6 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+              className="px-6 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center gap-2"
             >
+              <Icon name="users" className="w-5 h-5" />
               حفظ
             </button>
           </div>

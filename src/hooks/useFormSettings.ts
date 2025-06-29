@@ -50,40 +50,16 @@ export const useFormSettings = (userId: string | undefined) => {
               defaultExpanded: true
             },
             {
-              id: 'family',
-              name: 'family',
-              label: 'العلاقات الأسرية',
-              order: 4,
-              collapsible: true,
-              defaultExpanded: false
-            },
-            {
               id: 'additional',
               name: 'additional',
               label: 'معلومات إضافية',
-              order: 5,
+              order: 4,
               collapsible: true,
               defaultExpanded: false
             }
           ],
           fields: [
             // المعلومات الشخصية
-            {
-              id: 'profile_image',
-              name: 'profile_image',
-              label: 'الصورة الشخصية',
-              type: 'image',
-              required: false,
-              placeholder: 'اختر صورة شخصية',
-              validation: {
-                maxFileSize: 5,
-                allowedTypes: ['image/jpeg', 'image/png', 'image/webp']
-              },
-              group: 'personal',
-              order: 1,
-              visible: true,
-              width: 'half'
-            },
             {
               id: 'firstName',
               name: 'firstName',
@@ -92,7 +68,7 @@ export const useFormSettings = (userId: string | undefined) => {
               required: true,
               placeholder: 'أدخل الاسم الأول',
               group: 'personal',
-              order: 2,
+              order: 1,
               visible: true,
               width: 'half'
             },
@@ -104,7 +80,7 @@ export const useFormSettings = (userId: string | undefined) => {
               required: true,
               placeholder: 'أدخل اسم الأب',
               group: 'personal',
-              order: 3,
+              order: 2,
               visible: true,
               width: 'half'
             },
@@ -116,7 +92,7 @@ export const useFormSettings = (userId: string | undefined) => {
               required: false,
               placeholder: 'أدخل اسم الجد (اختياري)',
               group: 'personal',
-              order: 4,
+              order: 3,
               visible: true,
               width: 'half'
             },
@@ -128,7 +104,7 @@ export const useFormSettings = (userId: string | undefined) => {
               required: true,
               placeholder: 'أدخل اسم العائلة',
               group: 'personal',
-              order: 5,
+              order: 4,
               visible: true,
               width: 'half'
             },
@@ -141,7 +117,7 @@ export const useFormSettings = (userId: string | undefined) => {
               options: ['ذكر', 'أنثى'],
               defaultValue: 'ذكر',
               group: 'personal',
-              order: 6,
+              order: 5,
               visible: true,
               width: 'half'
             },
@@ -152,7 +128,7 @@ export const useFormSettings = (userId: string | undefined) => {
               type: 'date',
               required: true,
               group: 'personal',
-              order: 7,
+              order: 6,
               visible: true,
               width: 'half'
             },
@@ -165,7 +141,7 @@ export const useFormSettings = (userId: string | undefined) => {
               options: ['أعزب', 'متزوج', 'أرمل', 'مطلق'],
               defaultValue: 'أعزب',
               group: 'personal',
-              order: 8,
+              order: 7,
               visible: true,
               width: 'half'
             },
@@ -176,7 +152,7 @@ export const useFormSettings = (userId: string | undefined) => {
               type: 'date',
               required: false,
               group: 'personal',
-              order: 9,
+              order: 8,
               visible: true,
               width: 'half'
             },
