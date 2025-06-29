@@ -24,7 +24,8 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
     options: [],
     group: '',
     visible: true,
-    width: 'full'
+    width: 'full',
+    validation: {}
   });
 
   const fieldTypes = [
@@ -37,7 +38,8 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
     { value: 'multiselect', label: 'اختيار متعدد' },
     { value: 'textarea', label: 'نص طويل' },
     { value: 'checkbox', label: 'مربع اختيار' },
-    { value: 'radio', label: 'اختيار واحد' }
+    { value: 'radio', label: 'اختيار واحد' },
+    { value: 'image', label: 'صورة' }
   ];
 
   const widthOptions = [
@@ -57,6 +59,7 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
       required: newField.required!,
       placeholder: newField.placeholder,
       options: newField.options,
+      validation: newField.validation,
       group: newField.group!,
       order: formSettings.fields.filter(f => f.group === newField.group).length + 1,
       visible: newField.visible!,
@@ -73,7 +76,8 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
       options: [],
       group: '',
       visible: true,
-      width: 'full'
+      width: 'full',
+      validation: {}
     });
     setShowAddField(false);
   };
@@ -226,6 +230,54 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
                 className="w-full p-2 border rounded text-sm dark:bg-gray-700 dark:border-gray-600"
               />
             </div>
+
+            {/* Image field specific settings */}
+            {newField.type === 'image' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium mb-1">الحد الأقصى لحجم الملف (ميجابايت)</label>
+                  <input
+                    type="number"
+                    value={newField.validation?.maxFileSize || 5}
+                    onChange={(e) => setNewField(prev => ({ 
+                      ...prev, 
+                      validation: { 
+                        ...prev.validation, 
+                        maxFileSize: parseInt(e.target.value) 
+                      } 
+                    }))}
+                    min="1"
+                    max="50"
+                    className="w-full p-2 border rounded text-sm dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">أنواع الملفات المسموحة</label>
+                  <select
+                    multiple
+                    value={newField.validation?.allowedTypes || ['image/jpeg', 'image/png', 'image/webp']}
+                    onChange={(e) => {
+                      const selectedTypes = Array.from(e.target.selectedOptions, option => option.value);
+                      setNewField(prev => ({ 
+                        ...prev, 
+                        validation: { 
+                          ...prev.validation, 
+                          allowedTypes: selectedTypes 
+                        } 
+                      }));
+                    }}
+                    className="w-full p-2 border rounded text-sm dark:bg-gray-700 dark:border-gray-600"
+                  >
+                    <option value="image/jpeg">JPEG</option>
+                    <option value="image/png">PNG</option>
+                    <option value="image/webp">WebP</option>
+                    <option value="image/gif">GIF</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">اضغط Ctrl/Cmd لاختيار متعدد</p>
+                </div>
+              </>
+            )}
+
             <div className="md:col-span-2 flex items-center gap-4">
               <label className="flex items-center gap-2">
                 <input
@@ -276,6 +328,41 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
         </div>
       )}
 
+      {/* Quick Add Profile Image Button */}
+      <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
+        <div className="flex justify-between items-center">
+          <div>
+            <h5 className="font-semibold text-blue-800 dark:text-blue-200">إضافة سريعة: حقل الصورة الشخصية</h5>
+            <p className="text-sm text-blue-600 dark:text-blue-300">اضغط لإضافة حقل الصورة الشخصية بإعدادات افتراضية مُحسنة</p>
+          </div>
+          <button
+            onClick={() => {
+              const profileImageField: FormField = {
+                id: 'profile_image',
+                name: 'profile_image',
+                label: 'الصورة الشخصية',
+                type: 'image',
+                required: false,
+                placeholder: 'اختر صورة شخصية',
+                validation: {
+                  maxFileSize: 5,
+                  allowedTypes: ['image/jpeg', 'image/png', 'image/webp']
+                },
+                group: 'personal',
+                order: 1,
+                visible: true,
+                width: 'half'
+              };
+              addField(profileImageField);
+            }}
+            className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+          >
+            <Icon name="add" className="w-4 h-4" />
+            إضافة حقل الصورة
+          </button>
+        </div>
+      </div>
+
       {/* Fields List */}
       <div className="space-y-4 max-h-96 overflow-y-auto">
         {filteredGroups.map(group => {
@@ -312,6 +399,27 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
                             />
                           </div>
                         </div>
+                        {editingField.type === 'image' && (
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="block text-xs font-medium mb-1">حجم الملف الأقصى (MB)</label>
+                              <input
+                                type="number"
+                                value={editingField.validation?.maxFileSize || 5}
+                                onChange={(e) => setEditingField(prev => prev ? { 
+                                  ...prev, 
+                                  validation: { 
+                                    ...prev.validation, 
+                                    maxFileSize: parseInt(e.target.value) 
+                                  } 
+                                } : null)}
+                                min="1"
+                                max="50"
+                                className="w-full p-1 border rounded text-sm dark:bg-gray-600 dark:border-gray-500"
+                              />
+                            </div>
+                          </div>
+                        )}
                         <div className="flex items-center gap-4">
                           <label className="flex items-center gap-1">
                             <input
@@ -359,12 +467,18 @@ export const FormFieldEditor: React.FC<FormFieldEditorProps> = ({ formSettings, 
                     ) : (
                       <div className="flex justify-between items-center">
                         <div>
-                          <h6 className="font-medium text-sm">{field.label}</h6>
+                          <h6 className="font-medium text-sm flex items-center gap-2">
+                            {field.label}
+                            {field.type === 'image' && <Icon name="birthday" className="w-4 h-4 text-purple-500" />}
+                          </h6>
                           <p className="text-xs text-gray-600 dark:text-gray-300">
                             {field.name} • {fieldTypes.find(t => t.value === field.type)?.label} • 
                             {field.required ? ' مطلوب' : ' اختياري'} • 
                             {field.visible ? ' مرئي' : ' مخفي'} • 
                             {widthOptions.find(w => w.value === field.width)?.label}
+                            {field.type === 'image' && field.validation?.maxFileSize && 
+                              ` • حد أقصى ${field.validation.maxFileSize}MB`
+                            }
                           </p>
                         </div>
                         <div className="flex items-center gap-1">

@@ -45,7 +45,7 @@ export interface FormField {
   id: string;
   name: string;
   label: string;
-  type: 'text' | 'number' | 'email' | 'tel' | 'date' | 'select' | 'multiselect' | 'textarea' | 'checkbox' | 'radio';
+  type: 'text' | 'number' | 'email' | 'tel' | 'date' | 'select' | 'multiselect' | 'textarea' | 'checkbox' | 'radio' | 'image';
   required: boolean;
   placeholder?: string;
   options?: string[]; // للـ select و radio
@@ -55,6 +55,8 @@ export interface FormField {
     max?: number;
     pattern?: string;
     message?: string;
+    maxFileSize?: number; // بالميجابايت للصور
+    allowedTypes?: string[]; // أنواع الملفات المسموحة
   };
   group: string; // مجموعة الحقل
   order: number; // ترتيب الحقل

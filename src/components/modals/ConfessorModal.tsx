@@ -26,6 +26,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
   const [spouseSearch, setSpouseSearch] = useState('');
   const [childSearch, setChildSearch] = useState('');
+  const [imagePreview, setImagePreview] = useState<Record<string, string>>({});
 
   const getConfessorNameById = useCallback((id: string) => {
     const found = allConfessors.find(c => c.id === id);
@@ -36,6 +37,20 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   useEffect(() => {
     if (confessor) {
       setFormData({ ...confessor, customFields: confessor.customFields || {} });
+      
+      // Load existing image previews
+      const previews: Record<string, string> = {};
+      formSettings.fields.forEach(field => {
+        if (field.type === 'image') {
+          const imageValue = field.name.includes('.') 
+            ? confessor.customFields?.[field.name.split('.')[1]]
+            : confessor[field.name as keyof Confessor];
+          if (imageValue) {
+            previews[field.name] = imageValue as string;
+          }
+        }
+      });
+      setImagePreview(previews);
     } else {
       // Initialize with default values from form settings
       const initialData: any = { customFields: {} };
@@ -52,6 +67,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
         }
       });
       setFormData(initialData);
+      setImagePreview({});
     }
 
     // Initialize expanded groups
@@ -76,6 +92,37 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     } else {
       setFormData((prev: any) => ({ ...prev, [fieldName]: value }));
     }
+  };
+
+  const handleImageChange = async (fieldName: string, file: File | null, field: FormField) => {
+    if (!file) {
+      handleChange(fieldName, '');
+      setImagePreview(prev => ({ ...prev, [fieldName]: '' }));
+      return;
+    }
+
+    // Validate file size
+    const maxSize = (field.validation?.maxFileSize || 5) * 1024 * 1024; // Convert MB to bytes
+    if (file.size > maxSize) {
+      alert(`حجم الملف كبير جداً. الحد الأقصى ${field.validation?.maxFileSize || 5} ميجابايت`);
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = field.validation?.allowedTypes || ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert(`نوع الملف غير مدعوم. الأنواع المدعومة: ${allowedTypes.join(', ')}`);
+      return;
+    }
+
+    // Convert to base64 for storage
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64String = e.target?.result as string;
+      handleChange(fieldName, base64String);
+      setImagePreview(prev => ({ ...prev, [fieldName]: base64String }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleMultiSelectChange = (fieldName: string, value: string) => {
@@ -270,6 +317,41 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   </span>
                 </label>
               ))}
+            </div>
+          );
+
+        case 'image':
+          return (
+            <div className="space-y-3">
+              <input
+                type="file"
+                accept={field.validation?.allowedTypes?.join(',') || 'image/*'}
+                onChange={(e) => handleImageChange(field.name, e.target.files?.[0] || null, field)}
+                className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200"
+              />
+              
+              {imagePreview[field.name] && (
+                <div className="relative">
+                  <img
+                    src={imagePreview[field.name]}
+                    alt={field.label}
+                    className="w-32 h-32 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleImageChange(field.name, null, field)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    title="حذف الصورة"
+                  >
+                    <Icon name="close" className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+              
+              <div className="text-xs text-gray-500">
+                <p>الحد الأقصى: {field.validation?.maxFileSize || 5} ميجابايت</p>
+                <p>الأنواع المدعومة: {field.validation?.allowedTypes?.join(', ') || 'جميع أنواع الصور'}</p>
+              </div>
             </div>
           );
 
