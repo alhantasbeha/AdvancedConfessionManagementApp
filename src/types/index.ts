@@ -31,6 +31,8 @@ export interface Confessor {
   isArchived: boolean;
   // حقول ديناميكية إضافية
   customFields?: Record<string, any>;
+  // الصورة الشخصية كحقل ثابت
+  profileImage?: string;
 }
 
 export interface ConfessionLog {
