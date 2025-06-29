@@ -1,0 +1,827 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* إعادة تعيين الألوان الأساسية */
+html {
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+html.dark {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+/* تحسين الانتقال بين الأوضاع */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* متغيرات CSS للوضع النهاري */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --border-color: #e5e7eb;
+  --border-light: #f3f4f6;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* متغيرات CSS للوضع الليلي المحسن */
+.dark {
+  --bg-primary: #1e293b;
+  --bg-secondary: #0f172a;
+  --bg-tertiary: #020617;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --border-color: #334155;
+  --border-light: #475569;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+/* إجبار الألوان الأساسية */
+body {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* تحسين ألوان الخلفيات */
+.bg-white {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-gray-50 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-gray-100 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark .bg-white {
+  background-color: var(--bg-primary) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* تحسين ألوان النصوص */
+.text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+.text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+.dark .text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+.dark .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+/* تحسين الحدود */
+.border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+.border-gray-300 {
+  border-color: var(--border-light) !important;
+}
+
+.dark .border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+.dark .border-gray-300 {
+  border-color: var(--border-light) !important;
+}
+
+/* تحسين الأزرار */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* تحسين النماذج */
+input, select, textarea {
+  transition: all 0.2s ease;
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6 !important;
+}
+
+.dark input, .dark select, .dark textarea {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark input:focus, .dark select:focus, .dark textarea:focus {
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.25);
+  border-color: #60a5fa !important;
+}
+
+/* تحسين الظلال */
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 var(--shadow-color);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
+}
+
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color);
+}
+
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px var(--shadow-color);
+}
+
+/* تحسين البطاقات */
+.card {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color);
+}
+
+/* تحسين الانتقالات */
+.transition-theme {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* تحسين الجداول */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: var(--bg-primary) !important;
+}
+
+table th,
+table td {
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+table th {
+  background-color: var(--bg-secondary) !important;
+  font-weight: 600;
+}
+
+table tr:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* تحسين شريط التمرير */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* تحسين الرسوم المتحركة */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* تحسين النوافذ المنبثقة */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* تحسين الألوان الخاصة بالحالات للوضع النهاري */
+.bg-blue-50 {
+  background-color: #eff6ff !important;
+}
+
+.bg-green-50 {
+  background-color: #f0fdf4 !important;
+}
+
+.bg-red-50 {
+  background-color: #fef2f2 !important;
+}
+
+.bg-yellow-50 {
+  background-color: #fefce8 !important;
+}
+
+.bg-purple-50 {
+  background-color: #faf5ff !important;
+}
+
+.bg-pink-50 {
+  background-color: #fdf2f8 !important;
+}
+
+/* تحسين الألوان الخاصة بالحالات للوضع الليلي */
+.dark .bg-blue-50 {
+  background-color: #1e3a8a !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+.dark .bg-green-50 {
+  background-color: #14532d !important;
+  border: 1px solid #22c55e !important;
+}
+
+.dark .bg-red-50 {
+  background-color: #7f1d1d !important;
+  border: 1px solid #ef4444 !important;
+}
+
+.dark .bg-yellow-50 {
+  background-color: #713f12 !important;
+  border: 1px solid #eab308 !important;
+}
+
+.dark .bg-purple-50 {
+  background-color: #581c87 !important;
+  border: 1px solid #8b5cf6 !important;
+}
+
+.dark .bg-pink-50 {
+  background-color: #831843 !important;
+  border: 1px solid #ec4899 !important;
+}
+
+/* تحسين ألوان النصوص الملونة للوضع النهاري */
+.text-blue-600 {
+  color: #2563eb !important;
+}
+
+.text-green-600 {
+  color: #16a34a !important;
+}
+
+.text-red-600 {
+  color: #dc2626 !important;
+}
+
+.text-yellow-600 {
+  color: #ca8a04 !important;
+}
+
+.text-purple-600 {
+  color: #9333ea !important;
+}
+
+.text-pink-600 {
+  color: #db2777 !important;
+}
+
+/* تحسين ألوان النصوص الملونة للوضع الليلي */
+.dark .text-blue-600 {
+  color: #93c5fd !important;
+}
+
+.dark .text-green-600 {
+  color: #86efac !important;
+}
+
+.dark .text-red-600 {
+  color: #fca5a5 !important;
+}
+
+.dark .text-yellow-600 {
+  color: #fde047 !important;
+}
+
+.dark .text-purple-600 {
+  color: #d8b4fe !important;
+}
+
+.dark .text-pink-600 {
+  color: #f9a8d4 !important;
+}
+
+/* تحسين ألوان النصوص الثانوية للوضع الليلي */
+.dark .text-blue-700 {
+  color: #bfdbfe !important;
+}
+
+.dark .text-green-700 {
+  color: #bbf7d0 !important;
+}
+
+.dark .text-red-700 {
+  color: #fecaca !important;
+}
+
+.dark .text-yellow-700 {
+  color: #fef08a !important;
+}
+
+.dark .text-purple-700 {
+  color: #e9d5ff !important;
+}
+
+.dark .text-pink-700 {
+  color: #fbcfe8 !important;
+}
+
+.dark .text-blue-800 {
+  color: #dbeafe !important;
+}
+
+.dark .text-green-800 {
+  color: #dcfce7 !important;
+}
+
+.dark .text-red-800 {
+  color: #fee2e2 !important;
+}
+
+.dark .text-yellow-800 {
+  color: #fefce8 !important;
+}
+
+.dark .text-purple-800 {
+  color: #f3e8ff !important;
+}
+
+.dark .text-pink-800 {
+  color: #fdf2f8 !important;
+}
+
+/* تحسين الخلفيات الملونة للأزرار */
+.bg-blue-500 {
+  background-color: #3b82f6 !important;
+}
+
+.bg-green-500 {
+  background-color: #10b981 !important;
+}
+
+.bg-red-500 {
+  background-color: #ef4444 !important;
+}
+
+.bg-yellow-500 {
+  background-color: #eab308 !important;
+}
+
+.bg-purple-500 {
+  background-color: #8b5cf6 !important;
+}
+
+.bg-pink-500 {
+  background-color: #ec4899 !important;
+}
+
+/* تحسين hover للأزرار الملونة */
+.bg-blue-500:hover {
+  background-color: #2563eb !important;
+}
+
+.bg-green-500:hover {
+  background-color: #059669 !important;
+}
+
+.bg-red-500:hover {
+  background-color: #dc2626 !important;
+}
+
+.bg-yellow-500:hover {
+  background-color: #d97706 !important;
+}
+
+.bg-purple-500:hover {
+  background-color: #7c3aed !important;
+}
+
+.bg-pink-500:hover {
+  background-color: #db2777 !important;
+}
+
+/* تحسين الخلفيات الرمادية للوضع النهاري */
+.bg-gray-200 {
+  background-color: #e5e7eb !important;
+}
+
+.bg-gray-300 {
+  background-color: #d1d5db !important;
+}
+
+.bg-gray-400 {
+  background-color: #9ca3af !important;
+}
+
+.bg-gray-500 {
+  background-color: #6b7280 !important;
+}
+
+.bg-gray-600 {
+  background-color: #4b5563 !important;
+}
+
+.bg-gray-700 {
+  background-color: #374151 !important;
+}
+
+.bg-gray-800 {
+  background-color: #1f2937 !important;
+}
+
+.bg-gray-900 {
+  background-color: #111827 !important;
+}
+
+/* تحسين الخلفيات الرمادية للوضع الليلي */
+.dark .bg-gray-200 {
+  background-color: #475569 !important;
+}
+
+.dark .bg-gray-300 {
+  background-color: #64748b !important;
+}
+
+.dark .bg-gray-400 {
+  background-color: #94a3b8 !important;
+}
+
+.dark .bg-gray-500 {
+  background-color: #64748b !important;
+}
+
+.dark .bg-gray-600 {
+  background-color: #475569 !important;
+}
+
+.dark .bg-gray-700 {
+  background-color: #334155 !important;
+}
+
+.dark .bg-gray-800 {
+  background-color: #1e293b !important;
+}
+
+.dark .bg-gray-900 {
+  background-color: #0f172a !important;
+}
+
+/* تحسين النصوص الرمادية للوضع النهاري */
+.text-gray-100 {
+  color: #f3f4f6 !important;
+}
+
+.text-gray-200 {
+  color: #e5e7eb !important;
+}
+
+.text-gray-300 {
+  color: #d1d5db !important;
+}
+
+.text-gray-400 {
+  color: #9ca3af !important;
+}
+
+.text-gray-700 {
+  color: #374151 !important;
+}
+
+.text-gray-900 {
+  color: #111827 !important;
+}
+
+/* تحسين النصوص الرمادية للوضع الليلي */
+.dark .text-gray-100 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-200 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-gray-300 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-900 {
+  color: #f1f5f9 !important;
+}
+
+/* إضافة تحسينات خاصة للوضع النهاري */
+:not(.dark) body {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%) !important;
+}
+
+:not(.dark) .bg-white {
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+:not(.dark) .bg-gray-50 {
+  background: #f8fafc !important;
+}
+
+:not(.dark) .bg-gray-100 {
+  background: #f1f5f9 !important;
+}
+
+/* تحسين الحدود للوضع النهاري */
+:not(.dark) .border {
+  border-color: #e2e8f0 !important;
+}
+
+:not(.dark) .border-gray-200 {
+  border-color: #e2e8f0 !important;
+}
+
+:not(.dark) .border-gray-300 {
+  border-color: #cbd5e1 !important;
+}
+
+/* تحسين النصوص للوضع النهاري */
+:not(.dark) .text-gray-800 {
+  color: #1e293b !important;
+}
+
+:not(.dark) .text-gray-600 {
+  color: #475569 !important;
+}
+
+:not(.dark) .text-gray-500 {
+  color: #64748b !important;
+}
+
+:not(.dark) .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* تأكيد الألوان للوضع النهاري */
+html:not(.dark) {
+  background: #ffffff !important;
+  color: #1e293b !important;
+}
+
+html:not(.dark) body {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+/* تحسينات خاصة للوضع الليلي */
+.dark body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+}
+
+.dark .bg-white {
+  background: #1e293b !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .bg-gray-50 {
+  background: #0f172a !important;
+}
+
+.dark .bg-gray-100 {
+  background: #020617 !important;
+}
+
+/* تحسين الحدود للوضع الليلي */
+.dark .border {
+  border-color: #334155 !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #334155 !important;
+}
+
+.dark .border-gray-300 {
+  border-color: #475569 !important;
+}
+
+.dark .border-gray-700 {
+  border-color: #334155 !important;
+}
+
+/* تحسين النصوص للوضع الليلي */
+.dark .text-gray-800 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-400 {
+  color: #64748b !important;
+}
+
+/* تحسين الأزرار للوضع الليلي */
+.dark button:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* تحسين البطاقات للوضع الليلي */
+.dark .card {
+  background: linear-gradient(145deg, #1e293b, #334155) !important;
+  border: 1px solid #475569 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* تحسين الجداول للوضع الليلي */
+.dark table {
+  background: #1e293b !important;
+}
+
+.dark table th {
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+.dark table td {
+  color: #cbd5e1 !important;
+}
+
+.dark table tr:hover {
+  background: #334155 !important;
+}
+
+/* تحسين النماذج للوضع الليلي */
+.dark input, .dark select, .dark textarea {
+  background: #1e293b !important;
+  border: 1px solid #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark input::placeholder, .dark textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* تحسين الأزرار الثانوية للوضع الليلي */
+.dark .bg-gray-200 {
+  background: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .bg-gray-200:hover {
+  background: #64748b !important;
+}
+
+/* تحسين التدرجات للوضع الليلي */
+.dark .bg-gradient-to-r {
+  background: linear-gradient(to right, #1e293b, #334155) !important;
+}
+
+.dark .bg-gradient-to-br {
+  background: linear-gradient(to bottom right, #0f172a, #1e293b, #334155) !important;
+}
+
+/* تحسين الإشعارات للوضع الليلي */
+.dark .bg-blue-100 {
+  background: #1e3a8a !important;
+  color: #bfdbfe !important;
+}
+
+.dark .bg-green-100 {
+  background: #14532d !important;
+  color: #bbf7d0 !important;
+}
+
+.dark .bg-red-100 {
+  background: #7f1d1d !important;
+  color: #fecaca !important;
+}
+
+.dark .bg-yellow-100 {
+  background: #713f12 !important;
+  color: #fef08a !important;
+}
+
+/* تحسين العناصر التفاعلية للوضع الليلي */
+.dark .hover\:bg-gray-100:hover {
+  background: #334155 !important;
+}
+
+.dark .hover\:bg-gray-200:hover {
+  background: #475569 !important;
+}
+
+.dark .hover\:bg-blue-100:hover {
+  background: #1e40af !important;
+}
+
+.dark .hover\:bg-green-100:hover {
+  background: #166534 !important;
+}
+
+.dark .hover\:bg-red-100:hover {
+  background: #991b1b !important;
+}
+
+/* تحسين الحالات النشطة للوضع الليلي */
+.dark .bg-blue-100.dark\:bg-blue-900 {
+  background: #1e3a8a !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+.dark .text-blue-800.dark\:text-blue-200 {
+  color: #bfdbfe !important;
+}
+
+/* تحسين الشفافية للوضع الليلي */
+.dark .bg-black\/50 {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+}
+
+/* تحسين الانتقالات السلسة */
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-colors {
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* تحسين التركيز للوضع الليلي */
+.dark *:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.dark input:focus, .dark select:focus, .dark textarea:focus {
+  ring-color: #60a5fa;
+  border-color: #60a5fa !important;
+}
