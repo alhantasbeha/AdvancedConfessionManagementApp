@@ -189,6 +189,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     setShowSuccessMessage(true);
     setTimeout(() => {
       setShowSuccessMessage(false);
+      setIsSubmitting(false); // إعادة تعيين حالة الإرسال
       onClose();
     }, 2000);
   };
@@ -265,7 +266,6 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       alert('حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.');
       setIsSubmitting(false); // إعادة تعيين الحالة في حالة الخطأ
     }
-    // لا نقوم بإعادة تعيين isSubmitting هنا لأن showSuccess ستقوم بإغلاق النافذة
   };
 
   const renderStepIndicator = () => (
@@ -387,7 +387,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   title="حذف الصورة"
                 >
-                  <Icon name="close" className="w-4 h-4" />
+                  <Icon name="x" className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -692,7 +692,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                       className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="حذف الطفل"
                     >
-                      <Icon name="close" className="w-4 h-4" />
+                      <Icon name="x" className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -974,7 +974,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
               disabled={isSubmitting}
               className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Icon name="close" className="w-6 h-6" />
+              <Icon name="x" className="w-6 h-6" />
             </button>
           </div>
         </div>
