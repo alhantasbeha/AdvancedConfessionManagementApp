@@ -53,6 +53,8 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const [imagePreview, setImagePreview] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [expandedSections, setExpandedSections] = useState({
     personal: true,
     contact: true,
@@ -182,6 +184,15 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     }
   };
 
+  const showSuccess = (message: string) => {
+    setSuccessMessage(message);
+    setShowSuccessMessage(true);
+    setTimeout(() => {
+      setShowSuccessMessage(false);
+      onClose();
+    }, 2000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
@@ -237,10 +248,11 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       if (confessor?.id) {
         const docRef = doc(db, `artifacts/${appId}/users/${userId}/confessors`, confessor.id);
         await updateDoc(docRef, formData);
+        showSuccess('تم تعديل بيانات المعترف بنجاح! ✅');
       } else {
         await addDoc(collectionRef, formData);
+        showSuccess('تم تسجيل المعترف بنجاح! ✅');
       }
-      onClose();
     } catch (error) {
       console.error("Error saving confessor:", error);
       alert('حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.');
@@ -522,7 +534,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   );
 
   const renderStep2 = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 max-h-[70vh] overflow-y-auto">
       {renderCollapsibleSection(
         'معلومات الاتصال',
         'messages',
@@ -640,7 +652,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
               </button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-80 overflow-y-auto">
               {(formData.children || []).map((child: any, index: number) => (
                 <div key={index} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-blue-600 shadow-sm">
                   <div className="flex justify-between items-start mb-3">
@@ -879,6 +891,29 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       default: return renderStep1();
     }
   };
+
+  // Success Message Modal
+  if (showSuccessMessage) {
+    return (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center animate-fadeIn">
+          <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Icon name="users" className="w-10 h-10 text-green-600 dark:text-green-400" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+            تم بنجاح!
+          </h3>
+          <p className="text-lg text-green-600 dark:text-green-400 font-medium">
+            {successMessage}
+          </p>
+          <div className="mt-6">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500 mx-auto"></div>
+            <p className="text-sm text-gray-500 mt-2">جاري إغلاق النافذة...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
