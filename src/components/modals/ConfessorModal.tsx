@@ -204,8 +204,19 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     }
   };
 
+  const shouldShowField = (field: FormField) => {
+    if (!field.visible) return false;
+    
+    // Special condition for marriage date field
+    if (field.name === 'marriageDate') {
+      return formData.socialStatus === 'متزوج';
+    }
+    
+    return true;
+  };
+
   const renderField = (field: FormField) => {
-    if (!field.visible) return null;
+    if (!shouldShowField(field)) return null;
 
     const value = field.name.includes('.') 
       ? formData[field.name.split('.')[0]]?.[field.name.split('.')[1]]
@@ -403,6 +414,9 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
           <label className="block text-sm font-medium mb-2">
             {field.label}
             {field.required && <span className="text-red-500 mr-1">*</span>}
+            {field.name === 'marriageDate' && (
+              <span className="text-xs text-blue-500 mr-2">(يظهر عند اختيار متزوج)</span>
+            )}
           </label>
         )}
         {renderFieldInput()}
@@ -434,7 +448,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
 
   const renderGroup = (group: FormGroup) => {
     const groupFields = formSettings.fields
-      .filter(field => field.group === group.name && field.visible)
+      .filter(field => field.group === group.name && shouldShowField(field))
       .sort((a, b) => a.order - b.order);
 
     if (groupFields.length === 0) return null;
@@ -633,6 +647,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                     <li>• أرقام الهواتف اختيارية ومفيدة للتواصل المباشر</li>
                     <li>• يمكنك إضافة أو حذف الأطفال في أي وقت</li>
                     <li>• ستظهر أعياد الميلاد في التقويم إذا تم إدخال التواريخ</li>
+                    <li>• حقل "تاريخ الزواج" يظهر تلقائياً عند اختيار "متزوج"</li>
                   </ul>
                 </div>
               </div>
