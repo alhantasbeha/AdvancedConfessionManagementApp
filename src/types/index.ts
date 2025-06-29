@@ -20,8 +20,14 @@ export interface Confessor {
   isDeacon: boolean;
   isDeceased: boolean;
   notes: string;
-  spouseId?: string;
-  childrenIds: string[];
+  // تغيير حقول الأسرة لتكون نصوص بسيطة
+  spouseName?: string;
+  spousePhone?: string;
+  children?: Array<{
+    name: string;
+    birthDate?: string;
+    phone?: string;
+  }>;
   isArchived: boolean;
   // حقول ديناميكية إضافية
   customFields?: Record<string, any>;

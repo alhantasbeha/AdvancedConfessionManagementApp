@@ -48,7 +48,12 @@ export const AnniversariesPage: React.FC = () => {
   };
 
   const marriedCouples = useMemo(() => {
-    const couples: Array<{husband: Confessor, wife: Confessor, marriageDate: string}> = [];
+    const couples: Array<{
+      husband: Confessor, 
+      wife: Confessor | null, 
+      marriageDate: string,
+      spouseName?: string
+    }> = [];
     
     confessors.forEach(person => {
       if (person.socialStatus === 'متزوج' && 
@@ -57,14 +62,19 @@ export const AnniversariesPage: React.FC = () => {
           !person.isArchived &&
           person.gender === 'ذكر') {
         
-        const spouse = confessors.find(c => c.id === person.spouseId);
-        if (spouse && !spouse.isDeceased && !spouse.isArchived) {
-          couples.push({
-            husband: person,
-            wife: spouse,
-            marriageDate: person.marriageDate
-          });
-        }
+        // Try to find spouse in confessors list, otherwise use spouse name
+        const spouse = confessors.find(c => 
+          c.gender === 'أنثى' && 
+          c.socialStatus === 'متزوج' && 
+          c.spouseName === `${person.firstName} ${person.familyName}`
+        );
+        
+        couples.push({
+          husband: person,
+          wife: spouse || null,
+          marriageDate: person.marriageDate,
+          spouseName: person.spouseName
+        });
       }
     });
     
@@ -111,8 +121,20 @@ export const AnniversariesPage: React.FC = () => {
     });
   }, [marriedCouples, selectedPeriod, selectedMonth]);
 
-  const handleSendMessage = (couple: {husband: Confessor, wife: Confessor}) => {
-    setSelectedCouple(couple);
+  const handleSendMessage = (couple: any) => {
+    if (couple.wife) {
+      setSelectedCouple({ husband: couple.husband, wife: couple.wife });
+    } else {
+      // If wife is not in system, create a mock object for the modal
+      const mockWife = {
+        id: 'mock',
+        firstName: couple.spouseName || 'الزوجة',
+        familyName: '',
+        phone1: couple.husband.spousePhone || '',
+        phone1Whatsapp: true
+      } as Confessor;
+      setSelectedCouple({ husband: couple.husband, wife: mockWife });
+    }
     setShowSendModal(true);
   };
 
@@ -205,6 +227,7 @@ export const AnniversariesPage: React.FC = () => {
             const daysUntil = getDaysUntilAnniversary(couple.marriageDate);
             const years = calculateYears(couple.marriageDate);
             const marriageDate = new Date(couple.marriageDate);
+            const spouseName = couple.wife ? couple.wife.firstName : couple.spouseName;
             
             return (
               <div key={index} className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900 dark:to-pink-900 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
@@ -213,7 +236,7 @@ export const AnniversariesPage: React.FC = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <Icon name="birthday" className="w-6 h-6 text-purple-500" />
                       <h4 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                        {couple.husband.firstName} و {couple.wife.firstName} {couple.husband.familyName}
+                        {couple.husband.firstName} و {spouseName} {couple.husband.familyName}
                       </h4>
                       {daysUntil === 0 && (
                         <span className="bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
@@ -260,7 +283,7 @@ export const AnniversariesPage: React.FC = () => {
                           )}
                         </div>
                       )}
-                      {couple.wife.phone1 && (
+                      {couple.wife?.phone1 && (
                         <div className="flex items-center gap-2">
                           <Icon name="messages" className="w-4 h-4" />
                           <span>{couple.wife.firstName}: {couple.wife.phone1}</span>
@@ -271,11 +294,20 @@ export const AnniversariesPage: React.FC = () => {
                           )}
                         </div>
                       )}
+                      {!couple.wife && couple.husband.spousePhone && (
+                        <div className="flex items-center gap-2">
+                          <Icon name="messages" className="w-4 h-4" />
+                          <span>{spouseName}: {couple.husband.spousePhone}</span>
+                          <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded text-xs">
+                            واتساب
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
                   <div className="flex gap-2">
-                    {(couple.husband.phone1Whatsapp || couple.wife.phone1Whatsapp) && (
+                    {(couple.husband.phone1Whatsapp || couple.wife?.phone1Whatsapp || couple.husband.spousePhone) && (
                       <button 
                         onClick={() => handleSendMessage(couple)}
                         className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
@@ -295,7 +327,7 @@ export const AnniversariesPage: React.FC = () => {
       {/* Send Message Modal */}
       {showSendModal && selectedCouple && (
         <SendMessageModal 
-          person={selectedCouple.husband} // We'll modify this to handle couples
+          person={selectedCouple.husband}
           templates={anniversaryTemplates}
           messageType="anniversary"
           couple={selectedCouple}

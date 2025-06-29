@@ -30,7 +30,9 @@ export const ConfessorsPage: React.FC = () => {
     let results = confessors.filter(c => 
       (c.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
        c.fatherName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       c.familyName?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+       c.familyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       c.spouseName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       c.children?.some(child => child.name?.toLowerCase().includes(searchTerm.toLowerCase()))) &&
       c.isArchived === showArchived
     );
     setFilteredConfessors(results);
@@ -67,7 +69,7 @@ export const ConfessorsPage: React.FC = () => {
         <div className="relative w-full md:w-1/3">
           <input 
             type="text" 
-            placeholder="ابحث بالاسم..." 
+            placeholder="ابحث بالاسم أو اسم الزوج أو الأطفال..." 
             className="w-full p-2 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -102,6 +104,7 @@ export const ConfessorsPage: React.FC = () => {
               <th className="p-3">العمر</th>
               <th className="p-3">رقم الهاتف</th>
               <th className="p-3">الكنيسة</th>
+              <th className="p-3">الأسرة</th>
               <th className="p-3">إجراءات</th>
             </tr>
           </thead>
@@ -109,23 +112,62 @@ export const ConfessorsPage: React.FC = () => {
             {filteredConfessors.map(confessor => (
               <tr key={confessor.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="p-3 font-semibold">
-                  {`${confessor.firstName || ''} ${confessor.fatherName || ''} ${confessor.familyName || ''}`}
+                  <div>
+                    {`${confessor.firstName || ''} ${confessor.fatherName || ''} ${confessor.familyName || ''}`}
+                    {confessor.isDeacon && (
+                      <span className="mr-2 text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded">
+                        شماس
+                      </span>
+                    )}
+                  </div>
                 </td>
                 <td className="p-3">{calculateAge(confessor.birthDate)}</td>
-                <td className="p-3">{confessor.phone1}</td>
+                <td className="p-3">
+                  <div>
+                    {confessor.phone1}
+                    {confessor.phone1Whatsapp && (
+                      <span className="mr-1 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1 rounded">
+                        واتساب
+                      </span>
+                    )}
+                  </div>
+                </td>
                 <td className="p-3">{confessor.church}</td>
+                <td className="p-3">
+                  <div className="text-sm">
+                    {confessor.socialStatus === 'متزوج' && (
+                      <div>
+                        {confessor.spouseName && (
+                          <div className="text-blue-600 dark:text-blue-400">
+                            الزوج/ة: {confessor.spouseName}
+                          </div>
+                        )}
+                        {confessor.children && confessor.children.length > 0 && (
+                          <div className="text-green-600 dark:text-green-400">
+                            الأطفال: {confessor.children.length}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {confessor.socialStatus !== 'متزوج' && (
+                      <span className="text-gray-500">{confessor.socialStatus}</span>
+                    )}
+                  </div>
+                </td>
                 <td className="p-3 flex items-center gap-2">
                   <button 
                     onClick={() => handleEdit(confessor)} 
                     className="p-2 text-blue-500 hover:bg-blue-100 rounded-full"
+                    title="تعديل"
                   >
-                    <Icon name="edit" />
+                    <Icon name="edit" className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => handleArchive(confessor)} 
                     className="p-2 text-yellow-500 hover:bg-yellow-100 rounded-full"
+                    title={confessor.isArchived ? 'إلغاء الأرشفة' : 'أرشفة'}
                   >
-                    <Icon name={confessor.isArchived ? 'unarchive' : 'archive'} />
+                    <Icon name={confessor.isArchived ? 'unarchive' : 'archive'} className="w-4 h-4" />
                   </button>
                 </td>
               </tr>
@@ -134,7 +176,10 @@ export const ConfessorsPage: React.FC = () => {
         </table>
         
         {filteredConfessors.length === 0 && (
-          <p className="text-center p-4">لا توجد بيانات لعرضها.</p>
+          <div className="text-center py-8">
+            <Icon name="users" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <p className="text-gray-500">لا توجد بيانات لعرضها.</p>
+          </div>
         )}
       </div>
 
