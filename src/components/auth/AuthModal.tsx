@@ -64,6 +64,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     } catch (error: any) {
       console.error('Auth error:', error);
       switch (error.code) {
+        case 'auth/operation-not-allowed':
+          setError('خدمة المصادقة غير مفعلة. يرجى التواصل مع مدير النظام لتفعيل المصادقة بالبريد الإلكتروني وكلمة المرور');
+          break;
         case 'auth/user-not-found':
           setError('البريد الإلكتروني غير مسجل');
           break;
@@ -111,7 +114,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             {titles[mode]}
           </h3>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <Icon name="close" className="w-6 h-6" />
+            <Icon name="x" className="w-6 h-6" />
           </button>
         </div>
 
@@ -119,7 +122,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {error && (
             <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-3">
               <p className="text-red-800 dark:text-red-200 text-sm flex items-center gap-2">
-                <Icon name="close" className="w-4 h-4" />
+                <Icon name="alert-circle" className="w-4 h-4" />
                 {error}
               </p>
             </div>
@@ -128,7 +131,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {success && (
             <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-3">
               <p className="text-green-800 dark:text-green-200 text-sm flex items-center gap-2">
-                <Icon name="users" className="w-4 h-4" />
+                <Icon name="check-circle" className="w-4 h-4" />
                 {success}
               </p>
             </div>
