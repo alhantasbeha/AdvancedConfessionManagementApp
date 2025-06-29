@@ -334,20 +334,20 @@ export const SettingsPage: React.FC = () => {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">فترة التذكير للاعتراف (بالأيام)</label>
-            <select className="w-full p-2 border rounded dark:bg-gray-600 dark:border-gray-500">
+            <select className="w-full p-2 border rounded dark:bg-gray-600 dark:border-gray-500" defaultValue="60">
               <option value="30">30 يوم</option>
               <option value="45">45 يوم</option>
-              <option value="60" selected>60 يوم</option>
+              <option value="60">60 يوم</option>
               <option value="90">90 يوم</option>
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2">تذكير أعياد الميلاد مسبقاً</label>
-            <select className="w-full p-2 border rounded dark:bg-gray-600 dark:border-gray-500">
+            <select className="w-full p-2 border rounded dark:bg-gray-600 dark:border-gray-500" defaultValue="7">
               <option value="1">يوم واحد</option>
               <option value="3">3 أيام</option>
-              <option value="7" selected>أسبوع</option>
+              <option value="7">أسبوع</option>
               <option value="14">أسبوعين</option>
             </select>
           </div>

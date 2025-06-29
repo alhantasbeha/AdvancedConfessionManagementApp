@@ -19,7 +19,6 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
 }) => {
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [messageBody, setMessageBody] = useState('');
-  const [sendTo, setSendTo] = useState<'husband' | 'wife' | 'both'>('husband');
 
   useEffect(() => {
     if (templates.length > 0) {
@@ -209,8 +208,7 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
                       type="radio"
                       name="sendTo"
                       value={recipient.key}
-                      checked={sendTo === recipient.key}
-                      onChange={(e) => setSendTo(e.target.value as 'husband' | 'wife')}
+                      defaultChecked={recipient.key === 'husband'}
                       className="w-4 h-4"
                     />
                     <span>{recipient.label} ({recipient.phone})</span>
@@ -222,8 +220,6 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
                       type="radio"
                       name="sendTo"
                       value="both"
-                      checked={sendTo === 'both'}
-                      onChange={(e) => setSendTo(e.target.value as 'both')}
                       className="w-4 h-4"
                     />
                     <span>كلاهما</span>
@@ -244,25 +240,17 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
             </button>
             
             {recipients.length > 0 && messageBody && (
-              <>
-                {messageType === 'anniversary' && couple && sendTo === 'both' ? (
-                  <button
-                    onClick={() => handleSend('both')}
-                    className="px-6 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors flex items-center gap-2"
-                  >
-                    <Icon name="messages" className="w-5 h-5" />
-                    إرسال للجميع عبر واتساب
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleSend(messageType === 'anniversary' ? sendTo : 'husband')}
-                    className="px-6 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors flex items-center gap-2"
-                  >
-                    <Icon name="messages" className="w-5 h-5" />
-                    إرسال عبر واتساب
-                  </button>
-                )}
-              </>
+              <button
+                onClick={() => {
+                  const sendToRadio = document.querySelector('input[name="sendTo"]:checked') as HTMLInputElement;
+                  const sendToValue = sendToRadio?.value || 'husband';
+                  handleSend(sendToValue as 'husband' | 'wife' | 'both');
+                }}
+                className="px-6 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors flex items-center gap-2"
+              >
+                <Icon name="messages" className="w-5 h-5" />
+                إرسال عبر واتساب
+              </button>
             )}
           </div>
         </div>
