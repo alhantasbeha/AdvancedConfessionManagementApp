@@ -5,19 +5,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['sql.js'],
+    exclude: ['lucide-react'],
   },
-  server: {
-    fs: {
-      allow: ['..']
-    }
-  },
-  define: {
-    global: 'globalThis',
-  },
-  resolve: {
-    alias: {
-      'sql.js': 'sql.js/dist/sql-wasm.js'
-    }
-  }
 });
