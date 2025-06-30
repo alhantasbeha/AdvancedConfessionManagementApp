@@ -7,7 +7,7 @@ interface NotificationsPanelProps {
   onClose: () => void;
 }
 
-export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ 
+const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ 
   notifications, 
   onClose 
 }) => {
@@ -129,3 +129,5 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
     </div>
   );
 };
+
+export default NotificationsPanel;
