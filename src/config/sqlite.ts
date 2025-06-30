@@ -1,4 +1,4 @@
-import { initSqlJs } from 'sql.js';
+import initSqlJs from 'sql.js';
 
 let SQL: any = null;
 let db: any = null;
