@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { Icon } from '../ui/Icon';
-import { NotificationsPanel } from './NotificationsPanel';
+import NotificationsPanel from './NotificationsPanel';
 
 interface HeaderProps {
   onMenuClick: () => void;
