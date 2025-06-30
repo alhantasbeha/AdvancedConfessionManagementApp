@@ -121,10 +121,24 @@ const createTables = async () => {
 
   // إدراج الإعدادات الافتراضية
   const defaultSettings = {
-    professions: ['مهندس', 'طبيب', 'محاسب', 'صيدلي', 'محامي', 'مدرس', 'موظف', 'ربة منزل', 'طالب', 'متقاعد'],
-    services: ['خدمة مدارس الأحد', 'خدمة شباب', 'كورال', 'خدمة اجتماعية', 'خدمة الشمامسة', 'خدمة الكشافة'],
-    personalTags: ['طالب', 'مغترب', 'جديد', 'نشط', 'يحتاج متابعة'],
-    confessionTags: ['نمو روحي', 'مشاكل أسرية', 'مشاكل شخصية', 'ضعف عام', 'توبة', 'إرشاد']
+    professions: [
+      'مهندس', 'طبيب', 'محاسب', 'صيدلي', 'محامي', 'مدرس', 'موظف', 'ربة منزل', 
+      'طالب', 'متقاعد', 'تاجر', 'فني', 'ممرض', 'طبيب أسنان', 'مبرمج', 'مصمم',
+      'كاتب', 'صحفي', 'مترجم', 'سائق', 'عامل', 'حرفي', 'مزارع', 'طباخ'
+    ],
+    services: [
+      'خدمة مدارس الأحد', 'خدمة شباب', 'كورال', 'خدمة اجتماعية', 'خدمة الشمامسة', 
+      'خدمة الكشافة', 'خدمة المرأة', 'خدمة كبار السن', 'خدمة الأطفال', 'خدمة الزيارات',
+      'خدمة الإعلام', 'خدمة التنظيف', 'خدمة الاستقبال', 'خدمة الأمن', 'خدمة الصوتيات'
+    ],
+    personalTags: [
+      'طالب', 'مغترب', 'جديد', 'نشط', 'يحتاج متابعة', 'قيادي', 'متطوع', 
+      'موهوب', 'مبدع', 'مساعد', 'منتظم', 'متميز', 'مؤثر', 'داعم'
+    ],
+    confessionTags: [
+      'نمو روحي', 'مشاكل أسرية', 'مشاكل شخصية', 'ضعف عام', 'توبة', 'إرشاد',
+      'تشجيع', 'صلاة', 'دراسة كتابية', 'خدمة', 'علاقات', 'عمل', 'دراسة', 'صحة'
+    ]
   };
 
   Object.entries(defaultSettings).forEach(([key, value]) => {
@@ -134,96 +148,346 @@ const createTables = async () => {
     `);
   });
 
-  // إدراج بيانات تجريبية
-  insertSampleData();
+  // إدراج بيانات وهمية شاملة
+  insertComprehensiveFakeData();
   
   saveDatabase();
-  console.log('تم إنشاء الجداول وإدراج البيانات الافتراضية');
+  console.log('تم إنشاء الجداول وإدراج البيانات الشاملة');
 };
 
-const insertSampleData = () => {
-  // إدراج معترفين تجريبيين
-  const sampleConfessors = [
-    {
-      firstName: 'أحمد',
-      fatherName: 'محمد',
-      familyName: 'علي',
-      phone1: '01234567890',
-      phone1Whatsapp: 1,
-      gender: 'ذكر',
-      birthDate: '1990-05-15',
-      socialStatus: 'متزوج',
-      marriageDate: '2015-08-20',
-      church: 'كنيسة العذراء مريم',
-      profession: 'مهندس',
-      services: '["خدمة شباب"]',
-      personalTags: '["نشط"]',
-      spouseName: 'فاطمة أحمد',
-      spousePhone: '01234567891',
-      children: '[{"name": "محمد أحمد", "birthDate": "2016-03-10", "phone": ""}]'
-    },
-    {
-      firstName: 'مريم',
-      fatherName: 'يوسف',
-      familyName: 'جرجس',
-      phone1: '01234567892',
-      phone1Whatsapp: 1,
-      gender: 'أنثى',
-      birthDate: '1995-12-25',
-      socialStatus: 'أعزب',
-      church: 'كنيسة مار جرجس',
-      profession: 'طبيب',
-      services: '["خدمة مدارس الأحد"]',
-      personalTags: '["طالب", "نشط"]'
-    }
+const insertComprehensiveFakeData = () => {
+  // أسماء مصرية شائعة
+  const maleFirstNames = [
+    'أحمد', 'محمد', 'علي', 'حسن', 'محمود', 'عبدالله', 'يوسف', 'إبراهيم', 'عمر', 'خالد',
+    'مصطفى', 'طارق', 'سامح', 'هشام', 'وائل', 'أسامة', 'كريم', 'تامر', 'شريف', 'عادل',
+    'ماجد', 'فادي', 'مينا', 'جورج', 'بيتر', 'مارك', 'أندرو', 'ديفيد', 'مايكل', 'جون'
   ];
 
-  sampleConfessors.forEach(confessor => {
-    db.exec(`
-      INSERT INTO confessors (
-        firstName, fatherName, familyName, phone1, phone1Whatsapp,
-        gender, birthDate, socialStatus, marriageDate, church,
-        profession, services, personalTags, spouseName, spousePhone, children
-      ) VALUES (
-        '${confessor.firstName}', '${confessor.fatherName}', '${confessor.familyName}',
-        '${confessor.phone1}', ${confessor.phone1Whatsapp}, '${confessor.gender}',
-        '${confessor.birthDate}', '${confessor.socialStatus}', 
-        ${confessor.marriageDate ? `'${confessor.marriageDate}'` : 'NULL'},
-        '${confessor.church}', '${confessor.profession}', '${confessor.services}',
-        '${confessor.personalTags}', 
-        ${confessor.spouseName ? `'${confessor.spouseName}'` : 'NULL'},
-        ${confessor.spousePhone ? `'${confessor.spousePhone}'` : 'NULL'},
-        ${confessor.children ? `'${confessor.children}'` : 'NULL'}
-      )
-    `);
-  });
+  const femaleFirstNames = [
+    'فاطمة', 'عائشة', 'خديجة', 'زينب', 'مريم', 'سارة', 'نور', 'هدى', 'أمل', 'رانيا',
+    'دينا', 'منى', 'سمر', 'نادية', 'ليلى', 'سلمى', 'ياسمين', 'نهى', 'إيمان', 'هالة',
+    'مارينا', 'كريستينا', 'نانسي', 'فيرونيا', 'مريانا', 'إيرين', 'جيهان', 'سوزان', 'نيفين', 'سيلفيا'
+  ];
 
-  // إدراج قوالب رسائل تجريبية
-  const sampleTemplates = [
+  const fatherNames = [
+    'محمد', 'أحمد', 'علي', 'حسن', 'إبراهيم', 'عبدالله', 'محمود', 'يوسف', 'عمر', 'خالد',
+    'مصطفى', 'طارق', 'سامح', 'هشام', 'وائل', 'أسامة', 'كريم', 'عادل', 'ماجد', 'فادي'
+  ];
+
+  const familyNames = [
+    'محمد', 'أحمد', 'علي', 'حسن', 'إبراهيم', 'السيد', 'عبدالرحمن', 'الشريف', 'النجار', 'الطيب',
+    'المصري', 'القاهري', 'الإسكندراني', 'الصعيدي', 'البحيري', 'الدمياطي', 'المنوفي', 'الغربي', 'الشرقي', 'القليوبي',
+    'جرجس', 'يوسف', 'إبراهيم', 'عبدالملك', 'فهمي', 'زكي', 'رزق', 'عطية', 'بشارة', 'منصور'
+  ];
+
+  const churches = [
+    'كنيسة العذراء مريم - مصر الجديدة',
+    'كنيسة مار جرجس - شبرا',
+    'كنيسة الأنبا أنطونيوس - المعادي',
+    'كنيسة مار مينا - فلمنج',
+    'كنيسة الشهيد أبانوب - الإسكندرية',
+    'كنيسة العذراء والأنبا بيشوي - الزيتون',
+    'كنيسة الأنبا كاراس - المنيل',
+    'كنيسة مار مرقس - الأزبكية',
+    'كنيسة الأنبا شنودة - القاهرة الجديدة',
+    'كنيسة العذراء مريم - المطرية',
+    'كنيسة الأنبا بولا - الشروق',
+    'كنيسة مار جرجس - مدينة نصر',
+    'كنيسة الأنبا موسى - المقطم',
+    'كنيسة العذراء والأنبا أبرام - الهرم',
+    'كنيسة الأنبا بيشوي - العبور'
+  ];
+
+  const professions = [
+    'مهندس', 'طبيب', 'محاسب', 'صيدلي', 'محامي', 'مدرس', 'موظف', 'ربة منزل',
+    'طالب', 'متقاعد', 'تاجر', 'فني', 'ممرض', 'طبيب أسنان', 'مبرمج', 'مصمم',
+    'كاتب', 'صحفي', 'مترجم', 'سائق', 'عامل', 'حرفي', 'مزارع', 'طباخ'
+  ];
+
+  const services = [
+    'خدمة مدارس الأحد', 'خدمة شباب', 'كورال', 'خدمة اجتماعية', 'خدمة الشمامسة',
+    'خدمة الكشافة', 'خدمة المرأة', 'خدمة كبار السن', 'خدمة الأطفال', 'خدمة الزيارات'
+  ];
+
+  const personalTags = [
+    'طالب', 'مغترب', 'جديد', 'نشط', 'يحتاج متابعة', 'قيادي', 'متطوع',
+    'موهوب', 'مبدع', 'مساعد', 'منتظم', 'متميز', 'مؤثر', 'داعم'
+  ];
+
+  const confessionTags = [
+    'نمو روحي', 'مشاكل أسرية', 'مشاكل شخصية', 'ضعف عام', 'توبة', 'إرشاد',
+    'تشجيع', 'صلاة', 'دراسة كتابية', 'خدمة', 'علاقات', 'عمل', 'دراسة', 'صحة'
+  ];
+
+  const childrenNames = [
+    'محمد', 'أحمد', 'علي', 'فاطمة', 'عائشة', 'مريم', 'يوسف', 'إبراهيم', 'سارة', 'نور',
+    'مينا', 'مارينا', 'جورج', 'كريستينا', 'بيتر', 'فيرونيا', 'مارك', 'مريانا', 'أندرو', 'إيرين'
+  ];
+
+  // دالة مساعدة لتوليد تاريخ عشوائي
+  const getRandomDate = (startYear: number, endYear: number) => {
+    const start = new Date(startYear, 0, 1);
+    const end = new Date(endYear, 11, 31);
+    const randomTime = start.getTime() + Math.random() * (end.getTime() - start.getTime());
+    return new Date(randomTime).toISOString().split('T')[0];
+  };
+
+  // دالة مساعدة لتوليد رقم هاتف مصري
+  const generatePhoneNumber = () => {
+    const prefixes = ['010', '011', '012', '015'];
+    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const number = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+    return prefix + number;
+  };
+
+  // دالة مساعدة لاختيار عناصر عشوائية من مصفوفة
+  const getRandomItems = (array: string[], count: number) => {
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
+  // إنشاء 100 معترف وهمي
+  for (let i = 0; i < 100; i++) {
+    const gender = Math.random() > 0.5 ? 'ذكر' : 'أنثى';
+    const firstName = gender === 'ذكر' 
+      ? maleFirstNames[Math.floor(Math.random() * maleFirstNames.length)]
+      : femaleFirstNames[Math.floor(Math.random() * femaleFirstNames.length)];
+    
+    const fatherName = fatherNames[Math.floor(Math.random() * fatherNames.length)];
+    const grandFatherName = Math.random() > 0.3 ? fatherNames[Math.floor(Math.random() * fatherNames.length)] : null;
+    const familyName = familyNames[Math.floor(Math.random() * familyNames.length)];
+    
+    const birthDate = getRandomDate(1950, 2005);
+    const age = new Date().getFullYear() - new Date(birthDate).getFullYear();
+    
+    const socialStatuses = ['أعزب', 'متزوج', 'أرمل', 'مطلق'];
+    const weights = age < 25 ? [0.8, 0.15, 0.03, 0.02] : 
+                   age < 40 ? [0.3, 0.6, 0.05, 0.05] :
+                   age < 60 ? [0.1, 0.7, 0.15, 0.05] :
+                   [0.05, 0.5, 0.4, 0.05];
+    
+    let socialStatus = 'أعزب';
+    const rand = Math.random();
+    let cumulative = 0;
+    for (let j = 0; j < socialStatuses.length; j++) {
+      cumulative += weights[j];
+      if (rand <= cumulative) {
+        socialStatus = socialStatuses[j];
+        break;
+      }
+    }
+
+    const phone1 = generatePhoneNumber();
+    const phone1Whatsapp = Math.random() > 0.2;
+    const phone2 = Math.random() > 0.7 ? generatePhoneNumber() : null;
+    const phone2Whatsapp = phone2 ? Math.random() > 0.5 : false;
+    
+    const church = churches[Math.floor(Math.random() * churches.length)];
+    const profession = professions[Math.floor(Math.random() * professions.length)];
+    
+    const confessionStartDate = age >= 18 ? getRandomDate(Math.max(1970, new Date(birthDate).getFullYear() + 18), 2024) : null;
+    
+    const isDeacon = gender === 'ذكر' && age >= 25 && Math.random() > 0.85;
+    const isDeceased = age >= 70 && Math.random() > 0.95;
+    
+    // الخدمات والعلامات الشخصية
+    const selectedServices = getRandomItems(services, Math.floor(Math.random() * 4));
+    const selectedTags = getRandomItems(personalTags, Math.floor(Math.random() * 3) + 1);
+    
+    // معلومات الزواج والأطفال
+    let marriageDate = null;
+    let spouseName = null;
+    let spousePhone = null;
+    let children = [];
+    
+    if (socialStatus === 'متزوج') {
+      marriageDate = getRandomDate(Math.max(1970, new Date(birthDate).getFullYear() + 18), 2024);
+      
+      // اسم الزوج/الزوجة
+      if (gender === 'ذكر') {
+        spouseName = femaleFirstNames[Math.floor(Math.random() * femaleFirstNames.length)] + ' ' + familyName;
+      } else {
+        spouseName = maleFirstNames[Math.floor(Math.random() * maleFirstNames.length)] + ' ' + familyNames[Math.floor(Math.random() * familyNames.length)];
+      }
+      
+      spousePhone = Math.random() > 0.3 ? generatePhoneNumber() : null;
+      
+      // الأطفال
+      const marriageYear = new Date(marriageDate).getFullYear();
+      const yearsMarried = new Date().getFullYear() - marriageYear;
+      
+      if (yearsMarried >= 2) {
+        const numChildren = Math.floor(Math.random() * Math.min(5, Math.floor(yearsMarried / 2))) + (Math.random() > 0.7 ? 1 : 0);
+        
+        for (let j = 0; j < numChildren; j++) {
+          const childGender = Math.random() > 0.5 ? 'ذكر' : 'أنثى';
+          const childName = childGender === 'ذكر' 
+            ? maleFirstNames[Math.floor(Math.random() * maleFirstNames.length)]
+            : femaleFirstNames[Math.floor(Math.random() * femaleFirstNames.length)];
+          
+          const childBirthYear = marriageYear + 1 + j * 2 + Math.floor(Math.random() * 3);
+          const childBirthDate = getRandomDate(childBirthYear, Math.min(childBirthYear + 1, 2024));
+          const childAge = new Date().getFullYear() - new Date(childBirthDate).getFullYear();
+          
+          children.push({
+            name: childName + ' ' + firstName,
+            birthDate: childBirthDate,
+            phone: childAge >= 16 && Math.random() > 0.6 ? generatePhoneNumber() : ''
+          });
+        }
+      }
+    }
+    
+    // ملاحظات عشوائية
+    const noteTemplates = [
+      'شخص نشط في الخدمة ومتفاعل مع الأنشطة الكنسية.',
+      'يحتاج إلى متابعة روحية أكثر وتشجيع في الصلاة.',
+      'عضو مؤثر في المجتمع الكنسي ومساعد للآخرين.',
+      'طالب جامعي نشط ومتميز في دراسته.',
+      'يواجه بعض التحديات في العمل ويحتاج للصلاة.',
+      'شخص محبوب من الجميع وله روح الخدمة.',
+      'مغترب ويحتاج للتواصل المستمر.',
+      'متزوج حديثاً ويحتاج لإرشاد أسري.',
+      'والد مثالي ومهتم بتربية أطفاله روحياً.',
+      'يخدم في عدة أنشطة ومتطوع نشط.'
+    ];
+    
+    const notes = Math.random() > 0.4 ? noteTemplates[Math.floor(Math.random() * noteTemplates.length)] : '';
+    
+    // إدراج المعترف
+    const stmt = db.prepare(`
+      INSERT INTO confessors (
+        firstName, fatherName, grandFatherName, familyName,
+        phone1, phone1Whatsapp, phone2, phone2Whatsapp,
+        gender, birthDate, socialStatus, marriageDate,
+        church, confessionStartDate, profession,
+        services, personalTags, isDeacon, isDeceased,
+        notes, spouseName, spousePhone, children, isArchived
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    
+    stmt.run([
+      firstName,
+      fatherName,
+      grandFatherName,
+      familyName,
+      phone1,
+      phone1Whatsapp ? 1 : 0,
+      phone2,
+      phone2Whatsapp ? 1 : 0,
+      gender,
+      birthDate,
+      socialStatus,
+      marriageDate,
+      church,
+      confessionStartDate,
+      profession,
+      JSON.stringify(selectedServices),
+      JSON.stringify(selectedTags),
+      isDeacon ? 1 : 0,
+      isDeceased ? 1 : 0,
+      notes,
+      spouseName,
+      spousePhone,
+      JSON.stringify(children),
+      0 // isArchived
+    ]);
+    
+    stmt.free();
+    
+    // إضافة سجلات اعتراف عشوائية
+    if (confessionStartDate && !isDeceased) {
+      const confessorId = i + 1; // ID المعترف (بدءاً من 1)
+      const startDate = new Date(confessionStartDate);
+      const currentDate = new Date();
+      
+      // إضافة 1-5 سجلات اعتراف عشوائية
+      const numLogs = Math.floor(Math.random() * 5) + 1;
+      
+      for (let j = 0; j < numLogs; j++) {
+        const logDate = new Date(startDate.getTime() + Math.random() * (currentDate.getTime() - startDate.getTime()));
+        const logDateStr = logDate.toISOString().split('T')[0];
+        
+        const selectedConfessionTags = getRandomItems(confessionTags, Math.floor(Math.random() * 3) + 1);
+        
+        const logNotes = [
+          'جلسة اعتراف مثمرة، نمو روحي ملحوظ.',
+          'مناقشة حول التحديات الشخصية والصلاة.',
+          'تشجيع في الخدمة والمشاركة الكنسية.',
+          'إرشاد حول العلاقات الأسرية.',
+          'صلاة من أجل النجاح في العمل/الدراسة.',
+          'تأمل في كلمة الله وتطبيقها العملي.',
+          'مناقشة حول الهدف من الحياة المسيحية.',
+          'تشجيع في أوقات الضعف والتجارب.',
+          'شكر لله على البركات والنعم.',
+          'طلب الصلاة من أجل قرارات مهمة.'
+        ];
+        
+        const logNote = Math.random() > 0.3 ? logNotes[Math.floor(Math.random() * logNotes.length)] : '';
+        
+        const logStmt = db.prepare(`
+          INSERT INTO confession_logs (confessorId, date, notes, tags) 
+          VALUES (?, ?, ?, ?)
+        `);
+        
+        logStmt.run([
+          confessorId,
+          logDateStr,
+          logNote,
+          JSON.stringify(selectedConfessionTags)
+        ]);
+        
+        logStmt.free();
+      }
+    }
+  }
+
+  // إضافة قوالب رسائل شاملة
+  const messageTemplates = [
     {
       title: 'تهنئة عيد ميلاد بسيطة',
       body: 'كل عام وأنت بخير يا {الاسم_الأول}! أسأل الله أن يبارك في عمرك ويحفظك من كل شر. عيد ميلاد سعيد! 🎉'
     },
     {
+      title: 'تهنئة عيد ميلاد مفصلة',
+      body: 'أبارك لك يا {الاسم_الأول} {اسم_العائلة} بمناسبة عيد ميلادك، وأسأل الله العلي القدير أن يمنحك الصحة والعافية والسعادة، وأن يبارك في عمرك ويجعل كل أيامك خيراً وبركة. كل عام وأنت بألف خير! 🎂🎉'
+    },
+    {
       title: 'تهنئة عيد زواج',
-      body: 'بارك الله لكما يا {اسم_الزوج} و {اسم_الزوجة} بمناسبة ذكرى زواجكما، وأدام عليكما المحبة والوئام. كل عام وأنتما بخير! 💕'
+      body: 'بارك الله لكما يا {اسم_الزوج} و {اسم_الزوجة} بمناسبة ذكرى زواجكما، وأدام عليكما المحبة والوئام، وبارك في بيتكما وأولادكما. كل عام وأنتما بخير! 💕'
+    },
+    {
+      title: 'تهنئة ذكرى زواج مفصلة',
+      body: 'أهنئكما يا {اسم_الزوج} و {اسم_الزوجة} بمناسبة ذكرى زواجكما السعيد، وأسأل الله أن يديم عليكما نعمة المحبة والتفاهم، وأن يبارك في بيتكما ويرزقكما السعادة والهناء. كل عام وأنتما بألف خير! 🌹💍'
+    },
+    {
+      title: 'تشجيع ومتابعة',
+      body: 'السلام عليك يا {الاسم_الأول}، أتمنى أن تكون بخير وصحة جيدة. أصلي من أجلك دائماً وأتمنى أن يبارك الله في حياتك وخدمتك. لا تتردد في التواصل إذا احتجت لأي شيء. 🙏'
+    },
+    {
+      title: 'دعوة لحضور نشاط',
+      body: 'أهلاً {الاسم_الأول}، ندعوك لحضور [اسم النشاط] يوم [التاريخ] في تمام الساعة [الوقت]. نتطلع لرؤيتك ومشاركتك معنا. بارك الله فيك! ⛪'
+    },
+    {
+      title: 'تعزية ومواساة',
+      body: 'أشاركك الأحزان يا {الاسم_الأول} في هذا الوقت الصعب، وأصلي أن يعزيك الله ويقويك. تذكر أن الله معك دائماً وأننا نحبك ونصلي من أجلك. 💙'
+    },
+    {
+      title: 'تهنئة بالنجاح',
+      body: 'مبروك يا {الاسم_الأول} على نجاحك وتفوقك! أسأل الله أن يبارك في مجهودك ويوفقك في كل خطواتك القادمة. نحن فخورون بك! 🎓✨'
     }
   ];
 
-  sampleTemplates.forEach(template => {
-    db.exec(`
+  messageTemplates.forEach(template => {
+    const templateStmt = db.prepare(`
       INSERT INTO message_templates (title, body) 
-      VALUES ('${template.title}', '${template.body}')
+      VALUES (?, ?)
     `);
+    templateStmt.run([template.title, template.body]);
+    templateStmt.free();
   });
 
-  // إدراج سجلات اعتراف تجريبية
-  db.exec(`
-    INSERT INTO confession_logs (confessorId, date, notes, tags) 
-    VALUES 
-    (1, '2024-01-15', 'جلسة اعتراف جيدة، نمو روحي ملحوظ', '["نمو روحي"]'),
-    (2, '2024-01-20', 'مناقشة حول الحياة الروحية', '["إرشاد"]')
-  `);
+  console.log('تم إدراج 100 معترف وهمي مع بيانات شاملة وسجلات اعتراف وقوالب رسائل');
 };
 
 export const saveDatabase = () => {
