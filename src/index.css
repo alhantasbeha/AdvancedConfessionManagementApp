@@ -19,6 +19,7 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px; /* زيادة الحجم الأساسي */
 }
 
 html.dark {
@@ -28,11 +29,12 @@ html.dark {
 
 body {
   font-family: var(--font-body);
-  line-height: 1.6;
+  line-height: 1.7; /* زيادة المسافة بين الأسطر */
   font-weight: 400;
+  font-size: 1rem; /* 16px */
 }
 
-/* تحسين الخطوط للعناوين */
+/* تحسين الخطوط للعناوين مع أحجام أكبر */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-headings);
   font-weight: 700;
@@ -41,78 +43,97 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.25rem;
+  font-size: 2.75rem; /* زيادة من 2.25rem */
   font-weight: 800;
 }
 
 h2 {
-  font-size: 1.875rem;
+  font-size: 2.25rem; /* زيادة من 1.875rem */
   font-weight: 700;
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.875rem; /* زيادة من 1.5rem */
   font-weight: 600;
 }
 
 h4 {
-  font-size: 1.25rem;
+  font-size: 1.5rem; /* زيادة من 1.25rem */
   font-weight: 600;
 }
 
 h5 {
-  font-size: 1.125rem;
+  font-size: 1.25rem; /* زيادة من 1.125rem */
   font-weight: 500;
 }
 
 h6 {
-  font-size: 1rem;
+  font-size: 1.125rem; /* زيادة من 1rem */
   font-weight: 500;
 }
 
-/* تحسين الخطوط للنصوص */
+/* تحسين الخطوط للنصوص مع أحجام أكبر */
 p {
   font-family: var(--font-body);
-  line-height: 1.7;
+  line-height: 1.8; /* زيادة المسافة */
   font-weight: 400;
+  font-size: 1.125rem; /* زيادة من 1rem */
 }
 
-/* تحسين الخطوط لعناصر الواجهة */
+/* تحسين الخطوط لعناصر الواجهة مع أحجام أكبر */
 button, input, select, textarea {
   font-family: var(--font-ui);
   font-weight: 400;
+  font-size: 1rem; /* زيادة الحجم الأساسي */
 }
 
-/* تحسين الخطوط للنصوص الصغيرة */
+/* تحسين الخطوط للنصوص الصغيرة - جعلها أكبر */
 .text-xs {
   font-family: var(--font-ui);
   font-weight: 400;
+  font-size: 0.875rem !important; /* زيادة من 0.75rem */
+  line-height: 1.6;
 }
 
 .text-sm {
   font-family: var(--font-ui);
   font-weight: 400;
+  font-size: 1rem !important; /* زيادة من 0.875rem */
+  line-height: 1.7;
+}
+
+.text-base {
+  font-size: 1.125rem !important; /* زيادة من 1rem */
+  line-height: 1.8;
 }
 
 /* تحسين الخطوط للنصوص الكبيرة */
 .text-lg {
   font-family: var(--font-headings);
   font-weight: 500;
+  font-size: 1.25rem !important; /* زيادة من 1.125rem */
+  line-height: 1.7;
 }
 
 .text-xl {
   font-family: var(--font-headings);
   font-weight: 600;
+  font-size: 1.5rem !important; /* زيادة من 1.25rem */
+  line-height: 1.6;
 }
 
 .text-2xl {
   font-family: var(--font-headings);
   font-weight: 700;
+  font-size: 1.875rem !important; /* زيادة من 1.5rem */
+  line-height: 1.5;
 }
 
 .text-3xl {
   font-family: var(--font-headings);
   font-weight: 800;
+  font-size: 2.25rem !important; /* زيادة من 1.875rem */
+  line-height: 1.4;
 }
 
 /* تحسين الخطوط للنصوص المميزة */
@@ -255,23 +276,29 @@ body {
   border-color: var(--border-light) !important;
 }
 
-/* تحسين الأزرار */
+/* تحسين الأزرار مع padding أكبر */
 button {
   transition: all 0.2s ease;
   font-family: var(--font-ui);
+  padding: 0.75rem 1.5rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
+  line-height: 1.5;
 }
 
 button:hover {
   transform: translateY(-1px);
 }
 
-/* تحسين النماذج */
+/* تحسين النماذج مع padding أكبر */
 input, select, textarea {
   transition: all 0.2s ease;
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
   font-family: var(--font-ui);
+  padding: 0.875rem 1rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
+  line-height: 1.6;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -317,7 +344,7 @@ input:focus, select:focus, textarea:focus {
   background-color: var(--bg-primary) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: 0.75rem;
-  padding: 1.5rem;
+  padding: 2rem; /* زيادة الـ padding */
   box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color);
 }
 
@@ -326,7 +353,7 @@ input:focus, select:focus, textarea:focus {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* تحسين الجداول */
+/* تحسين الجداول مع padding أكبر */
 table {
   border-collapse: separate;
   border-spacing: 0;
@@ -338,12 +365,15 @@ table th,
 table td {
   border-bottom: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
+  padding: 1rem 1.5rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
 }
 
 table th {
   background-color: var(--bg-secondary) !important;
   font-weight: 600;
   font-family: var(--font-headings);
+  font-size: 1.125rem; /* زيادة حجم خط العناوين */
 }
 
 table tr:hover {
@@ -352,8 +382,8 @@ table tr:hover {
 
 /* تحسين شريط التمرير */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 12px; /* زيادة العرض */
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -362,7 +392,7 @@ table tr:hover {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px; /* زيادة الانحناء */
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1139,7 +1169,7 @@ img:hover {
 /* تحسين النصوص في الجداول */
 table .arabic-text {
   font-family: var(--font-ui);
-  font-size: 0.875rem;
+  font-size: 1rem; /* زيادة الحجم */
 }
 
 /* تحسين النصوص في النماذج */
@@ -1184,4 +1214,87 @@ nav .arabic-text {
 .report .arabic-text {
   font-family: var(--font-body);
   line-height: 1.7;
+}
+
+/* تحسينات خاصة للشريط الجانبي */
+.sidebar-item {
+  padding: 1rem 1.5rem; /* زيادة الـ padding */
+  font-size: 1.125rem; /* زيادة حجم الخط */
+  line-height: 1.6;
+}
+
+.sidebar-icon {
+  width: 1.5rem; /* زيادة حجم الأيقونات */
+  height: 1.5rem;
+}
+
+/* تحسينات خاصة للهيدر */
+.header-item {
+  padding: 0.875rem 1.25rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
+}
+
+/* تحسينات خاصة للبطاقات */
+.dashboard-card {
+  padding: 2rem; /* زيادة الـ padding */
+}
+
+.dashboard-card h3 {
+  font-size: 1.5rem; /* زيادة حجم عناوين البطاقات */
+}
+
+.dashboard-card .stat-value {
+  font-size: 2.5rem; /* زيادة حجم القيم الإحصائية */
+  font-weight: 800;
+}
+
+/* تحسينات للقوائم المنسدلة */
+select {
+  padding: 1rem 1.25rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
+}
+
+/* تحسينات للنوافذ المنبثقة */
+.modal-content {
+  padding: 2.5rem; /* زيادة الـ padding */
+}
+
+.modal-title {
+  font-size: 1.75rem; /* زيادة حجم عناوين النوافذ */
+}
+
+/* تحسينات للتنبيهات */
+.notification-item {
+  padding: 1.25rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
+}
+
+/* تحسينات للأزرار الصغيرة */
+.btn-sm {
+  padding: 0.75rem 1.25rem; /* زيادة الـ padding */
+  font-size: 0.875rem; /* زيادة حجم الخط */
+}
+
+/* تحسينات للأزرار الكبيرة */
+.btn-lg {
+  padding: 1.25rem 2rem; /* زيادة الـ padding */
+  font-size: 1.125rem; /* زيادة حجم الخط */
+}
+
+/* تحسينات للنصوص في الجداول */
+.table-text {
+  font-size: 1rem; /* زيادة حجم النص في الجداول */
+  line-height: 1.6;
+}
+
+/* تحسينات للعناوين الفرعية */
+.subtitle {
+  font-size: 1.125rem; /* زيادة حجم العناوين الفرعية */
+  line-height: 1.7;
+}
+
+/* تحسينات للنصوص التوضيحية */
+.description-text {
+  font-size: 1rem; /* زيادة حجم النصوص التوضيحية */
+  line-height: 1.8;
 }

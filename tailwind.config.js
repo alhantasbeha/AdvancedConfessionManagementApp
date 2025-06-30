@@ -76,14 +76,20 @@ export default {
         'dark-end': '#334155',
       },
       fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
-        'sm': ['0.875rem', { lineHeight: '1.6', letterSpacing: '0.025em' }],
-        'base': ['1rem', { lineHeight: '1.7', letterSpacing: '0.025em' }],
-        'lg': ['1.125rem', { lineHeight: '1.6', letterSpacing: '0.025em' }],
-        'xl': ['1.25rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
-        '2xl': ['1.5rem', { lineHeight: '1.4', letterSpacing: '0.025em' }],
-        '3xl': ['1.875rem', { lineHeight: '1.3', letterSpacing: '0.025em' }],
-        '4xl': ['2.25rem', { lineHeight: '1.2', letterSpacing: '0.025em' }],
+        'xs': ['0.875rem', { lineHeight: '1.6', letterSpacing: '0.025em' }], // زيادة من 0.75rem
+        'sm': ['1rem', { lineHeight: '1.7', letterSpacing: '0.025em' }], // زيادة من 0.875rem
+        'base': ['1.125rem', { lineHeight: '1.8', letterSpacing: '0.025em' }], // زيادة من 1rem
+        'lg': ['1.25rem', { lineHeight: '1.7', letterSpacing: '0.025em' }], // زيادة من 1.125rem
+        'xl': ['1.5rem', { lineHeight: '1.6', letterSpacing: '0.025em' }], // زيادة من 1.25rem
+        '2xl': ['1.875rem', { lineHeight: '1.5', letterSpacing: '0.025em' }], // زيادة من 1.5rem
+        '3xl': ['2.25rem', { lineHeight: '1.4', letterSpacing: '0.025em' }], // زيادة من 1.875rem
+        '4xl': ['2.75rem', { lineHeight: '1.3', letterSpacing: '0.025em' }], // زيادة من 2.25rem
+      },
+      spacing: {
+        '18': '4.5rem', // إضافة مسافات جديدة
+        '22': '5.5rem',
+        '26': '6.5rem',
+        '30': '7.5rem',
       }
     },
   },
