@@ -22,12 +22,10 @@ export const useSQLiteNotifications = () => {
       const todayDay = today.getDate();
 
       // تحميل المعترفين
-      const confessorsStmt = db.prepare('SELECT * FROM confessors WHERE isDeceased = 0 AND isArchived = 0');
-      const confessors: Confessor[] = [];
-      
-      while (confessorsStmt.step()) {
-        const row = confessorsStmt.getAsObject();
-        confessors.push({
+      const confessorsData = await db.select('confessors');
+      const confessors: Confessor[] = confessorsData
+        .filter((row: any) => !Boolean(row.isDeceased) && !Boolean(row.isArchived))
+        .map((row: any) => ({
           id: row.id?.toString(),
           firstName: row.firstName as string,
           familyName: row.familyName as string,
@@ -36,23 +34,15 @@ export const useSQLiteNotifications = () => {
           socialStatus: row.socialStatus as any,
           confessionStartDate: row.confessionStartDate as string,
           children: row.children ? JSON.parse(row.children as string) : []
-        } as Confessor);
-      }
-      confessorsStmt.free();
+        } as Confessor));
 
       // تحميل سجلات الاعتراف
-      const logsStmt = db.prepare('SELECT * FROM confession_logs');
-      const logs: ConfessionLog[] = [];
-      
-      while (logsStmt.step()) {
-        const row = logsStmt.getAsObject();
-        logs.push({
-          id: row.id?.toString(),
-          confessorId: row.confessorId?.toString() || '',
-          date: row.date as string
-        } as ConfessionLog);
-      }
-      logsStmt.free();
+      const logsData = await db.select('confession_logs');
+      const logs: ConfessionLog[] = logsData.map((row: any) => ({
+        id: row.id?.toString(),
+        confessorId: row.confessorId?.toString() || '',
+        date: row.date as string
+      } as ConfessionLog));
 
       // تنبيهات أعياد الميلاد
       confessors.forEach(c => {
