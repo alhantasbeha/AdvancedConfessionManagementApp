@@ -66,7 +66,11 @@ const AppContent: React.FC = () => {
         />
 
         <main className="flex-1 transition-all duration-300">
-          <Header onMenuClick={() => setIsSidebarOpen(true)} />
+          <Header 
+            onMenuClick={() => setIsSidebarOpen(true)}
+            isCollapsed={isSidebarCollapsed}
+            onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          />
           
           <div className="p-4 md:p-6">
             <div className="animate-fadeIn">

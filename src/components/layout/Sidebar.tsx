@@ -220,11 +220,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
         
-        {/* Footer with medium styling - Fixed at bottom */}
+        {/* Footer with user profile - Fixed at bottom */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex-shrink-0">
           {/* User Profile Section */}
           {!isCollapsed && (
-            <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 rounded-xl border border-blue-200 dark:border-blue-700">
+            <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 rounded-xl border border-blue-200 dark:border-blue-700">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                   <Icon name="users" className="w-5 h-5 text-white" />
@@ -245,25 +245,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
           
-          {/* Collapse Toggle */}
-          <button 
-            onClick={onToggleCollapse} 
-            className="hidden md:flex items-center justify-center w-full p-3 rounded-xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 transition-all duration-300 group shadow-sm hover:shadow-md"
-          >
-            <Icon 
-              name={isCollapsed ? 'arrowLeft' : 'arrowRight'} 
-              className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
-            />
-            {!isCollapsed && (
-              <span className="mr-2 text-sm font-semibold text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                طي الشريط الجانبي
-              </span>
-            )}
-          </button>
-          
           {/* Quick Stats for collapsed state */}
           {isCollapsed && (
-            <div className="mt-3 space-y-2">
+            <div className="space-y-2">
               <div className="text-center p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
                 <div className="text-sm font-bold text-blue-700 dark:text-blue-300">150</div>
                 <div className="text-xs text-blue-600 dark:text-blue-400">معترف</div>

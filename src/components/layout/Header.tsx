@@ -5,6 +5,8 @@ import NotificationsPanel from './NotificationsPanel';
 
 interface HeaderProps {
   onMenuClick: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 const NAV_ITEMS = [
@@ -19,7 +21,11 @@ const NAV_ITEMS = [
   { id: 'settings', label: 'الإعدادات' },
 ];
 
-export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
+export const Header: React.FC<HeaderProps> = ({ 
+  onMenuClick, 
+  isCollapsed = false, 
+  onToggleCollapse 
+}) => {
   const { currentPage, isDarkMode, setIsDarkMode, notifications, user } = useAppContext();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -33,20 +39,59 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     <>
       <header className="h-[73px] bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-md bg-white/95 dark:bg-gray-900/95">
         <div className="flex items-center justify-between h-full px-6 lg:px-8">
-          {/* Left Section - Mobile Menu & Page Title */}
-          <div className="flex items-center gap-6">
+          {/* Left Section - Mobile Menu, App Name & Collapse Toggle */}
+          <div className="flex items-center gap-4">
+            {/* Mobile Menu Button */}
             <button 
               onClick={onMenuClick} 
               className="md:hidden p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
             >
               <Icon name="menu" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
             </button>
-            
+
+            {/* App Name & Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Icon name="users" className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                  الكاهن الرقمي
+                </h1>
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                  نظام إدارة الكنيسة
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop Sidebar Collapse Toggle */}
+            {onToggleCollapse && (
+              <button 
+                onClick={onToggleCollapse}
+                className="hidden md:flex items-center gap-2 p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
+                title={isCollapsed ? 'توسيع الشريط الجانبي' : 'طي الشريط الجانبي'}
+              >
+                <Icon 
+                  name={isCollapsed ? 'arrowLeft' : 'arrowRight'} 
+                  className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
+                />
+                {!isCollapsed && (
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                    طي الشريط
+                  </span>
+                )}
+              </button>
+            )}
+
+            {/* Divider */}
+            <div className="hidden md:block w-px h-8 bg-gray-200 dark:bg-gray-700"></div>
+
+            {/* Page Title */}
             <div className="hidden md:block">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
                 {currentPageLabel}
               </h2>
-              <p className="text-base text-gray-600 dark:text-gray-400 font-medium mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                 إدارة شؤون الكنيسة والمعترفين بكفاءة عالية
               </p>
             </div>
