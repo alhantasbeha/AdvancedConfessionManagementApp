@@ -67,7 +67,11 @@ export const ConfessorsPage: React.FC = () => {
     return results;
   }, [confessors, searchTerm, showArchived, sortBy, sortOrder]);
 
-  // Pagination
+  // Pagination - تحديد العدد الافتراضي بناءً على وضع العرض
+  const getDefaultItemsPerPage = () => {
+    return viewMode === 'cards' ? 24 : 25;
+  };
+
   const {
     currentPage,
     totalPages,
@@ -78,9 +82,17 @@ export const ConfessorsPage: React.FC = () => {
     setItemsPerPage
   } = usePagination({
     data: filteredAndSortedConfessors,
-    initialItemsPerPage: 24, // Good for card view (4x6 grid)
+    initialItemsPerPage: getDefaultItemsPerPage(),
     initialPage: 1
   });
+
+  // تحديث عدد العناصر عند تغيير وضع العرض
+  useEffect(() => {
+    const newItemsPerPage = getDefaultItemsPerPage();
+    if (itemsPerPage !== newItemsPerPage) {
+      setItemsPerPage(newItemsPerPage);
+    }
+  }, [viewMode]);
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return null;
@@ -126,6 +138,11 @@ export const ConfessorsPage: React.FC = () => {
       setSortBy(newSortBy);
       setSortOrder('asc');
     }
+  };
+
+  const handleViewModeChange = (newViewMode: 'table' | 'cards') => {
+    setViewMode(newViewMode);
+    // سيتم تحديث itemsPerPage تلقائياً عبر useEffect
   };
 
   // If a confessor is selected, show their profile page
@@ -497,7 +514,7 @@ export const ConfessorsPage: React.FC = () => {
           {/* View Mode Toggle */}
           <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
             <button
-              onClick={() => setViewMode('cards')}
+              onClick={() => handleViewModeChange('cards')}
               className={`p-2 rounded-md transition-colors ${
                 viewMode === 'cards' 
                   ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' 
@@ -508,7 +525,7 @@ export const ConfessorsPage: React.FC = () => {
               <Icon name="dashboard" className="w-5 h-5" />
             </button>
             <button
-              onClick={() => setViewMode('table')}
+              onClick={() => handleViewModeChange('table')}
               className={`p-2 rounded-md transition-colors ${
                 viewMode === 'table' 
                   ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' 

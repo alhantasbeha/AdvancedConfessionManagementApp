@@ -68,6 +68,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               className="px-3 py-1 border rounded-lg dark:bg-gray-700 dark:border-gray-600 text-sm"
             >
               <option value={10}>10</option>
+              <option value={24}>24</option>
               <option value={25}>25</option>
               <option value={50}>50</option>
               <option value={100}>100</option>
@@ -144,6 +145,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             className="px-3 py-1 border rounded-lg dark:bg-gray-700 dark:border-gray-600 text-sm focus:ring-blue-500 focus:border-blue-500"
           >
             <option value={10}>10</option>
+            <option value={24}>24</option>
             <option value={25}>25</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
