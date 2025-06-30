@@ -49,22 +49,17 @@ export const Header: React.FC<HeaderProps> = ({
               <Icon name="menu" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
             </button>
 
-            {/* Desktop Sidebar Collapse Toggle */}
+            {/* Desktop Sidebar Collapse Toggle - Icon Only */}
             {onToggleCollapse && (
               <button 
                 onClick={onToggleCollapse}
-                className="hidden md:flex items-center gap-2 p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
+                className="hidden md:flex items-center justify-center p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
                 title={isCollapsed ? 'توسيع الشريط الجانبي' : 'طي الشريط الجانبي'}
               >
                 <Icon 
                   name={isCollapsed ? 'arrowLeft' : 'arrowRight'} 
-                  className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
+                  className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-all duration-200 group-hover:scale-110" 
                 />
-                {!isCollapsed && (
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                    طي الشريط
-                  </span>
-                )}
               </button>
             )}
 
