@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useConfessors } from '../../hooks/useConfessors';
-import { useConfessionLogs } from '../../hooks/useConfessionLogs';
+import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
+import { useSQLiteConfessionLogs } from '../../hooks/useSQLiteConfessionLogs';
 import { Icon } from '../ui/Icon';
 import { Confessor, ConfessionLog } from '../../types';
 
@@ -16,8 +16,8 @@ interface CalendarEvent {
 
 export const CalendarPage: React.FC = () => {
   const { user } = useAppContext();
-  const { confessors } = useConfessors(user?.uid);
-  const { logs } = useConfessionLogs(user?.uid);
+  const { confessors } = useSQLiteConfessors();
+  const { logs } = useSQLiteConfessionLogs();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');

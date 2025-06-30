@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useConfessors } from '../../hooks/useConfessors';
-import { useConfessionLogs } from '../../hooks/useConfessionLogs';
-import { useSettings } from '../../hooks/useSettings';
+import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
+import { useSQLiteConfessionLogs } from '../../hooks/useSQLiteConfessionLogs';
+import { useSQLiteSettings } from '../../hooks/useSQLiteSettings';
 import { Icon } from '../ui/Icon';
 import { Confessor, ConfessionLog } from '../../types';
 
 export const ReportsPage: React.FC = () => {
   const { user } = useAppContext();
-  const { confessors } = useConfessors(user?.uid);
-  const { logs } = useConfessionLogs(user?.uid);
-  const { settings } = useSettings(user?.uid);
+  const { confessors } = useSQLiteConfessors();
+  const { logs } = useSQLiteConfessionLogs();
+  const { settings } = useSQLiteSettings();
   
   const [filters, setFilters] = useState({
     name: '',

@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useConfessors } from '../../hooks/useConfessors';
-import { useMessageTemplates } from '../../hooks/useMessageTemplates';
+import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
+import { useSQLiteMessageTemplates } from '../../hooks/useSQLiteMessageTemplates';
 import { Icon } from '../ui/Icon';
 import { SendMessageModal } from '../modals/SendMessageModal';
 import { Confessor } from '../../types';
 
 export const BirthdaysPage: React.FC = () => {
   const { user } = useAppContext();
-  const { confessors } = useConfessors(user?.uid);
-  const { templates } = useMessageTemplates(user?.uid);
+  const { confessors } = useSQLiteConfessors();
+  const { templates } = useSQLiteMessageTemplates();
   const [selectedPeriod, setSelectedPeriod] = useState('هذا الشهر');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [showSendModal, setShowSendModal] = useState(false);

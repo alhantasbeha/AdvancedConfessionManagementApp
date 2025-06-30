@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { Icon } from '../ui/Icon';
 import { NotificationsPanel } from './NotificationsPanel';
-import { UserProfile } from '../auth/UserProfile';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -23,7 +22,6 @@ const NAV_ITEMS = [
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { currentPage, isDarkMode, setIsDarkMode, notifications, user } = useAppContext();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const currentPageLabel = NAV_ITEMS.find(item => item.id === currentPage)?.label || 'لوحة المعلومات';
 
@@ -75,19 +73,13 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             />
           </button>
 
-          {/* User Profile Button */}
-          {user && (
-            <button 
-              onClick={() => setIsProfileOpen(true)} 
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
-              title={user.email || 'الملف الشخصي'}
-            >
-              <Icon name="users" className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-              <span className="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {user.email?.split('@')[0] || 'المستخدم'}
-              </span>
-            </button>
-          )}
+          {/* User Info */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900 rounded-lg">
+            <Icon name="users" className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+              SQLite المحلي
+            </span>
+          </div>
         </div>
       </header>
       
@@ -96,14 +88,6 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         <NotificationsPanel 
           notifications={notifications} 
           onClose={() => setIsNotificationsOpen(false)} 
-        />
-      )}
-
-      {/* User Profile Modal */}
-      {isProfileOpen && user && (
-        <UserProfile 
-          user={user}
-          onClose={() => setIsProfileOpen(false)} 
         />
       )}
     </>
