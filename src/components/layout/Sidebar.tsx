@@ -107,23 +107,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Fixed Position */}
       <aside className={`
-        fixed top-0 right-0 h-full bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 ease-in-out z-40 
+        fixed top-0 right-0 h-screen bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 ease-in-out z-40 
         flex flex-col border-l border-gray-200 dark:border-gray-700
         ${isOpen ? 'translate-x-0' : 'translate-x-full'} 
         md:relative md:translate-x-0 
         ${isCollapsed ? 'md:w-20' : 'md:w-72'}
       `}>
         
-        {/* Header - Match main header height with enhanced styling */}
+        {/* Header with Collapse Toggle at Top */}
         <div className="h-[73px] p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 flex items-center justify-between relative overflow-hidden">
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-sm"></div>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
           
+          {/* Logo and Title */}
           {!isCollapsed && (
-            <div className="flex items-center gap-3 relative z-10">
+            <div className="flex items-center gap-3 relative z-10 flex-1">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-lg">
                 <Icon name="users" className="w-5 h-5 text-white" />
               </div>
@@ -140,16 +141,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
           
-          <button 
-            onClick={onClose} 
-            className="md:hidden p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors border border-white/30 relative z-10"
-          >
-            <Icon name="close" className="w-5 h-5 text-white" />
-          </button>
+          {/* Top Controls */}
+          <div className="flex items-center gap-2 relative z-10">
+            {/* Desktop Collapse Toggle - Moved to Top */}
+            <button 
+              onClick={onToggleCollapse} 
+              className="hidden md:flex items-center justify-center p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-all duration-200 border border-white/30 backdrop-blur-sm group"
+              title={isCollapsed ? 'توسيع الشريط الجانبي' : 'طي الشريط الجانبي'}
+            >
+              <Icon 
+                name={isCollapsed ? 'arrowLeft' : 'arrowRight'} 
+                className="w-4 h-4 text-white group-hover:scale-110 transition-transform" 
+              />
+            </button>
+            
+            {/* Mobile Close Button */}
+            <button 
+              onClick={onClose} 
+              className="md:hidden p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-colors border border-white/30"
+            >
+              <Icon name="close" className="w-4 h-4 text-white" />
+            </button>
+          </div>
         </div>
 
-        {/* Navigation with medium spacing and typography */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        {/* Navigation - Scrollable Content */}
+        <nav className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
           <div className="space-y-2">
             {NAV_ITEMS.map(item => {
               const isActive = currentPage === item.id;
@@ -220,7 +237,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
         
-        {/* Footer with medium styling */}
+        {/* Footer */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           {/* User Profile Section */}
           {!isCollapsed && (
@@ -245,25 +262,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
           
-          {/* Collapse Toggle */}
-          <button 
-            onClick={onToggleCollapse} 
-            className="hidden md:flex items-center justify-center w-full p-3 rounded-xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 transition-all duration-300 group shadow-sm hover:shadow-md"
-          >
-            <Icon 
-              name={isCollapsed ? 'arrowLeft' : 'arrowRight'} 
-              className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
-            />
-            {!isCollapsed && (
-              <span className="mr-2 text-sm font-semibold text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                طي الشريط الجانبي
-              </span>
-            )}
-          </button>
-          
           {/* Quick Stats for collapsed state */}
           {isCollapsed && (
-            <div className="mt-3 space-y-2">
+            <div className="space-y-2">
               <div className="text-center p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
                 <div className="text-sm font-bold text-blue-700 dark:text-blue-300">150</div>
                 <div className="text-xs text-blue-600 dark:text-blue-400">معترف</div>
@@ -271,6 +272,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="text-center p-2 bg-green-100 dark:bg-green-900 rounded-lg">
                 <div className="text-sm font-bold text-green-700 dark:text-green-300">25</div>
                 <div className="text-xs text-green-600 dark:text-green-400">اعتراف</div>
+              </div>
+              <div className="text-center p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                <div className="text-sm font-bold text-purple-700 dark:text-purple-300">8</div>
+                <div className="text-xs text-purple-600 dark:text-purple-400">تنبيه</div>
               </div>
             </div>
           )}

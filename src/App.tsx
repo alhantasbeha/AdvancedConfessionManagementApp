@@ -29,7 +29,6 @@ const AppContent: React.FC = () => {
     );
   }
 
-  // مع SQLite، المستخدم دائماً متاح
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
@@ -57,7 +56,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div dir="rtl" className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans transition-theme">
-      <div className="flex">
+      <div className="flex h-screen overflow-hidden">
+        {/* Fixed Sidebar */}
         <Sidebar 
           isOpen={isSidebarOpen}
           isCollapsed={isSidebarCollapsed}
@@ -65,23 +65,21 @@ const AppContent: React.FC = () => {
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        <main className="flex-1 transition-all duration-300">
+        {/* Main Content Area - Adjusted for fixed sidebar */}
+        <main className={`flex-1 flex flex-col transition-all duration-300 ${
+          isSidebarCollapsed ? 'md:mr-20' : 'md:mr-72'
+        } overflow-hidden`}>
+          {/* Fixed Header */}
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
           
-          <div className="p-4 md:p-6">
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto">
             <div className="animate-fadeIn">
               {renderPage()}
             </div>
           </div>
         </main>
       </div>
-      
-      {isSidebarOpen && (
-        <div 
-          onClick={() => setIsSidebarOpen(false)} 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden transition-all duration-300"
-        />
-      )}
     </div>
   );
 };
