@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { useSQLiteMessageTemplates } from '../../hooks/useSQLiteMessageTemplates';
+import { usePagination } from '../../hooks/usePagination';
 import { Icon } from '../ui/Icon';
+import { Pagination } from '../ui/Pagination';
 import { MessageTemplateModal } from '../modals/MessageTemplateModal';
 import { MessageTemplate } from '../../types';
 
@@ -13,6 +15,7 @@ export const MessagesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('الكل');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const categories = ['الكل', 'عيد ميلاد', 'عيد زواج', 'تهنئة', 'تعزية', 'دعوة', 'أخرى'];
 
@@ -31,6 +34,21 @@ export const MessagesPage: React.FC = () => {
                          template.body.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'الكل' || getTemplateCategory(template.title) === selectedCategory;
     return matchesSearch && matchesCategory;
+  });
+
+  // Pagination
+  const {
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    paginatedData: paginatedTemplates,
+    totalItems,
+    goToPage,
+    setItemsPerPage
+  } = usePagination({
+    data: filteredTemplates,
+    initialItemsPerPage: viewMode === 'grid' ? 12 : 25,
+    initialPage: 1
   });
 
   const handleAdd = () => {
@@ -86,6 +104,147 @@ export const MessagesPage: React.FC = () => {
     );
   }
 
+  const renderGridView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {paginatedTemplates.map(template => {
+        const category = getTemplateCategory(template.title);
+        return (
+          <div key={template.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border hover:shadow-md transition-shadow card-hover">
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex-1">
+                <h4 className="font-bold text-lg mb-2 line-clamp-2">{template.title}</h4>
+                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(category)}`}>
+                  {category}
+                </span>
+              </div>
+              <div className="flex gap-1 ml-2">
+                <button 
+                  onClick={() => handleEdit(template)}
+                  className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full"
+                  title="تعديل"
+                >
+                  <Icon name="edit" className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => handleDuplicate(template)}
+                  className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full"
+                  title="نسخ"
+                >
+                  <Icon name="add" className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => setShowDeleteConfirm(template.id!)}
+                  className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full"
+                  title="حذف"
+                >
+                  <Icon name="delete" className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 p-3 rounded border mb-3">
+              <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap line-clamp-4">
+                {template.body}
+              </p>
+            </div>
+            
+            <div className="border-t pt-3">
+              <h5 className="font-semibold text-sm mb-2">معاينة:</h5>
+              <div className="bg-green-50 dark:bg-green-900 p-3 rounded text-sm">
+                <p className="text-green-800 dark:text-green-200 whitespace-pre-wrap line-clamp-3">
+                  {previewMessage(template)}
+                </p>
+              </div>
+            </div>
+            
+            <div className="mt-3 pt-3 border-t">
+              <div className="flex justify-between items-center text-xs text-gray-500">
+                <span>المتغيرات المستخدمة:</span>
+                <div className="flex flex-wrap gap-1">
+                  {template.body.includes('{الاسم_الأول}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">الاسم الأول</span>
+                  )}
+                  {template.body.includes('{اسم_العائلة}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">اسم العائلة</span>
+                  )}
+                  {template.body.includes('{اسم_الزوج}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">اسم الزوج</span>
+                  )}
+                  {template.body.includes('{اسم_الزوجة}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">اسم الزوجة</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const renderListView = () => (
+    <div className="space-y-4">
+      {paginatedTemplates.map(template => {
+        const category = getTemplateCategory(template.title);
+        return (
+          <div key={template.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h4 className="font-bold text-lg">{template.title}</h4>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(category)}`}>
+                    {category}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2">
+                  {template.body}
+                </p>
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <span>المتغيرات:</span>
+                  {template.body.includes('{الاسم_الأول}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">الاسم الأول</span>
+                  )}
+                  {template.body.includes('{اسم_العائلة}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">اسم العائلة</span>
+                  )}
+                  {template.body.includes('{اسم_الزوج}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">اسم الزوج</span>
+                  )}
+                  {template.body.includes('{اسم_الزوجة}') && (
+                    <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">اسم الزوجة</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-2 ml-4">
+                <button 
+                  onClick={() => handleEdit(template)}
+                  className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full"
+                  title="تعديل"
+                >
+                  <Icon name="edit" className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => handleDuplicate(template)}
+                  className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full"
+                  title="نسخ"
+                >
+                  <Icon name="add" className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => setShowDeleteConfirm(template.id!)}
+                  className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full"
+                  title="حذف"
+                >
+                  <Icon name="delete" className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
@@ -102,29 +261,57 @@ export const MessagesPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Filters and Controls */}
       <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="البحث في القوالب..." 
-              className="w-full p-2 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1">
+            <div className="relative w-full sm:w-80">
+              <input 
+                type="text" 
+                placeholder="البحث في القوالب..." 
+                className="w-full p-2 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
+            </div>
+            
+            <select 
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
+            >
+              {categories.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
           </div>
-          
-          <select 
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="p-2 rounded-lg border dark:bg-gray-700 dark:border-gray-600"
-          >
-            {categories.map(category => (
-              <option key={category} value={category}>{category}</option>
-            ))}
-          </select>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-white dark:bg-gray-700 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'grid' 
+                  ? 'bg-blue-500 text-white shadow-sm' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              }`}
+              title="عرض الشبكة"
+            >
+              <Icon name="dashboard" className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'list' 
+                  ? 'bg-blue-500 text-white shadow-sm' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              }`}
+              title="عرض القائمة"
+            >
+              <Icon name="list" className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -132,122 +319,62 @@ export const MessagesPage: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg text-center">
           <Icon name="messages" className="w-8 h-8 mx-auto text-blue-500 mb-2" />
-          <p className="text-2xl font-bold text-blue-700 dark:text-blue-200">{templates.length}</p>
+          <p className="text-2xl font-bold text-blue-700 dark:text-blue-200">{totalItems}</p>
           <p className="text-blue-600 dark:text-blue-300 text-sm">إجمالي القوالب</p>
         </div>
         <div className="bg-pink-50 dark:bg-pink-900 p-4 rounded-lg text-center">
           <Icon name="birthday" className="w-8 h-8 mx-auto text-pink-500 mb-2" />
           <p className="text-2xl font-bold text-pink-700 dark:text-pink-200">
-            {templates.filter(t => getTemplateCategory(t.title) === 'عيد ميلاد').length}
+            {filteredTemplates.filter(t => getTemplateCategory(t.title) === 'عيد ميلاد').length}
           </p>
           <p className="text-pink-600 dark:text-pink-300 text-sm">أعياد ميلاد</p>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg text-center">
           <Icon name="birthday" className="w-8 h-8 mx-auto text-purple-500 mb-2" />
           <p className="text-2xl font-bold text-purple-700 dark:text-purple-200">
-            {templates.filter(t => getTemplateCategory(t.title) === 'عيد زواج').length}
+            {filteredTemplates.filter(t => getTemplateCategory(t.title) === 'عيد زواج').length}
           </p>
           <p className="text-purple-600 dark:text-purple-300 text-sm">أعياد زواج</p>
         </div>
         <div className="bg-green-50 dark:bg-green-900 p-4 rounded-lg text-center">
           <Icon name="messages" className="w-8 h-8 mx-auto text-green-500 mb-2" />
           <p className="text-2xl font-bold text-green-700 dark:text-green-200">
-            {templates.filter(t => ['تهنئة', 'دعوة', 'أخرى'].includes(getTemplateCategory(t.title))).length}
+            {filteredTemplates.filter(t => ['تهنئة', 'دعوة', 'أخرى'].includes(getTemplateCategory(t.title))).length}
           </p>
           <p className="text-green-600 dark:text-green-300 text-sm">أخرى</p>
         </div>
       </div>
 
-      {/* Templates Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.length === 0 ? (
-          <div className="col-span-full text-center py-12">
-            <Icon name="messages" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-500 text-lg">لا توجد قوالب تطابق البحث</p>
-            <button 
-              onClick={handleAdd}
-              className="mt-4 flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors mx-auto"
-            >
-              <Icon name="add" className="w-5 h-5" />
-              إضافة قالب جديد
-            </button>
+      {/* Templates Content */}
+      {totalItems === 0 ? (
+        <div className="text-center py-12">
+          <Icon name="messages" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-500 text-lg mb-4">لا توجد قوالب تطابق البحث</p>
+          <button 
+            onClick={handleAdd}
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            إضافة قالب جديد
+          </button>
+        </div>
+      ) : (
+        <>
+          {viewMode === 'grid' ? renderGridView() : renderListView()}
+          
+          {/* Pagination */}
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={goToPage}
+              onItemsPerPageChange={setItemsPerPage}
+              className="border-t pt-6"
+            />
           </div>
-        ) : (
-          filteredTemplates.map(template => {
-            const category = getTemplateCategory(template.title);
-            return (
-              <div key={template.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg border hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex-1">
-                    <h4 className="font-bold text-lg mb-2">{template.title}</h4>
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(category)}`}>
-                      {category}
-                    </span>
-                  </div>
-                  <div className="flex gap-1">
-                    <button 
-                      onClick={() => handleEdit(template)}
-                      className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full"
-                      title="تعديل"
-                    >
-                      <Icon name="edit" className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDuplicate(template)}
-                      className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full"
-                      title="نسخ"
-                    >
-                      <Icon name="add" className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => setShowDeleteConfirm(template.id!)}
-                      className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full"
-                      title="حذف"
-                    >
-                      <Icon name="delete" className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="bg-white dark:bg-gray-800 p-3 rounded border mb-3">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap line-clamp-4">
-                    {template.body}
-                  </p>
-                </div>
-                
-                <div className="border-t pt-3">
-                  <h5 className="font-semibold text-sm mb-2">معاينة:</h5>
-                  <div className="bg-green-50 dark:bg-green-900 p-3 rounded text-sm">
-                    <p className="text-green-800 dark:text-green-200 whitespace-pre-wrap line-clamp-3">
-                      {previewMessage(template)}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="mt-3 pt-3 border-t">
-                  <div className="flex justify-between items-center text-xs text-gray-500">
-                    <span>المتغيرات المستخدمة:</span>
-                    <div className="flex flex-wrap gap-1">
-                      {template.body.includes('{الاسم_الأول}') && (
-                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">الاسم الأول</span>
-                      )}
-                      {template.body.includes('{اسم_العائلة}') && (
-                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">اسم العائلة</span>
-                      )}
-                      {template.body.includes('{اسم_الزوج}') && (
-                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">اسم الزوج</span>
-                      )}
-                      {template.body.includes('{اسم_الزوجة}') && (
-                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 rounded">اسم الزوجة</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
+        </>
+      )}
 
       {/* Modals */}
       {showModal && (

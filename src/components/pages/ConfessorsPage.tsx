@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
+import { usePagination } from '../../hooks/usePagination';
 import { Icon } from '../ui/Icon';
+import { Pagination } from '../ui/Pagination';
 import { ConfessorModal } from '../modals/ConfessorModal';
 import { ConfessorProfilePage } from './ConfessorProfilePage';
 import { assignFakeImagesToConfessors } from '../../utils/fakeImages';
@@ -10,21 +12,78 @@ import { Confessor } from '../../types';
 export const ConfessorsPage: React.FC = () => {
   const { user } = useAppContext();
   const { confessors: rawConfessors, loading, updateConfessor } = useSQLiteConfessors();
-  const [filteredConfessors, setFilteredConfessors] = useState<Confessor[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingConfessor, setEditingConfessor] = useState<Confessor | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showArchived, setShowArchived] = useState(false);
   const [selectedConfessorId, setSelectedConfessorId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
+  const [sortBy, setSortBy] = useState<'name' | 'age' | 'church' | 'recent'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   // إضافة الصور الوهمية للمعترفين
   const confessors = useMemo(() => {
     return assignFakeImagesToConfessors(rawConfessors);
   }, [rawConfessors]);
 
+  // Filter and sort confessors
+  const filteredAndSortedConfessors = useMemo(() => {
+    let results = confessors.filter(c => 
+      (c.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+       c.fatherName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+       c.familyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       c.spouseName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       c.children?.some(child => child.name?.toLowerCase().includes(searchTerm.toLowerCase()))) &&
+      c.isArchived === showArchived
+    );
+
+    // Sort results
+    results.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = `${a.firstName} ${a.familyName}`.localeCompare(`${b.firstName} ${b.familyName}`);
+          break;
+        case 'age':
+          const ageA = calculateAge(a.birthDate);
+          const ageB = calculateAge(b.birthDate);
+          comparison = (ageA || 0) - (ageB || 0);
+          break;
+        case 'church':
+          comparison = (a.church || '').localeCompare(b.church || '');
+          break;
+        case 'recent':
+          // Sort by creation date or ID (most recent first)
+          comparison = (parseInt(b.id || '0') || 0) - (parseInt(a.id || '0') || 0);
+          break;
+        default:
+          comparison = 0;
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return results;
+  }, [confessors, searchTerm, showArchived, sortBy, sortOrder]);
+
+  // Pagination
+  const {
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    paginatedData: paginatedConfessors,
+    totalItems,
+    goToPage,
+    setItemsPerPage
+  } = usePagination({
+    data: filteredAndSortedConfessors,
+    initialItemsPerPage: 24, // Good for card view (4x6 grid)
+    initialPage: 1
+  });
+
   const calculateAge = (birthDate: string) => {
-    if (!birthDate) return '';
+    if (!birthDate) return null;
     const today = new Date();
     const birthDateObj = new Date(birthDate);
     let age = today.getFullYear() - birthDateObj.getFullYear();
@@ -34,18 +93,6 @@ export const ConfessorsPage: React.FC = () => {
     }
     return age;
   };
-
-  useEffect(() => {
-    let results = confessors.filter(c => 
-      (c.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       c.fatherName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-       c.familyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       c.spouseName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       c.children?.some(child => child.name?.toLowerCase().includes(searchTerm.toLowerCase()))) &&
-      c.isArchived === showArchived
-    );
-    setFilteredConfessors(results);
-  }, [searchTerm, confessors, showArchived]);
 
   const handleAdd = () => {
     setEditingConfessor(null);
@@ -72,6 +119,15 @@ export const ConfessorsPage: React.FC = () => {
     setSelectedConfessorId(null);
   };
 
+  const handleSort = (newSortBy: typeof sortBy) => {
+    if (sortBy === newSortBy) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(newSortBy);
+      setSortOrder('asc');
+    }
+  };
+
   // If a confessor is selected, show their profile page
   if (selectedConfessorId) {
     return (
@@ -92,8 +148,8 @@ export const ConfessorsPage: React.FC = () => {
 
   const renderCardView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {filteredConfessors.map(confessor => (
-        <div key={confessor.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700">
+      {paginatedConfessors.map(confessor => (
+        <div key={confessor.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 card-hover">
           {/* Card Header with Profile Image */}
           <div className="relative">
             <div className="h-32 bg-gradient-to-r from-blue-500 to-purple-600"></div>
@@ -261,16 +317,46 @@ export const ConfessorsPage: React.FC = () => {
         <thead>
           <tr className="border-b dark:border-gray-700">
             <th className="p-3">الصورة</th>
-            <th className="p-3">الاسم بالكامل</th>
-            <th className="p-3">العمر</th>
+            <th className="p-3">
+              <button
+                onClick={() => handleSort('name')}
+                className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                الاسم بالكامل
+                {sortBy === 'name' && (
+                  <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+                )}
+              </button>
+            </th>
+            <th className="p-3">
+              <button
+                onClick={() => handleSort('age')}
+                className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                العمر
+                {sortBy === 'age' && (
+                  <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+                )}
+              </button>
+            </th>
             <th className="p-3">رقم الهاتف</th>
-            <th className="p-3">الكنيسة</th>
+            <th className="p-3">
+              <button
+                onClick={() => handleSort('church')}
+                className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                الكنيسة
+                {sortBy === 'church' && (
+                  <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+                )}
+              </button>
+            </th>
             <th className="p-3">الأسرة</th>
             <th className="p-3">إجراءات</th>
           </tr>
         </thead>
         <tbody>
-          {filteredConfessors.map(confessor => (
+          {paginatedConfessors.map(confessor => (
             <tr key={confessor.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
               <td className="p-3">
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
@@ -369,16 +455,42 @@ export const ConfessorsPage: React.FC = () => {
   
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-        <div className="relative w-full md:w-1/3">
-          <input 
-            type="text" 
-            placeholder="ابحث بالاسم أو اسم الزوج أو الأطفال..." 
-            className="w-full p-2 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
+      {/* Header Controls */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
+          {/* Search */}
+          <div className="relative w-full sm:w-80">
+            <input 
+              type="text" 
+              placeholder="ابحث بالاسم أو اسم الزوج أو الأطفال..." 
+              className="w-full p-3 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
+          </div>
+
+          {/* Sort Options */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 dark:text-gray-300">ترتيب:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 text-sm"
+            >
+              <option value="name">الاسم</option>
+              <option value="age">العمر</option>
+              <option value="church">الكنيسة</option>
+              <option value="recent">الأحدث</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600"
+              title={sortOrder === 'asc' ? 'ترتيب تنازلي' : 'ترتيب تصاعدي'}
+            >
+              <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+            </button>
+          </div>
         </div>
         
         <div className="flex items-center gap-2">
@@ -430,34 +542,34 @@ export const ConfessorsPage: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg text-center">
           <Icon name="users" className="w-8 h-8 mx-auto text-blue-500 mb-2" />
-          <p className="text-2xl font-bold text-blue-700 dark:text-blue-200">{filteredConfessors.length}</p>
+          <p className="text-2xl font-bold text-blue-700 dark:text-blue-200">{totalItems}</p>
           <p className="text-blue-600 dark:text-blue-300 text-sm">{showArchived ? 'مؤرشف' : 'نشط'}</p>
         </div>
         <div className="bg-green-50 dark:bg-green-900 p-4 rounded-lg text-center">
           <Icon name="users" className="w-8 h-8 mx-auto text-green-500 mb-2" />
           <p className="text-2xl font-bold text-green-700 dark:text-green-200">
-            {filteredConfessors.filter(c => c.gender === 'ذكر').length}
+            {filteredAndSortedConfessors.filter(c => c.gender === 'ذكر').length}
           </p>
           <p className="text-green-600 dark:text-green-300 text-sm">ذكور</p>
         </div>
         <div className="bg-pink-50 dark:bg-pink-900 p-4 rounded-lg text-center">
           <Icon name="users" className="w-8 h-8 mx-auto text-pink-500 mb-2" />
           <p className="text-2xl font-bold text-pink-700 dark:text-pink-200">
-            {filteredConfessors.filter(c => c.gender === 'أنثى').length}
+            {filteredAndSortedConfessors.filter(c => c.gender === 'أنثى').length}
           </p>
           <p className="text-pink-600 dark:text-pink-300 text-sm">إناث</p>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg text-center">
           <Icon name="users" className="w-8 h-8 mx-auto text-purple-500 mb-2" />
           <p className="text-2xl font-bold text-purple-700 dark:text-purple-200">
-            {filteredConfessors.filter(c => c.socialStatus === 'متزوج').length}
+            {filteredAndSortedConfessors.filter(c => c.socialStatus === 'متزوج').length}
           </p>
           <p className="text-purple-600 dark:text-purple-300 text-sm">متزوجون</p>
         </div>
       </div>
 
       {/* Content */}
-      {filteredConfessors.length === 0 ? (
+      {totalItems === 0 ? (
         <div className="text-center py-12">
           <Icon name="users" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <p className="text-gray-500 text-lg mb-4">
@@ -473,7 +585,22 @@ export const ConfessorsPage: React.FC = () => {
           )}
         </div>
       ) : (
-        viewMode === 'cards' ? renderCardView() : renderTableView()
+        <>
+          {viewMode === 'cards' ? renderCardView() : renderTableView()}
+          
+          {/* Pagination */}
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={goToPage}
+              onItemsPerPageChange={setItemsPerPage}
+              className="border-t pt-6"
+            />
+          </div>
+        </>
       )}
 
       {showModal && (
