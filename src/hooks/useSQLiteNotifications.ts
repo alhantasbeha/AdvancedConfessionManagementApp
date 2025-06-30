@@ -22,7 +22,7 @@ export const useSQLiteNotifications = () => {
       const todayDay = today.getDate();
 
       // تحميل المعترفين
-      const confessorsData = await db.select('confessors');
+      const confessorsData = db.select('confessors');
       const confessors: Confessor[] = confessorsData
         .filter((row: any) => !Boolean(row.isDeceased) && !Boolean(row.isArchived))
         .map((row: any) => ({
@@ -33,11 +33,18 @@ export const useSQLiteNotifications = () => {
           marriageDate: row.marriageDate as string,
           socialStatus: row.socialStatus as any,
           confessionStartDate: row.confessionStartDate as string,
-          children: row.children ? JSON.parse(row.children as string) : []
+          children: (() => {
+            try {
+              return Array.isArray(row.children) ? row.children : (row.children ? JSON.parse(row.children) : []);
+            } catch (e) {
+              console.warn('Error parsing children data for confessor', row.id, e);
+              return [];
+            }
+          })()
         } as Confessor));
 
       // تحميل سجلات الاعتراف
-      const logsData = await db.select('confession_logs');
+      const logsData = db.select('confession_logs');
       const logs: ConfessionLog[] = logsData.map((row: any) => ({
         id: row.id?.toString(),
         confessorId: row.confessorId?.toString() || '',
@@ -47,29 +54,37 @@ export const useSQLiteNotifications = () => {
       // تنبيهات أعياد الميلاد
       confessors.forEach(c => {
         if (c.birthDate) {
-          const birthDate = new Date(c.birthDate);
-          if (birthDate.getMonth() === todayMonth && birthDate.getDate() === todayDay) {
-            newNotifications.push({
-              id: `bday-${c.id}`,
-              type: 'birthday',
-              message: `اليوم هو عيد ميلاد ${c.firstName} ${c.familyName}.`,
-              timestamp: new Date()
-            });
+          try {
+            const birthDate = new Date(c.birthDate);
+            if (birthDate.getMonth() === todayMonth && birthDate.getDate() === todayDay) {
+              newNotifications.push({
+                id: `bday-${c.id}`,
+                type: 'birthday',
+                message: `اليوم هو عيد ميلاد ${c.firstName} ${c.familyName}.`,
+                timestamp: new Date()
+              });
+            }
+          } catch (e) {
+            console.warn('Error parsing birth date for confessor', c.id, e);
           }
         }
 
         // تنبيهات أعياد الميلاد للأطفال
-        if (c.children && c.children.length > 0) {
+        if (c.children && Array.isArray(c.children) && c.children.length > 0) {
           c.children.forEach((child: any, index: number) => {
             if (child.birthDate) {
-              const childBirthDate = new Date(child.birthDate);
-              if (childBirthDate.getMonth() === todayMonth && childBirthDate.getDate() === todayDay) {
-                newNotifications.push({
-                  id: `child-bday-${c.id}-${index}`,
-                  type: 'birthday',
-                  message: `اليوم هو عيد ميلاد ${child.name} (ابن/ة ${c.firstName} ${c.familyName}).`,
-                  timestamp: new Date()
-                });
+              try {
+                const childBirthDate = new Date(child.birthDate);
+                if (childBirthDate.getMonth() === todayMonth && childBirthDate.getDate() === todayDay) {
+                  newNotifications.push({
+                    id: `child-bday-${c.id}-${index}`,
+                    type: 'birthday',
+                    message: `اليوم هو عيد ميلاد ${child.name} (ابن/ة ${c.firstName} ${c.familyName}).`,
+                    timestamp: new Date()
+                  });
+                }
+              } catch (e) {
+                console.warn('Error parsing child birth date for confessor', c.id, 'child', index, e);
               }
             }
           });
@@ -79,14 +94,18 @@ export const useSQLiteNotifications = () => {
       // تنبيهات أعياد الزواج
       confessors.forEach(c => {
         if (c.marriageDate && c.socialStatus === 'متزوج') {
-          const marriageDate = new Date(c.marriageDate);
-          if (marriageDate.getMonth() === todayMonth && marriageDate.getDate() === todayDay) {
-            newNotifications.push({
-              id: `anniv-${c.id}`,
-              type: 'anniversary',
-              message: `اليوم هو عيد زواج ${c.firstName} ${c.familyName}.`,
-              timestamp: new Date()
-            });
+          try {
+            const marriageDate = new Date(c.marriageDate);
+            if (marriageDate.getMonth() === todayMonth && marriageDate.getDate() === todayDay) {
+              newNotifications.push({
+                id: `anniv-${c.id}`,
+                type: 'anniversary',
+                message: `اليوم هو عيد زواج ${c.firstName} ${c.familyName}.`,
+                timestamp: new Date()
+              });
+            }
+          } catch (e) {
+            console.warn('Error parsing marriage date for confessor', c.id, e);
           }
         }
       });

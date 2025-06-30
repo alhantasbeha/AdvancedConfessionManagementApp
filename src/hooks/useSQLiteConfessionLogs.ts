@@ -14,24 +14,18 @@ export const useSQLiteConfessionLogs = () => {
     try {
       setLoading(true);
       const db = await initDatabase();
-      const stmt = db.prepare('SELECT * FROM confession_logs ORDER BY date DESC');
-      const results: ConfessionLog[] = [];
+      const results = db.select('confession_logs');
       
-      while (stmt.step()) {
-        const row = stmt.getAsObject();
-        const log: ConfessionLog = {
-          id: row.id?.toString(),
-          confessorId: row.confessorId?.toString() || '',
-          date: row.date as string,
-          notes: row.notes as string,
-          tags: row.tags ? JSON.parse(row.tags as string) : []
-        };
-        results.push(log);
-      }
+      const logs: ConfessionLog[] = results.map((row: any) => ({
+        id: row.id?.toString(),
+        confessorId: row.confessorId?.toString() || '',
+        date: row.date as string,
+        notes: row.notes as string || '',
+        tags: Array.isArray(row.tags) ? row.tags : (row.tags ? JSON.parse(row.tags) : [])
+      })).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       
-      stmt.free();
-      setLogs(results);
-      console.log(`تم تحميل ${results.length} سجل اعتراف`);
+      setLogs(logs);
+      console.log(`تم تحميل ${logs.length} سجل اعتراف`);
     } catch (error) {
       console.error('Error loading confession logs:', error);
     } finally {
@@ -42,20 +36,15 @@ export const useSQLiteConfessionLogs = () => {
   const addLog = async (logData: Omit<ConfessionLog, 'id'>) => {
     try {
       const db = await initDatabase();
-      const stmt = db.prepare(`
-        INSERT INTO confession_logs (confessorId, date, notes, tags) 
-        VALUES (?, ?, ?, ?)
-      `);
       
-      stmt.run([
-        logData.confessorId,
-        logData.date,
-        logData.notes || null,
-        JSON.stringify(logData.tags || [])
-      ]);
+      const newLogData = {
+        confessorId: logData.confessorId,
+        date: logData.date,
+        notes: logData.notes || '',
+        tags: logData.tags || []
+      };
       
-      stmt.free();
-      saveDatabase();
+      db.insert('confession_logs', newLogData);
       await loadLogs();
       console.log('تم إضافة سجل اعتراف جديد');
     } catch (error) {
@@ -68,23 +57,12 @@ export const useSQLiteConfessionLogs = () => {
     try {
       const db = await initDatabase();
       
-      const processedUpdates: any = {};
-      Object.entries(logData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          processedUpdates[key] = JSON.stringify(value);
-        } else {
-          processedUpdates[key] = value;
-        }
-      });
+      const updateData = { ...logData };
+      if (updateData.tags && Array.isArray(updateData.tags)) {
+        // Tags will be handled automatically by SimpleDB
+      }
       
-      const setClause = Object.keys(processedUpdates).map(key => `${key} = ?`).join(', ');
-      const values = Object.values(processedUpdates);
-      
-      const stmt = db.prepare(`UPDATE confession_logs SET ${setClause} WHERE id = ?`);
-      stmt.run([...values, id]);
-      stmt.free();
-      
-      saveDatabase();
+      db.update('confession_logs', id, updateData);
       await loadLogs();
       console.log('تم تحديث سجل الاعتراف');
     } catch (error) {
@@ -96,11 +74,7 @@ export const useSQLiteConfessionLogs = () => {
   const deleteLog = async (id: string) => {
     try {
       const db = await initDatabase();
-      const stmt = db.prepare('DELETE FROM confession_logs WHERE id = ?');
-      stmt.run([id]);
-      stmt.free();
-      
-      saveDatabase();
+      db.delete('confession_logs', id);
       await loadLogs();
       console.log('تم حذف سجل الاعتراف');
     } catch (error) {

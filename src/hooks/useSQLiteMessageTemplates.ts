@@ -14,22 +14,16 @@ export const useSQLiteMessageTemplates = () => {
     try {
       setLoading(true);
       const db = await initDatabase();
-      const stmt = db.prepare('SELECT * FROM message_templates ORDER BY title');
-      const results: MessageTemplate[] = [];
+      const results = db.select('message_templates');
       
-      while (stmt.step()) {
-        const row = stmt.getAsObject();
-        const template: MessageTemplate = {
-          id: row.id?.toString(),
-          title: row.title as string,
-          body: row.body as string
-        };
-        results.push(template);
-      }
+      const templates: MessageTemplate[] = results.map((row: any) => ({
+        id: row.id?.toString(),
+        title: row.title as string,
+        body: row.body as string
+      })).sort((a, b) => a.title.localeCompare(b.title));
       
-      stmt.free();
-      setTemplates(results);
-      console.log(`تم تحميل ${results.length} قالب رسالة`);
+      setTemplates(templates);
+      console.log(`تم تحميل ${templates.length} قالب رسالة`);
     } catch (error) {
       console.error('Error loading message templates:', error);
     } finally {
@@ -40,15 +34,7 @@ export const useSQLiteMessageTemplates = () => {
   const addTemplate = async (templateData: Omit<MessageTemplate, 'id'>) => {
     try {
       const db = await initDatabase();
-      const stmt = db.prepare(`
-        INSERT INTO message_templates (title, body) 
-        VALUES (?, ?)
-      `);
-      
-      stmt.run([templateData.title, templateData.body]);
-      stmt.free();
-      
-      saveDatabase();
+      db.insert('message_templates', templateData);
       await loadTemplates();
       console.log('تم إضافة قالب رسالة جديد');
     } catch (error) {
@@ -60,14 +46,7 @@ export const useSQLiteMessageTemplates = () => {
   const updateTemplate = async (id: string, templateData: Partial<MessageTemplate>) => {
     try {
       const db = await initDatabase();
-      const setClause = Object.keys(templateData).map(key => `${key} = ?`).join(', ');
-      const values = Object.values(templateData);
-      
-      const stmt = db.prepare(`UPDATE message_templates SET ${setClause} WHERE id = ?`);
-      stmt.run([...values, id]);
-      stmt.free();
-      
-      saveDatabase();
+      db.update('message_templates', id, templateData);
       await loadTemplates();
       console.log('تم تحديث قالب الرسالة');
     } catch (error) {
@@ -79,11 +58,7 @@ export const useSQLiteMessageTemplates = () => {
   const deleteTemplate = async (id: string) => {
     try {
       const db = await initDatabase();
-      const stmt = db.prepare('DELETE FROM message_templates WHERE id = ?');
-      stmt.run([id]);
-      stmt.free();
-      
-      saveDatabase();
+      db.delete('message_templates', id);
       await loadTemplates();
       console.log('تم حذف قالب الرسالة');
     } catch (error) {

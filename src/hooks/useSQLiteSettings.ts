@@ -19,24 +19,14 @@ export const useSQLiteSettings = () => {
     try {
       setLoading(true);
       const db = await initDatabase();
-      const stmt = db.prepare('SELECT key, value FROM settings');
+      
       const results: Settings = {
-        professions: [],
-        services: [],
-        personalTags: [],
-        confessionTags: []
+        professions: db.getSetting('professions') || [],
+        services: db.getSetting('services') || [],
+        personalTags: db.getSetting('personalTags') || [],
+        confessionTags: db.getSetting('confessionTags') || []
       };
       
-      while (stmt.step()) {
-        const row = stmt.getAsObject();
-        const key = row.key as keyof Settings;
-        const value = JSON.parse(row.value as string);
-        if (key in results) {
-          (results as any)[key] = value;
-        }
-      }
-      
-      stmt.free();
       setSettings(results);
       console.log('تم تحميل الإعدادات');
     } catch (error) {
@@ -51,15 +41,9 @@ export const useSQLiteSettings = () => {
       const db = await initDatabase();
       
       for (const [key, value] of Object.entries(newSettings)) {
-        const stmt = db.prepare(`
-          INSERT OR REPLACE INTO settings (key, value, updatedAt) 
-          VALUES (?, ?, CURRENT_TIMESTAMP)
-        `);
-        stmt.run([key, JSON.stringify(value)]);
-        stmt.free();
+        db.setSetting(key, value);
       }
       
-      saveDatabase();
       await loadSettings();
       console.log('تم تحديث الإعدادات');
     } catch (error) {
