@@ -29,6 +29,7 @@ const AppContent: React.FC = () => {
     );
   }
 
+  // مع SQLite، المستخدم دائماً متاح
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
@@ -57,7 +58,6 @@ const AppContent: React.FC = () => {
   return (
     <div dir="rtl" className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans transition-theme">
       <div className="flex">
-        {/* Fixed Sidebar */}
         <Sidebar 
           isOpen={isSidebarOpen}
           isCollapsed={isSidebarCollapsed}
@@ -65,27 +65,33 @@ const AppContent: React.FC = () => {
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        {/* Main Content Area with Left Margin for Fixed Sidebar */}
-        <main className={`flex-1 transition-all duration-300 ${
-          isSidebarCollapsed ? 'md:mr-20' : 'md:mr-72'
-        }`}>
+        <main className="flex-1 transition-all duration-300">
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
           
-          <div className="min-h-screen">
+          <div className="p-4 md:p-6">
             <div className="animate-fadeIn">
               {renderPage()}
             </div>
           </div>
         </main>
       </div>
+      
+      {isSidebarOpen && (
+        <div 
+          onClick={() => setIsSidebarOpen(false)} 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden transition-all duration-300"
+        />
+      )}
     </div>
   );
 };
 
-export default function App() {
+function App() {
   return (
     <AppProvider>
       <AppContent />
     </AppProvider>
   );
 }
+
+export default App;
