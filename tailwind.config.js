@@ -4,6 +4,13 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Cairo', 'Tajawal', 'Almarai', 'IBM Plex Sans Arabic', 'system-ui', '-apple-system', 'sans-serif'],
+        'arabic': ['Cairo', 'Tajawal', 'system-ui', '-apple-system', 'sans-serif'],
+        'arabic-body': ['Tajawal', 'Cairo', 'Almarai', 'system-ui', '-apple-system', 'sans-serif'],
+        'arabic-ui': ['IBM Plex Sans Arabic', 'Cairo', 'system-ui', '-apple-system', 'sans-serif'],
+        'arabic-headings': ['Cairo', 'Tajawal', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
         // ألوان مخصصة للوضع النهاري
         light: {
@@ -67,6 +74,16 @@ export default {
         'dark-start': '#0f172a',
         'dark-middle': '#1e293b',
         'dark-end': '#334155',
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
+        'sm': ['0.875rem', { lineHeight: '1.6', letterSpacing: '0.025em' }],
+        'base': ['1rem', { lineHeight: '1.7', letterSpacing: '0.025em' }],
+        'lg': ['1.125rem', { lineHeight: '1.6', letterSpacing: '0.025em' }],
+        'xl': ['1.25rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
+        '2xl': ['1.5rem', { lineHeight: '1.4', letterSpacing: '0.025em' }],
+        '3xl': ['1.875rem', { lineHeight: '1.3', letterSpacing: '0.025em' }],
+        '4xl': ['2.25rem', { lineHeight: '1.2', letterSpacing: '0.025em' }],
       }
     },
   },

@@ -2,6 +2,144 @@
 @tailwind components;
 @tailwind utilities;
 
+/* تحديد الخطوط العربية الحديثة */
+:root {
+  --font-primary: 'Cairo', 'Tajawal', 'Almarai', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  --font-headings: 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
+  --font-body: 'Tajawal', 'Cairo', 'Almarai', system-ui, -apple-system, sans-serif;
+  --font-ui: 'IBM Plex Sans Arabic', 'Cairo', system-ui, -apple-system, sans-serif;
+}
+
+/* تطبيق الخطوط على العناصر الأساسية */
+html {
+  font-family: var(--font-primary);
+  background-color: #ffffff;
+  color: #1f2937;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+body {
+  font-family: var(--font-body);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* تحسين الخطوط للعناوين */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headings);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* تحسين الخطوط للنصوص */
+p {
+  font-family: var(--font-body);
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+/* تحسين الخطوط لعناصر الواجهة */
+button, input, select, textarea {
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+/* تحسين الخطوط للنصوص الصغيرة */
+.text-xs {
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+.text-sm {
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+/* تحسين الخطوط للنصوص الكبيرة */
+.text-lg {
+  font-family: var(--font-headings);
+  font-weight: 500;
+}
+
+.text-xl {
+  font-family: var(--font-headings);
+  font-weight: 600;
+}
+
+.text-2xl {
+  font-family: var(--font-headings);
+  font-weight: 700;
+}
+
+.text-3xl {
+  font-family: var(--font-headings);
+  font-weight: 800;
+}
+
+/* تحسين الخطوط للنصوص المميزة */
+.font-bold {
+  font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-extralight {
+  font-weight: 200;
+}
+
+.font-black {
+  font-weight: 900;
+}
+
 /* إعادة تعيين الألوان الأساسية */
 html {
   background-color: #ffffff;
@@ -120,6 +258,7 @@ body {
 /* تحسين الأزرار */
 button {
   transition: all 0.2s ease;
+  font-family: var(--font-ui);
 }
 
 button:hover {
@@ -132,6 +271,7 @@ input, select, textarea {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
+  font-family: var(--font-ui);
 }
 
 input:focus, select:focus, textarea:focus {
@@ -191,6 +331,7 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   background-color: var(--bg-primary) !important;
+  font-family: var(--font-ui);
 }
 
 table th,
@@ -202,6 +343,7 @@ table td {
 table th {
   background-color: var(--bg-secondary) !important;
   font-weight: 600;
+  font-family: var(--font-headings);
 }
 
 table tr:hover {
@@ -946,4 +1088,100 @@ img:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* تحسين خاص للخطوط العربية */
+.arabic-text {
+  font-family: var(--font-body);
+  text-align: right;
+  direction: rtl;
+}
+
+.arabic-heading {
+  font-family: var(--font-headings);
+  text-align: right;
+  direction: rtl;
+}
+
+.arabic-ui {
+  font-family: var(--font-ui);
+  text-align: right;
+  direction: rtl;
+}
+
+/* تحسين المسافات للنصوص العربية */
+.arabic-spacing {
+  letter-spacing: 0.025em;
+  word-spacing: 0.1em;
+}
+
+/* تحسين الأرقام العربية */
+.arabic-numbers {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* تحسين النصوص المختلطة (عربي وإنجليزي) */
+.mixed-text {
+  font-family: var(--font-ui);
+  unicode-bidi: bidi-override;
+  direction: rtl;
+}
+
+/* تحسين النصوص الطويلة */
+.long-text {
+  font-family: var(--font-body);
+  line-height: 1.8;
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* تحسين النصوص في الجداول */
+table .arabic-text {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+}
+
+/* تحسين النصوص في النماذج */
+form .arabic-text {
+  font-family: var(--font-ui);
+}
+
+/* تحسين النصوص في الأزرار */
+button .arabic-text {
+  font-family: var(--font-ui);
+  font-weight: 500;
+}
+
+/* تحسين النصوص في القوائم */
+nav .arabic-text {
+  font-family: var(--font-ui);
+  font-weight: 500;
+}
+
+/* تحسين النصوص في البطاقات */
+.card .arabic-text {
+  font-family: var(--font-body);
+}
+
+.card .arabic-heading {
+  font-family: var(--font-headings);
+}
+
+/* تحسين النصوص في التنبيهات */
+.notification .arabic-text {
+  font-family: var(--font-ui);
+  line-height: 1.5;
+}
+
+/* تحسين النصوص في الإحصائيات */
+.stats .arabic-text {
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+
+/* تحسين النصوص في التقارير */
+.report .arabic-text {
+  font-family: var(--font-body);
+  line-height: 1.7;
 }
