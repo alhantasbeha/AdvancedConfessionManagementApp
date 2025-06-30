@@ -82,12 +82,10 @@ const AppContent: React.FC = () => {
   );
 };
 
-function App() {
+export default function App() {
   return (
     <AppProvider>
       <AppContent />
     </AppProvider>
   );
 }
-
-export default App;
