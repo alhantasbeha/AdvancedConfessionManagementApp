@@ -32,45 +32,45 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   return (
     <>
-      <header className="h-24 bg-white dark:bg-gray-900 shadow-xl border-b-2 border-gray-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-lg bg-white/95 dark:bg-gray-900/95">
-        <div className="flex items-center justify-between h-full px-8 lg:px-12">
+      <header className="h-[73px] bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-md bg-white/95 dark:bg-gray-900/95">
+        <div className="flex items-center justify-between h-full px-6 lg:px-8">
           {/* Left Section - Mobile Menu & Page Title */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
             <button 
               onClick={onMenuClick} 
-              className="md:hidden p-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group shadow-lg hover:shadow-xl"
+              className="md:hidden p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
             >
-              <Icon name="menu" className="w-8 h-8 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+              <Icon name="menu" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
             </button>
             
             <div className="hidden md:block">
-              <h2 className="text-3xl font-black text-gray-900 dark:text-white leading-tight tracking-tight">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
                 {currentPageLabel}
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 font-semibold mt-2 leading-relaxed">
-                إدارة شؤون الكنيسة والمعترفين بكفاءة عالية ومتقدمة
+              <p className="text-base text-gray-600 dark:text-gray-400 font-medium mt-1">
+                إدارة شؤون الكنيسة والمعترفين بكفاءة عالية
               </p>
             </div>
           </div>
 
           {/* Center Section - Search Bar (Desktop) */}
-          <div className="hidden lg:flex flex-1 max-w-2xl mx-12">
+          <div className="hidden lg:flex flex-1 max-w-lg mx-8">
             <div className={`
               relative w-full transition-all duration-300
               ${isSearchFocused ? 'transform scale-105' : ''}
             `}>
-              <div className="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
-                <Icon name="search" className="w-7 h-7 text-gray-400" />
+              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                <Icon name="search" className="w-6 h-6 text-gray-400" />
               </div>
               <input
                 type="text"
                 placeholder="البحث في النظام... (Ctrl+K)"
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
-                className="w-full pl-8 pr-16 py-5 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-3xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-lg font-medium shadow-lg hover:shadow-xl focus:shadow-2xl"
+                className="w-full pl-6 pr-12 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md focus:shadow-lg"
               />
-              <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                <kbd className="hidden sm:inline-flex items-center px-3 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 shadow-md">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <kbd className="hidden sm:inline-flex items-center px-2 py-1 border border-gray-200 dark:border-gray-600 rounded text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700">
                   Ctrl K
                 </kbd>
               </div>
@@ -78,25 +78,25 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           </div>
 
           {/* Right Section - Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* Search Button (Mobile) */}
-            <button className="lg:hidden p-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group shadow-lg hover:shadow-xl">
-              <Icon name="search" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+            <button className="lg:hidden p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group">
+              <Icon name="search" className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
             </button>
 
             {/* Notifications */}
             <div className="relative">
               <button 
                 onClick={() => setIsNotificationsOpen(prev => !prev)} 
-                className="relative p-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group shadow-lg hover:shadow-xl"
+                className="relative p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
                 title="التنبيهات"
               >
-                <Icon name="bell" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+                <Icon name="bell" className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
                 {notifications.length > 0 && (
                   <div className="absolute -top-1 -right-1">
-                    <div className="flex h-7 w-7">
+                    <div className="flex h-6 w-6">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-7 w-7 bg-red-500 text-white text-sm items-center justify-center font-black shadow-xl">
+                      <span className="relative inline-flex rounded-full h-6 w-6 bg-red-500 text-white text-xs items-center justify-center font-bold shadow-lg">
                         {notifications.length > 9 ? '9+' : notifications.length}
                       </span>
                     </div>
@@ -108,51 +108,51 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             {/* Theme Toggle */}
             <button 
               onClick={handleThemeToggle}
-              className="p-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group shadow-lg hover:shadow-xl"
+              className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
               title={isDarkMode ? 'تفعيل الوضع النهاري' : 'تفعيل الوضع الليلي'}
             >
               <Icon 
                 name={isDarkMode ? 'sun' : 'moon'} 
-                className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
+                className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
               />
             </button>
 
             {/* User Profile */}
-            <div className="flex items-center gap-5 px-6 py-4 bg-gradient-to-r from-blue-50 via-purple-50 to-indigo-50 dark:from-blue-900 dark:via-purple-900 dark:to-indigo-900 rounded-3xl border-2 border-blue-200 dark:border-blue-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <Icon name="users" className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4 px-5 py-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 rounded-2xl border border-blue-200 dark:border-blue-700 shadow-sm hover:shadow-md transition-all duration-200">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Icon name="users" className="w-5 h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <p className="text-lg font-black text-gray-900 dark:text-white leading-tight">
+                <p className="text-base font-bold text-gray-900 dark:text-white leading-tight">
                   المستخدم المحلي
                 </p>
-                <p className="text-base text-gray-600 dark:text-gray-400 font-bold">
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                   قاعدة بيانات SQLite
                 </p>
               </div>
-              <div className="hidden lg:flex items-center gap-2">
-                <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse shadow-lg"></div>
-                <span className="text-base text-green-600 dark:text-green-400 font-black">متصل</span>
+              <div className="hidden lg:flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-600 dark:text-green-400 font-medium mr-2">متصل</span>
               </div>
             </div>
 
             {/* Settings Quick Access */}
             <button 
               onClick={() => window.location.href = '#settings'}
-              className="p-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group shadow-lg hover:shadow-xl"
+              className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
               title="الإعدادات السريعة"
             >
-              <Icon name="settings" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+              <Icon name="settings" className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
             </button>
           </div>
         </div>
 
         {/* Mobile Page Title */}
-        <div className="md:hidden px-8 pb-6">
-          <h2 className="text-2xl font-black text-gray-900 dark:text-white leading-tight">
+        <div className="md:hidden px-6 pb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
             {currentPageLabel}
           </h2>
-          <p className="text-base text-gray-600 dark:text-gray-400 font-bold mt-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mt-1">
             إدارة شؤون الكنيسة والمعترفين
           </p>
         </div>
