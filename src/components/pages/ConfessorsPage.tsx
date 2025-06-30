@@ -69,7 +69,7 @@ export const ConfessorsPage: React.FC = () => {
 
   // Pagination - تحديد العدد الافتراضي بناءً على وضع العرض
   const getDefaultItemsPerPage = () => {
-    return viewMode === 'cards' ? 24 : 25;
+    return viewMode === 'cards' ? 18 : 25;
   };
 
   const {
