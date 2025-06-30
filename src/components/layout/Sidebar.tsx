@@ -104,40 +104,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
         flex flex-col border-l border-gray-200 dark:border-gray-700
         ${isOpen ? 'translate-x-0' : 'translate-x-full'} 
         md:relative md:translate-x-0 
-        ${isCollapsed ? 'md:w-20' : 'md:w-72'}
+        ${isCollapsed ? 'md:w-16' : 'md:w-64'}
       `}>
         
         {/* Header - Match main header height */}
-        <div className="h-[73px] p-4 lg:px-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-between">
+        <div className="h-[60px] p-3 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-between">
           {!isCollapsed && (
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <Icon name="users" className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                <Icon name="users" className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">الكاهن الرقمي</h1>
-                <p className="text-blue-100 text-sm">نظام إدارة الكنيسة</p>
+                <h1 className="text-lg font-bold text-white">الكاهن الرقمي</h1>
+                <p className="text-blue-100 text-xs">نظام إدارة الكنيسة</p>
               </div>
             </div>
           )}
           
           {isCollapsed && (
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm mx-auto">
-              <Icon name="users" className="w-6 h-6 text-white" />
+            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm mx-auto">
+              <Icon name="users" className="w-5 h-5 text-white" />
             </div>
           )}
           
           <button 
             onClick={onClose} 
-            className="md:hidden p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+            className="md:hidden p-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
           >
-            <Icon name="close" className="w-5 h-5 text-white" />
+            <Icon name="close" className="w-4 h-4 text-white" />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <div className="space-y-2">
+        <nav className="flex-1 p-2 overflow-y-auto">
+          <div className="space-y-1">
             {NAV_ITEMS.map(item => {
               const isActive = currentPage === item.id;
               
@@ -146,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   key={item.id}
                   onClick={() => handleNavigation(item.id)}
                   className={`
-                    group relative w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200
+                    group relative w-full flex items-center gap-3 p-2.5 rounded-lg transition-all duration-200
                     ${isCollapsed ? 'justify-center' : 'justify-start'}
                     ${isActive 
                       ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg transform scale-[1.02]` 
@@ -156,12 +156,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   {/* Active indicator */}
                   {isActive && (
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-white rounded-l-full"></div>
+                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-white rounded-l-full"></div>
                   )}
                   
                   {/* Icon */}
                   <div className={`
-                    p-2 rounded-lg transition-all duration-200
+                    p-1.5 rounded-lg transition-all duration-200
                     ${isActive 
                       ? 'bg-white/20 shadow-lg' 
                       : `bg-${item.color}-100 dark:bg-${item.color}-900 group-hover:bg-${item.color}-200 dark:group-hover:bg-${item.color}-800`
@@ -169,7 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   `}>
                     <Icon 
                       name={item.icon} 
-                      className={`w-5 h-5 transition-all duration-200 ${
+                      className={`w-4 h-4 transition-all duration-200 ${
                         isActive 
                           ? 'text-white' 
                           : `text-${item.color}-600 dark:text-${item.color}-400`
@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   
                   {/* Label */}
                   {!isCollapsed && (
-                    <span className="font-medium text-sm truncate">
+                    <span className="font-semibold text-base truncate">
                       {item.label}
                     </span>
                   )}
@@ -198,13 +198,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
         
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="p-2 border-t border-gray-200 dark:border-gray-700">
           {/* User Profile Section */}
           {!isCollapsed && (
-            <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <Icon name="users" className="w-5 h-5 text-white" />
+            <div className="mb-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <Icon name="users" className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -221,14 +221,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Collapse Toggle */}
           <button 
             onClick={onToggleCollapse} 
-            className="hidden md:flex items-center justify-center w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group"
+            className="hidden md:flex items-center justify-center w-full p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group"
           >
             <Icon 
               name={isCollapsed ? 'arrowLeft' : 'arrowRight'} 
-              className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
+              className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" 
             />
             {!isCollapsed && (
-              <span className="mr-2 text-sm font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+              <span className="mr-2 text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                 طي الشريط الجانبي
               </span>
             )}
