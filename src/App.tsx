@@ -22,8 +22,8 @@ const AppContent: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-theme">
         <div className="text-center animate-fadeIn">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-3"></div>
-          <p className="text-gray-600 dark:text-gray-300 font-medium text-sm">جاري تحميل التطبيق...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300 font-medium">جاري تحميل التطبيق...</p>
         </div>
       </div>
     );
@@ -68,7 +68,7 @@ const AppContent: React.FC = () => {
         <main className="flex-1 transition-all duration-300">
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
           
-          <div className="p-3 md:p-4">
+          <div className="p-4 md:p-6">
             <div className="animate-fadeIn">
               {renderPage()}
             </div>
