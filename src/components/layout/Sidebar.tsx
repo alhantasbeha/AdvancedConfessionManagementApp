@@ -107,17 +107,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Made Sticky */}
       <aside className={`
-        fixed top-0 right-0 h-full bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 ease-in-out z-40 
+        fixed top-0 right-0 h-screen bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 ease-in-out z-40 
         flex flex-col border-l border-gray-200 dark:border-gray-700
         ${isOpen ? 'translate-x-0' : 'translate-x-full'} 
-        md:relative md:translate-x-0 
+        md:relative md:translate-x-0 md:sticky md:top-0
         ${isCollapsed ? 'md:w-20' : 'md:w-72'}
       `}>
         
         {/* Header - Match main header height with enhanced styling */}
-        <div className="h-[73px] p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 flex items-center justify-between relative overflow-hidden">
+        <div className="h-[73px] p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 flex items-center justify-between relative overflow-hidden flex-shrink-0">
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-sm"></div>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
@@ -148,8 +148,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Navigation with medium spacing and typography */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        {/* Navigation with medium spacing and typography - Made scrollable */}
+        <nav className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
           <div className="space-y-2">
             {NAV_ITEMS.map(item => {
               const isActive = currentPage === item.id;
@@ -220,8 +220,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
         
-        {/* Footer with medium styling */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        {/* Footer with medium styling - Fixed at bottom */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex-shrink-0">
           {/* User Profile Section */}
           {!isCollapsed && (
             <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 rounded-xl border border-blue-200 dark:border-blue-700">
