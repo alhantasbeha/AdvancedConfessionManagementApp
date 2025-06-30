@@ -53,6 +53,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const [imagePreview, setImagePreview] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // إضافة حالة جديدة لتتبع الإرسال
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [expandedSections, setExpandedSections] = useState({
@@ -88,9 +89,17 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       setFormData(initialFormState);
       setImagePreview('');
     }
+    
+    // إعادة تعيين حالات الإرسال عند تغيير المعترف
+    setIsSubmitting(false);
+    setIsSubmitted(false);
+    setShowSuccessMessage(false);
   }, [confessor]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    // منع التعديل إذا تم الإرسال بالفعل
+    if (isSubmitted) return;
+    
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
     setFormData(prev => ({
@@ -110,6 +119,8 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   };
 
   const handleImageChange = async (file: File | null) => {
+    if (isSubmitted) return;
+    
     if (!file) {
       setFormData(prev => ({ ...prev, profileImage: '' }));
       setImagePreview('');
@@ -138,6 +149,8 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   };
 
   const handleMultiSelectChange = (listName: keyof Pick<Confessor, 'services' | 'personalTags'>, value: string) => {
+    if (isSubmitted) return;
+    
     const currentList = formData[listName] || [];
     const newList = currentList.includes(value)
       ? currentList.filter(item => item !== value)
@@ -146,23 +159,31 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   };
 
   const handleAddChild = () => {
+    if (isSubmitted) return;
+    
     const newChild = { name: '', birthDate: '', phone: '' };
     const updatedChildren = [...(formData.children || []), newChild];
     setFormData(prev => ({ ...prev, children: updatedChildren }));
   };
 
   const handleUpdateChild = (index: number, field: string, value: string) => {
+    if (isSubmitted) return;
+    
     const updatedChildren = [...(formData.children || [])];
     updatedChildren[index] = { ...updatedChildren[index], [field]: value };
     setFormData(prev => ({ ...prev, children: updatedChildren }));
   };
 
   const handleRemoveChild = (index: number) => {
+    if (isSubmitted) return;
+    
     const updatedChildren = (formData.children || []).filter((_: any, i: number) => i !== index);
     setFormData(prev => ({ ...prev, children: updatedChildren }));
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
+    if (isSubmitted) return;
+    
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
@@ -187,9 +208,10 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const showSuccess = (message: string) => {
     setSuccessMessage(message);
     setShowSuccessMessage(true);
+    setIsSubmitted(true); // تعيين حالة الإرسال المكتمل
+    
     setTimeout(() => {
       setShowSuccessMessage(false);
-      setIsSubmitting(false); // إعادة تعيين حالة الإرسال
       onClose();
     }, 2000);
   };
@@ -197,8 +219,9 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // منع الإرسال المتعدد
-    if (isSubmitting) {
+    // منع الإرسال المتعدد بشكل قاطع
+    if (isSubmitting || isSubmitted) {
+      console.log('Form submission blocked - already submitting or submitted');
       return;
     }
 
@@ -249,6 +272,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       }
     }
 
+    console.log('Starting form submission...');
     setIsSubmitting(true);
     
     try {
@@ -256,15 +280,17 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       if (confessor?.id) {
         const docRef = doc(db, `artifacts/${appId}/users/${userId}/confessors`, confessor.id);
         await updateDoc(docRef, formData);
+        console.log('Document updated successfully');
         showSuccess('تم تعديل بيانات المعترف بنجاح! ✅');
       } else {
         await addDoc(collectionRef, formData);
+        console.log('Document added successfully');
         showSuccess('تم تسجيل المعترف بنجاح! ✅');
       }
     } catch (error) {
       console.error("Error saving confessor:", error);
       alert('حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.');
-      setIsSubmitting(false); // إعادة تعيين الحالة في حالة الخطأ
+      setIsSubmitting(false); // إعادة تعيين الحالة في حالة الخطأ فقط
     }
   };
 
@@ -276,15 +302,15 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
             <div className="flex flex-col items-center">
               <button
                 type="button"
-                onClick={() => setCurrentStep(step.id)}
-                disabled={isSubmitting}
+                onClick={() => !isSubmitted && setCurrentStep(step.id)}
+                disabled={isSubmitting || isSubmitted}
                 className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                   currentStep === step.id
                     ? `bg-${step.color}-500 text-white shadow-lg scale-110`
                     : currentStep > step.id
                     ? `bg-${step.color}-100 dark:bg-${step.color}-900 text-${step.color}-600 dark:text-${step.color}-300`
                     : 'bg-gray-200 dark:bg-gray-700 text-gray-400'
-                } ${validateStep(step.id) ? 'ring-2 ring-green-300' : ''} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                } ${validateStep(step.id) ? 'ring-2 ring-green-300' : ''} ${(isSubmitting || isSubmitted) ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <Icon name={step.icon} className="w-6 h-6" />
               </button>
@@ -318,9 +344,9 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     }`}>
       <button
         type="button"
-        onClick={() => toggleSection(sectionKey)}
-        disabled={isSubmitting}
-        className={`w-full p-4 bg-gradient-to-r from-${color}-50 to-${color}-100 dark:from-${color}-900 dark:to-${color}-800 flex items-center justify-between hover:from-${color}-100 hover:to-${color}-200 dark:hover:from-${color}-800 dark:hover:to-${color}-700 transition-all duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onClick={() => !isSubmitted && toggleSection(sectionKey)}
+        disabled={isSubmitting || isSubmitted}
+        className={`w-full p-4 bg-gradient-to-r from-${color}-50 to-${color}-100 dark:from-${color}-900 dark:to-${color}-800 flex items-center justify-between hover:from-${color}-100 hover:to-${color}-200 dark:hover:from-${color}-800 dark:hover:to-${color}-700 transition-all duration-200 ${(isSubmitting || isSubmitted) ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <div className="flex items-center gap-3">
           <Icon name={icon} className={`w-6 h-6 text-${color}-600 dark:text-${color}-400`} />
@@ -379,11 +405,11 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 )}
               </div>
               
-              {imagePreview && (
+              {imagePreview && !isSubmitted && (
                 <button
                   type="button"
                   onClick={() => handleImageChange(null)}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isSubmitted}
                   className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   title="حذف الصورة"
                 >
@@ -392,13 +418,15 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
               )}
             </div>
             
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => handleImageChange(e.target.files?.[0] || null)}
-              disabled={isSubmitting}
-              className="mt-4 w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            />
+            {!isSubmitted && (
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => handleImageChange(e.target.files?.[0] || null)}
+                disabled={isSubmitting || isSubmitted}
+                className="mt-4 w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+            )}
             
             <div className="text-xs text-gray-500 mt-2 text-center">
               <p>الحد الأقصى: 5 ميجابايت</p>
@@ -418,7 +446,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 onChange={handleChange} 
                 placeholder="أدخل الاسم الأول" 
                 required 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -433,7 +461,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 onChange={handleChange} 
                 placeholder="أدخل اسم الأب" 
                 required 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -447,7 +475,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 value={formData.grandFatherName || ''} 
                 onChange={handleChange} 
                 placeholder="أدخل اسم الجد (اختياري)" 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -462,7 +490,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 onChange={handleChange} 
                 placeholder="أدخل اسم العائلة" 
                 required 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -479,7 +507,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                     value="ذكر"
                     checked={formData.gender === 'ذكر'}
                     onChange={handleChange}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isSubmitted}
                     className="w-4 h-4 text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <span>ذكر</span>
@@ -491,7 +519,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                     value="أنثى"
                     checked={formData.gender === 'أنثى'}
                     onChange={handleChange}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isSubmitted}
                     className="w-4 h-4 text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <span>أنثى</span>
@@ -509,7 +537,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 value={formData.birthDate} 
                 onChange={handleChange} 
                 required 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:[color-scheme:dark] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -522,7 +550,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 name="socialStatus" 
                 value={formData.socialStatus} 
                 onChange={handleChange} 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="أعزب">أعزب</option>
@@ -542,7 +570,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   name="marriageDate" 
                   value={formData.marriageDate || ''} 
                   onChange={handleChange} 
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isSubmitted}
                   className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:[color-scheme:dark] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
@@ -573,14 +601,14 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   onChange={handleChange} 
                   placeholder="أدخل رقم الهاتف" 
                   required 
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isSubmitted}
                   className="flex-1 p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <div className="flex items-center">
                   <Toggle 
                     label="واتساب" 
                     checked={formData.phone1Whatsapp} 
-                    onChange={(e) => setFormData(p => ({...p, phone1Whatsapp: e.target.checked}))} 
+                    onChange={(e) => !isSubmitted && setFormData(p => ({...p, phone1Whatsapp: e.target.checked}))} 
                   />
                 </div>
               </div>
@@ -596,14 +624,14 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   value={formData.phone2 || ''} 
                   onChange={handleChange} 
                   placeholder="رقم الهاتف الثاني (اختياري)" 
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isSubmitted}
                   className="flex-1 p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <div className="flex items-center">
                   <Toggle 
                     label="واتساب" 
                     checked={formData.phone2Whatsapp} 
-                    onChange={(e) => setFormData(p => ({...p, phone2Whatsapp: e.target.checked}))} 
+                    onChange={(e) => !isSubmitted && setFormData(p => ({...p, phone2Whatsapp: e.target.checked}))} 
                   />
                 </div>
               </div>
@@ -635,7 +663,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   value={formData.spouseName || ''}
                   onChange={handleChange}
                   placeholder="أدخل اسم الزوج أو الزوجة"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isSubmitted}
                   className="w-full p-3 border-2 border-purple-200 dark:border-purple-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
@@ -649,7 +677,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   value={formData.spousePhone || ''}
                   onChange={handleChange}
                   placeholder="رقم الهاتف (اختياري)"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isSubmitted}
                   className="w-full p-3 border-2 border-purple-200 dark:border-purple-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
@@ -666,15 +694,17 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                   {(formData.children || []).length}
                 </span>
               </h4>
-              <button
-                type="button"
-                onClick={handleAddChild}
-                disabled={isSubmitting}
-                className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Icon name="add" className="w-4 h-4" />
-                إضافة طفل
-              </button>
+              {!isSubmitted && (
+                <button
+                  type="button"
+                  onClick={handleAddChild}
+                  disabled={isSubmitting || isSubmitted}
+                  className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Icon name="add" className="w-4 h-4" />
+                  إضافة طفل
+                </button>
+              )}
             </div>
             
             <div className="space-y-4 max-h-80 overflow-y-auto">
@@ -685,15 +715,17 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                       <Icon name="users" className="w-4 h-4" />
                       الطفل #{index + 1}
                     </h5>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveChild(index)}
-                      disabled={isSubmitting}
-                      className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      title="حذف الطفل"
-                    >
-                      <Icon name="x" className="w-4 h-4" />
-                    </button>
+                    {!isSubmitted && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveChild(index)}
+                        disabled={isSubmitting || isSubmitted}
+                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="حذف الطفل"
+                      >
+                        <Icon name="x" className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="space-y-2">
@@ -706,7 +738,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                         onChange={(e) => handleUpdateChild(index, 'name', e.target.value)}
                         placeholder="اسم الطفل"
                         required
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || isSubmitted}
                         className="w-full p-2 border-2 border-blue-200 dark:border-blue-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
@@ -718,7 +750,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                         type="date"
                         value={child.birthDate || ''}
                         onChange={(e) => handleUpdateChild(index, 'birthDate', e.target.value)}
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || isSubmitted}
                         className="w-full p-2 border-2 border-blue-200 dark:border-blue-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:[color-scheme:dark] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
@@ -731,7 +763,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                         value={child.phone || ''}
                         onChange={(e) => handleUpdateChild(index, 'phone', e.target.value)}
                         placeholder="رقم الهاتف (اختياري)"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || isSubmitted}
                         className="w-full p-2 border-2 border-blue-200 dark:border-blue-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                     </div>
@@ -743,7 +775,9 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 <div className="text-center py-8 text-gray-500 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
                   <Icon name="users" className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p className="text-sm font-medium">لم يتم إضافة أطفال بعد</p>
-                  <p className="text-xs text-gray-400 mt-1">اضغط "إضافة طفل" لبدء إضافة الأطفال</p>
+                  {!isSubmitted && (
+                    <p className="text-xs text-gray-400 mt-1">اضغط "إضافة طفل" لبدء إضافة الأطفال</p>
+                  )}
                 </div>
               )}
             </div>
@@ -773,7 +807,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 onChange={handleChange} 
                 placeholder="أدخل اسم الكنيسة" 
                 required 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -787,7 +821,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 name="confessionStartDate" 
                 value={formData.confessionStartDate || ''} 
                 onChange={handleChange} 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 dark:[color-scheme:dark] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
@@ -800,7 +834,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 name="profession" 
                 value={formData.profession || ''} 
                 onChange={handleChange} 
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSubmitted}
                 className="w-full p-3 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">اختر المهنة...</option>
@@ -825,7 +859,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                           type="checkbox" 
                           checked={formData.services?.includes(service)} 
                           onChange={() => handleMultiSelectChange('services', service)} 
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || isSubmitted}
                           className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed" 
                         />
                         <span className="text-sm">{service}</span>
@@ -850,7 +884,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                         type="button" 
                         key={tag} 
                         onClick={() => handleMultiSelectChange('personalTags', tag)} 
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || isSubmitted}
                         className={`px-3 py-2 text-sm rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
                           formData.personalTags?.includes(tag) 
                             ? 'bg-purple-500 text-white shadow-md transform scale-105' 
@@ -871,7 +905,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
               <Toggle 
                 label="شماس" 
                 checked={formData.isDeacon} 
-                onChange={(e) => setFormData(p => ({...p, isDeacon: e.target.checked}))} 
+                onChange={(e) => !isSubmitted && setFormData(p => ({...p, isDeacon: e.target.checked}))} 
               />
             </div>
           </div>
@@ -893,7 +927,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
               <Toggle 
                 label="متوفى" 
                 checked={formData.isDeceased} 
-                onChange={(e) => setFormData(p => ({...p, isDeceased: e.target.checked}))} 
+                onChange={(e) => !isSubmitted && setFormData(p => ({...p, isDeceased: e.target.checked}))} 
               />
             </div>
           </div>
@@ -908,7 +942,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
               onChange={handleChange} 
               placeholder="أدخل أي ملاحظات إضافية..." 
               rows={6} 
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSubmitted}
               className="w-full p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 dark:bg-gray-700 transition-all duration-200 resize-vertical disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
@@ -971,7 +1005,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
             </div>
             <button 
               onClick={onClose}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isSubmitted}
               className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Icon name="x" className="w-6 h-6" />
@@ -997,8 +1031,8 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 {currentStep > 1 && (
                   <button 
                     type="button" 
-                    onClick={() => setCurrentStep(currentStep - 1)}
-                    disabled={isSubmitting}
+                    onClick={() => !isSubmitted && setCurrentStep(currentStep - 1)}
+                    disabled={isSubmitting || isSubmitted}
                     className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Icon name="arrowRight" className="w-5 h-5" />
@@ -1020,8 +1054,8 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 {currentStep < steps.length ? (
                   <button 
                     type="button" 
-                    onClick={() => setCurrentStep(currentStep + 1)}
-                    disabled={!validateStep(currentStep) || isSubmitting}
+                    onClick={() => !isSubmitted && setCurrentStep(currentStep + 1)}
+                    disabled={!validateStep(currentStep) || isSubmitting || isSubmitted}
                     className="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     التالي
@@ -1030,13 +1064,18 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                 ) : (
                   <button 
                     type="submit" 
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isSubmitted}
                     className="flex items-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
                   >
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                         جاري الحفظ...
+                      </>
+                    ) : isSubmitted ? (
+                      <>
+                        <Icon name="users" className="w-5 h-5" />
+                        تم الحفظ ✅
                       </>
                     ) : (
                       <>
