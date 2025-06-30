@@ -1,13 +1,20 @@
-import initSqlJs from 'sql.js';
-
 let SQL: any = null;
 let db: any = null;
 
 export const initDatabase = async () => {
   if (!SQL) {
-    SQL = await initSqlJs({
-      locateFile: (file: string) => `https://sql.js.org/dist/${file}`
-    });
+    try {
+      // استيراد sql.js بطريقة ديناميكية
+      const sqlModule = await import('sql.js');
+      const initSqlJs = sqlModule.default || sqlModule;
+      
+      SQL = await initSqlJs({
+        locateFile: (file: string) => `https://sql.js.org/dist/${file}`
+      });
+    } catch (error) {
+      console.error('خطأ في تحميل sql.js:', error);
+      throw error;
+    }
   }
 
   if (!db) {
