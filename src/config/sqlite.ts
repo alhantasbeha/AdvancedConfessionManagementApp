@@ -1,11 +1,11 @@
-import initSqlJs from 'sql.js';
+import * as SQLJs from 'sql.js';
 
 let SQL: any = null;
 let db: any = null;
 
 export const initDatabase = async () => {
   if (!SQL) {
-    SQL = await initSqlJs({
+    SQL = await SQLJs.default({
       locateFile: (file: string) => `https://sql.js.org/dist/${file}`
     });
   }
