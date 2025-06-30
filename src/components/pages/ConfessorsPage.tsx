@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useConfessors } from '../../hooks/useConfessors';
+import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
 import { Icon } from '../ui/Icon';
 import { ConfessorModal } from '../modals/ConfessorModal';
 import { Confessor } from '../../types';
 
 export const ConfessorsPage: React.FC = () => {
   const { user } = useAppContext();
-  const { confessors, loading, updateConfessor } = useConfessors(user?.uid);
+  const { confessors, loading, updateConfessor } = useSQLiteConfessors();
   const [filteredConfessors, setFilteredConfessors] = useState<Confessor[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingConfessor, setEditingConfessor] = useState<Confessor | null>(null);

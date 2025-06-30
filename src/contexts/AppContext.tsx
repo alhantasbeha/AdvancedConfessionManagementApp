@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '../config/firebase';
-import { useNotifications } from '../hooks/useNotifications';
+import { useSQLiteNotifications } from '../hooks/useSQLiteNotifications';
 import { AppContextType } from '../types';
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -20,18 +18,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   });
   
   const [currentPage, setCurrentPage] = useState('dashboard');
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthReady, setIsAuthReady] = useState(false);
+  const [user] = useState({ uid: 'sqlite-user' }); // مستخدم وهمي لـ SQLite
+  const [isAuthReady] = useState(true); // دائماً جاهز مع SQLite
 
-  const { notifications } = useNotifications(user?.uid);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setIsAuthReady(true);
-    });
-    return () => unsubscribe();
-  }, []);
+  const { notifications } = useSQLiteNotifications();
 
   // تطبيق الوضع النهاري/الليلي فوراً عند تحميل الصفحة
   useEffect(() => {

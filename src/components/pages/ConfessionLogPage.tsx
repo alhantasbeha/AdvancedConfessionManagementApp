@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useConfessors } from '../../hooks/useConfessors';
-import { useConfessionLogs } from '../../hooks/useConfessionLogs';
+import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
+import { useSQLiteConfessionLogs } from '../../hooks/useSQLiteConfessionLogs';
 import { Icon } from '../ui/Icon';
 import { ConfessionLogModal } from '../modals/ConfessionLogModal';
 import { ConfessionLog } from '../../types';
 
 export const ConfessionLogPage: React.FC = () => {
   const { user } = useAppContext();
-  const { confessors } = useConfessors(user?.uid);
-  const { logs, loading, deleteLog } = useConfessionLogs(user?.uid);
+  const { confessors } = useSQLiteConfessors();
+  const { logs, loading, deleteLog } = useSQLiteConfessionLogs();
   const [filteredLogs, setFilteredLogs] = useState<ConfessionLog[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingLog, setEditingLog] = useState<ConfessionLog | null>(null);
@@ -139,7 +139,7 @@ export const ConfessionLogPage: React.FC = () => {
             onClick={clearFilters}
             className="flex items-center justify-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
           >
-            <Icon name="close" className="w-4 h-4" />
+            <Icon name="x" className="w-4 h-4" />
             مسح الفلاتر
           </button>
         </div>
@@ -281,6 +281,7 @@ export const ConfessionLogPage: React.FC = () => {
                 >
                   تأكيد الحذف
                 </button>
+              
               </div>
             </div>
           </div>

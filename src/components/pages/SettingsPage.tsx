@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useSettings } from '../../hooks/useSettings';
-import { useFormSettings } from '../../hooks/useFormSettings';
+import { useSQLiteSettings } from '../../hooks/useSQLiteSettings';
+import { exportDatabase, importDatabase, clearDatabase } from '../../config/sqlite';
 import { Icon } from '../ui/Icon';
-import { FormFieldEditor } from '../settings/FormFieldEditor';
-import { FormGroupEditor } from '../settings/FormGroupEditor';
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAppContext();
-  const { settings, loading, updateSettings } = useSettings(user?.uid);
-  const { formSettings, loading: formLoading } = useFormSettings(user?.uid);
+  const { settings, loading, updateSettings } = useSQLiteSettings();
   const [newItems, setNewItems] = useState({
     professions: '',
     services: '',
@@ -20,7 +17,6 @@ export const SettingsPage: React.FC = () => {
 
   const tabs = [
     { id: 'lists', label: 'القوائم المخصصة', icon: 'settings' },
-    { id: 'form', label: 'إعدادات الاستمارة', icon: 'edit' },
     { id: 'backup', label: 'النسخ الاحتياطي', icon: 'archive' },
     { id: 'preferences', label: 'التفضيلات', icon: 'settings' }
   ];
@@ -78,46 +74,29 @@ export const SettingsPage: React.FC = () => {
   };
 
   const handleExportData = () => {
-    const dataToExport = {
-      settings,
-      formSettings,
-      exportDate: new Date().toISOString(),
-      version: '1.0'
-    };
-    
-    const dataStr = JSON.stringify(dataToExport, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `confession-app-settings-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    exportDatabase();
   };
 
-  const handleImportData = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportData = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const importedData = JSON.parse(e.target?.result as string);
-        if (importedData.settings) {
-          await updateSettings(importedData.settings);
-        }
-        if (importedData.formSettings) {
-          // يمكن إضافة استيراد إعدادات الاستمارة هنا
-        }
-        alert('تم استيراد الإعدادات بنجاح');
-      } catch (error) {
-        alert('خطأ في قراءة الملف');
-      }
-    };
-    reader.readAsText(file);
+    try {
+      await importDatabase(file);
+      alert('تم استيراد قاعدة البيانات بنجاح');
+      window.location.reload();
+    } catch (error) {
+      alert('خطأ في استيراد قاعدة البيانات');
+      console.error(error);
+    }
+  };
+
+  const handleClearDatabase = async () => {
+    const success = await clearDatabase();
+    if (success) {
+      alert('تم مسح قاعدة البيانات بنجاح');
+      window.location.reload();
+    }
   };
 
   const resetToDefaults = async () => {
@@ -201,7 +180,7 @@ export const SettingsPage: React.FC = () => {
                       onClick={() => handleRemoveItem(key, item)}
                       className="text-red-500 hover:text-red-700"
                     >
-                      <Icon name="close" className="w-4 h-4" />
+                      <Icon name="x" className="w-4 h-4" />
                     </button>
                   </span>
                 ))}
@@ -213,58 +192,36 @@ export const SettingsPage: React.FC = () => {
     );
   };
 
-  const renderFormTab = () => (
-    <div className="space-y-6">
-      <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
-        <h4 className="font-bold mb-2">إعدادات استمارة المعترفين</h4>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          يمكنك تخصيص حقول استمارة إضافة المعترفين، تحديد الحقول المطلوبة، وإضافة حقول جديدة حسب احتياجاتك
-        </p>
-      </div>
-
-      {formLoading ? (
-        <div className="flex items-center justify-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <FormGroupEditor formSettings={formSettings} />
-          <FormFieldEditor formSettings={formSettings} settings={settings} />
-        </div>
-      )}
-    </div>
-  );
-
   const renderBackupTab = () => (
     <div className="space-y-6">
       <div className="bg-blue-50 dark:bg-blue-900 p-6 rounded-lg">
         <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
           <Icon name="export" className="w-6 h-6 text-blue-500" />
-          تصدير البيانات
+          تصدير قاعدة البيانات
         </h4>
         <p className="text-gray-600 dark:text-gray-300 mb-4">
-          قم بتصدير جميع إعداداتك وإعدادات الاستمارة لحفظها كنسخة احتياطية
+          قم بتصدير جميع بياناتك لحفظها كنسخة احتياطية
         </p>
         <button 
           onClick={handleExportData}
           className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
         >
           <Icon name="export" className="w-5 h-5" />
-          تصدير الإعدادات
+          تصدير قاعدة البيانات
         </button>
       </div>
 
       <div className="bg-green-50 dark:bg-green-900 p-6 rounded-lg">
         <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
           <Icon name="archive" className="w-6 h-6 text-green-500" />
-          استيراد البيانات
+          استيراد قاعدة البيانات
         </h4>
         <p className="text-gray-600 dark:text-gray-300 mb-4">
-          استيراد إعدادات محفوظة مسبقاً
+          استيراد قاعدة بيانات محفوظة مسبقاً
         </p>
         <input
           type="file"
-          accept=".json"
+          accept=".db"
           onChange={handleImportData}
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
         />
@@ -272,18 +229,35 @@ export const SettingsPage: React.FC = () => {
 
       <div className="bg-red-50 dark:bg-red-900 p-6 rounded-lg">
         <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
-          <Icon name="close" className="w-6 h-6 text-red-500" />
-          إعادة تعيين
+          <Icon name="delete" className="w-6 h-6 text-red-500" />
+          مسح قاعدة البيانات
+        </h4>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">
+          مسح جميع البيانات وإعادة إنشاء قاعدة بيانات جديدة
+        </p>
+        <button 
+          onClick={handleClearDatabase}
+          className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+        >
+          <Icon name="delete" className="w-5 h-5" />
+          مسح قاعدة البيانات
+        </button>
+      </div>
+
+      <div className="bg-yellow-50 dark:bg-yellow-900 p-6 rounded-lg">
+        <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+          <Icon name="settings" className="w-6 h-6 text-yellow-500" />
+          إعادة تعيين الإعدادات
         </h4>
         <p className="text-gray-600 dark:text-gray-300 mb-4">
           إعادة تعيين جميع الإعدادات إلى القيم الافتراضية
         </p>
         <button 
           onClick={resetToDefaults}
-          className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+          className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors"
         >
-          <Icon name="close" className="w-5 h-5" />
-          إعادة تعيين
+          <Icon name="settings" className="w-5 h-5" />
+          إعادة تعيين الإعدادات
         </button>
       </div>
     </div>
@@ -353,6 +327,24 @@ export const SettingsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <div className="bg-blue-50 dark:bg-blue-900 p-6 rounded-lg">
+        <h4 className="font-bold text-lg mb-4">معلومات النظام</h4>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span>نوع قاعدة البيانات:</span>
+            <span className="font-medium">SQLite (محلي)</span>
+          </div>
+          <div className="flex justify-between">
+            <span>حالة الاتصال:</span>
+            <span className="font-medium text-green-600">متصل</span>
+          </div>
+          <div className="flex justify-between">
+            <span>إصدار التطبيق:</span>
+            <span className="font-medium">1.0.0</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 
@@ -369,7 +361,7 @@ export const SettingsPage: React.FC = () => {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
         <h3 className="text-xl font-bold flex items-center gap-2">
           <Icon name="settings" className="w-6 h-6 text-blue-500" />
-          الإعدادات
+          الإعدادات (SQLite)
         </h3>
       </div>
 
@@ -398,7 +390,7 @@ export const SettingsPage: React.FC = () => {
             <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
               <h4 className="font-bold mb-2">إدارة القوائم المخصصة</h4>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                يمكنك إضافة وإدارة القوائم المخصصة التي تظهر في نماذج إدخال البيانات
+                يمكنك إضافة وإدارة القوائم المخصصة التي تظهر في نماذج إدخال البيانات. البيانات محفوظة محلياً في متصفحك.
               </p>
             </div>
             
@@ -408,7 +400,6 @@ export const SettingsPage: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'form' && renderFormTab()}
         {activeTab === 'backup' && renderBackupTab()}
         {activeTab === 'preferences' && renderPreferencesTab()}
       </div>

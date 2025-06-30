@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
-import { useMessageTemplates } from '../../hooks/useMessageTemplates';
+import { useSQLiteMessageTemplates } from '../../hooks/useSQLiteMessageTemplates';
 import { Icon } from '../ui/Icon';
 import { MessageTemplateModal } from '../modals/MessageTemplateModal';
 import { MessageTemplate } from '../../types';
 
 export const MessagesPage: React.FC = () => {
   const { user } = useAppContext();
-  const { templates, loading, deleteTemplate } = useMessageTemplates(user?.uid);
+  const { templates, loading, deleteTemplate } = useSQLiteMessageTemplates();
   const [showModal, setShowModal] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<MessageTemplate | null>(null);
   const [searchTerm, setSearchTerm] = useState('');

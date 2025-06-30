@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, doc, onSnapshot, addDoc, updateDoc } from 'firebase/firestore';
-import { db, appId } from '../../config/firebase';
-import { useSettings } from '../../hooks/useSettings';
+import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
+import { useSQLiteSettings } from '../../hooks/useSQLiteSettings';
 import { Icon } from '../ui/Icon';
 import { Toggle } from '../ui/Toggle';
 import { Confessor } from '../../types';
@@ -19,7 +18,8 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   onClose, 
   userId 
 }) => {
-  const { settings } = useSettings(userId);
+  const { addConfessor, updateConfessor } = useSQLiteConfessors();
+  const { settings } = useSQLiteSettings();
   
   const initialFormState: Omit<Confessor, 'id'> = {
     firstName: '', 
@@ -53,7 +53,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const [imagePreview, setImagePreview] = useState<string>('');
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false); // إضافة حالة جديدة لتتبع الإرسال
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [expandedSections, setExpandedSections] = useState({
@@ -90,14 +90,12 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
       setImagePreview('');
     }
     
-    // إعادة تعيين حالات الإرسال عند تغيير المعترف
     setIsSubmitting(false);
     setIsSubmitted(false);
     setShowSuccessMessage(false);
   }, [confessor]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    // منع التعديل إذا تم الإرسال بالفعل
     if (isSubmitted) return;
     
     const { name, value, type } = e.target;
@@ -208,7 +206,7 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const showSuccess = (message: string) => {
     setSuccessMessage(message);
     setShowSuccessMessage(true);
-    setIsSubmitted(true); // تعيين حالة الإرسال المكتمل
+    setIsSubmitted(true);
     
     setTimeout(() => {
       setShowSuccessMessage(false);
@@ -219,18 +217,11 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // منع الإرسال المتعدد بشكل قاطع
     if (isSubmitting || isSubmitted) {
       console.log('Form submission blocked - already submitting or submitted');
       return;
     }
 
-    if (!userId) {
-      console.error("User not logged in.");
-      return;
-    }
-
-    // Validate all required fields
     if (!formData.firstName?.trim()) {
       alert('الاسم الأول مطلوب');
       setCurrentStep(1);
@@ -276,21 +267,19 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
     setIsSubmitting(true);
     
     try {
-      const collectionRef = collection(db, `artifacts/${appId}/users/${userId}/confessors`);
       if (confessor?.id) {
-        const docRef = doc(db, `artifacts/${appId}/users/${userId}/confessors`, confessor.id);
-        await updateDoc(docRef, formData);
+        await updateConfessor(confessor.id, formData);
         console.log('Document updated successfully');
         showSuccess('تم تعديل بيانات المعترف بنجاح! ✅');
       } else {
-        await addDoc(collectionRef, formData);
+        await addConfessor(formData);
         console.log('Document added successfully');
         showSuccess('تم تسجيل المعترف بنجاح! ✅');
       }
     } catch (error) {
       console.error("Error saving confessor:", error);
       alert('حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.');
-      setIsSubmitting(false); // إعادة تعيين الحالة في حالة الخطأ فقط
+      setIsSubmitting(false);
     }
   };
 

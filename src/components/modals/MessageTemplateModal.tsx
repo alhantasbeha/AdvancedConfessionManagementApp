@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { db, appId } from '../../config/firebase';
+import { useSQLiteMessageTemplates } from '../../hooks/useSQLiteMessageTemplates';
 import { Icon } from '../ui/Icon';
 import { MessageTemplate } from '../../types';
 
@@ -15,6 +14,8 @@ export const MessageTemplateModal: React.FC<MessageTemplateModalProps> = ({
   onClose,
   userId
 }) => {
+  const { addTemplate, updateTemplate } = useSQLiteMessageTemplates();
+  
   const [formData, setFormData] = useState<Omit<MessageTemplate, 'id'>>({
     title: '',
     body: ''
@@ -92,12 +93,10 @@ export const MessageTemplateModal: React.FC<MessageTemplateModalProps> = ({
     if (!userId || !formData.title.trim() || !formData.body.trim()) return;
 
     try {
-      const collectionRef = collection(db, `artifacts/${appId}/users/${userId}/messageTemplates`);
       if (template?.id) {
-        const docRef = doc(db, `artifacts/${appId}/users/${userId}/messageTemplates`, template.id);
-        await updateDoc(docRef, formData);
+        await updateTemplate(template.id, formData);
       } else {
-        await addDoc(collectionRef, formData);
+        await addTemplate(formData);
       }
       onClose();
     } catch (error) {
@@ -134,7 +133,7 @@ export const MessageTemplateModal: React.FC<MessageTemplateModalProps> = ({
             {template ? 'تعديل قالب الرسالة' : 'إضافة قالب رسالة جديد'}
           </h3>
           <button onClick={onClose}>
-            <Icon name="close" className="w-6 h-6" />
+            <Icon name="x" className="w-6 h-6" />
           </button>
         </div>
 

@@ -12,9 +12,10 @@ export const useSQLiteConfessors = () => {
 
   const loadConfessors = async () => {
     try {
+      setLoading(true);
       const db = await initDatabase();
       const stmt = db.prepare('SELECT * FROM confessors ORDER BY firstName, familyName');
-      const results = [];
+      const results: Confessor[] = [];
       
       while (stmt.step()) {
         const row = stmt.getAsObject();
@@ -52,6 +53,7 @@ export const useSQLiteConfessors = () => {
       
       stmt.free();
       setConfessors(results);
+      console.log(`تم تحميل ${results.length} معترف`);
     } catch (error) {
       console.error('Error loading confessors:', error);
     } finally {
@@ -106,6 +108,7 @@ export const useSQLiteConfessors = () => {
       stmt.free();
       saveDatabase();
       await loadConfessors();
+      console.log('تم إضافة معترف جديد');
     } catch (error) {
       console.error('Error adding confessor:', error);
       throw error;
@@ -115,12 +118,21 @@ export const useSQLiteConfessors = () => {
   const updateConfessor = async (id: string, updates: Partial<Confessor>) => {
     try {
       const db = await initDatabase();
-      const setClause = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-      const values = Object.values(updates).map(value => {
-        if (typeof value === 'boolean') return value ? 1 : 0;
-        if (Array.isArray(value) || typeof value === 'object') return JSON.stringify(value);
-        return value;
+      
+      // تحويل البيانات للتنسيق المناسب لقاعدة البيانات
+      const processedUpdates: any = {};
+      Object.entries(updates).forEach(([key, value]) => {
+        if (typeof value === 'boolean') {
+          processedUpdates[key] = value ? 1 : 0;
+        } else if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
+          processedUpdates[key] = JSON.stringify(value);
+        } else {
+          processedUpdates[key] = value;
+        }
       });
+      
+      const setClause = Object.keys(processedUpdates).map(key => `${key} = ?`).join(', ');
+      const values = Object.values(processedUpdates);
       
       const stmt = db.prepare(`UPDATE confessors SET ${setClause}, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`);
       stmt.run([...values, id]);
@@ -128,6 +140,7 @@ export const useSQLiteConfessors = () => {
       
       saveDatabase();
       await loadConfessors();
+      console.log('تم تحديث بيانات المعترف');
     } catch (error) {
       console.error('Error updating confessor:', error);
       throw error;
@@ -137,12 +150,20 @@ export const useSQLiteConfessors = () => {
   const deleteConfessor = async (id: string) => {
     try {
       const db = await initDatabase();
+      
+      // حذف سجلات الاعتراف المرتبطة أولاً
+      const deleteLogsStmt = db.prepare('DELETE FROM confession_logs WHERE confessorId = ?');
+      deleteLogsStmt.run([id]);
+      deleteLogsStmt.free();
+      
+      // حذف المعترف
       const stmt = db.prepare('DELETE FROM confessors WHERE id = ?');
       stmt.run([id]);
       stmt.free();
       
       saveDatabase();
       await loadConfessors();
+      console.log('تم حذف المعترف وسجلات الاعتراف المرتبطة');
     } catch (error) {
       console.error('Error deleting confessor:', error);
       throw error;

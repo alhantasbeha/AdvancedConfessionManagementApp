@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { collection, doc, onSnapshot, addDoc, updateDoc } from 'firebase/firestore';
-import { db, appId } from '../../config/firebase';
+import { useSQLiteConfessionLogs } from '../../hooks/useSQLiteConfessionLogs';
+import { useSQLiteSettings } from '../../hooks/useSQLiteSettings';
 import { Icon } from '../ui/Icon';
-import { ConfessionLog, Confessor, Settings } from '../../types';
+import { ConfessionLog, Confessor } from '../../types';
 
 interface ConfessionLogModalProps {
   mode: 'add' | 'edit' | 'view';
@@ -19,18 +19,14 @@ export const ConfessionLogModal: React.FC<ConfessionLogModalProps> = ({
   onClose,
   userId
 }) => {
+  const { addLog, updateLog } = useSQLiteConfessionLogs();
+  const { settings } = useSQLiteSettings();
+  
   const [formData, setFormData] = useState<Omit<ConfessionLog, 'id'>>({
     confessorId: '',
     date: new Date().toISOString().split('T')[0],
     notes: '',
     tags: []
-  });
-  
-  const [settings, setSettings] = useState<Settings>({
-    professions: [],
-    services: [],
-    personalTags: [],
-    confessionTags: []
   });
 
   const isViewMode = mode === 'view';
@@ -53,17 +49,6 @@ export const ConfessionLogModal: React.FC<ConfessionLogModalProps> = ({
     }
   }, [log]);
 
-  useEffect(() => {
-    if (!userId) return;
-    const settingsDocRef = doc(db, `artifacts/${appId}/users/${userId}/settings`, 'customLists');
-    const unsubscribe = onSnapshot(settingsDocRef, (doc) => {
-      if (doc.exists()) {
-        setSettings(doc.data() as Settings);
-      }
-    });
-    return () => unsubscribe();
-  }, [userId]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -84,11 +69,9 @@ export const ConfessionLogModal: React.FC<ConfessionLogModalProps> = ({
 
     try {
       if (isEditMode && log?.id) {
-        const docRef = doc(db, `artifacts/${appId}/users/${userId}/confessionLogs`, log.id);
-        await updateDoc(docRef, formData);
+        await updateLog(log.id, formData);
       } else {
-        const collectionRef = collection(db, `artifacts/${appId}/users/${userId}/confessionLogs`);
-        await addDoc(collectionRef, formData);
+        await addLog(formData);
       }
       onClose();
     } catch (error) {
@@ -110,7 +93,7 @@ export const ConfessionLogModal: React.FC<ConfessionLogModalProps> = ({
             {modalTitles[mode]}
           </h3>
           <button onClick={onClose}>
-            <Icon name="close" className="w-6 h-6" />
+            <Icon name="x" className="w-6 h-6" />
           </button>
         </div>
 

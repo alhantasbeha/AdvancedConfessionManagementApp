@@ -17,6 +17,7 @@ export const useSQLiteSettings = () => {
 
   const loadSettings = async () => {
     try {
+      setLoading(true);
       const db = await initDatabase();
       const stmt = db.prepare('SELECT key, value FROM settings');
       const results: Settings = {
@@ -37,6 +38,7 @@ export const useSQLiteSettings = () => {
       
       stmt.free();
       setSettings(results);
+      console.log('تم تحميل الإعدادات');
     } catch (error) {
       console.error('Error loading settings:', error);
     } finally {
@@ -59,6 +61,7 @@ export const useSQLiteSettings = () => {
       
       saveDatabase();
       await loadSettings();
+      console.log('تم تحديث الإعدادات');
     } catch (error) {
       console.error('Error updating settings:', error);
       throw error;
@@ -68,6 +71,7 @@ export const useSQLiteSettings = () => {
   return {
     settings,
     loading,
-    updateSettings
+    updateSettings,
+    refreshSettings: loadSettings
   };
 };
