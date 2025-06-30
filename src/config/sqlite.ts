@@ -1,13 +1,28 @@
-import initSqlJs from 'sql.js';
-
 let SQL: any = null;
 let db: any = null;
 
 export const initDatabase = async () => {
   if (!SQL) {
-    SQL = await initSqlJs({
-      locateFile: (file: string) => `https://sql.js.org/dist/${file}`
+    // استخدام CDN بدلاً من الحزمة المحلية
+    const sqlPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://sql.js.org/dist/sql-wasm.js';
+      script.onload = () => {
+        // @ts-ignore
+        if (window.initSqlJs) {
+          // @ts-ignore
+          window.initSqlJs({
+            locateFile: (file: string) => `https://sql.js.org/dist/${file}`
+          }).then(resolve).catch(reject);
+        } else {
+          reject(new Error('sql.js not loaded'));
+        }
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
     });
+    
+    SQL = await sqlPromise;
   }
 
   if (!db) {
