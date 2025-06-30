@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../contexts/AppContext';
 import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
 import { useSQLiteConfessionLogs } from '../../hooks/useSQLiteConfessionLogs';
+import { generateFakeProfileImage } from '../../utils/fakeImages';
 import { Icon } from '../ui/Icon';
 import { ConfessionLogModal } from '../modals/ConfessionLogModal';
 import { ConfessorModal } from '../modals/ConfessorModal';
@@ -28,7 +29,19 @@ export const ConfessorProfilePage: React.FC<ConfessorProfilePageProps> = ({
 
   useEffect(() => {
     const foundConfessor = confessors.find(c => c.id === confessorId);
-    setConfessor(foundConfessor || null);
+    if (foundConfessor) {
+      // إضافة صورة وهمية إذا لم تكن موجودة
+      const confessorWithImage = {
+        ...foundConfessor,
+        profileImage: foundConfessor.profileImage || generateFakeProfileImage(
+          `${foundConfessor.firstName} ${foundConfessor.familyName}`,
+          foundConfessor.gender
+        )
+      };
+      setConfessor(confessorWithImage);
+    } else {
+      setConfessor(null);
+    }
     
     const filteredLogs = logs.filter(log => log.confessorId === confessorId)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -129,6 +142,10 @@ export const ConfessorProfilePage: React.FC<ConfessorProfilePageProps> = ({
                   src={confessor.profileImage}
                   alt="الصورة الشخصية"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://ui-avatars.com/api/?name=${confessor.firstName}+${confessor.familyName}&background=random&color=fff&size=200&rounded=true&bold=true`;
+                  }}
                 />
               ) : (
                 <Icon name="users" className="w-12 h-12 text-white/70" />
