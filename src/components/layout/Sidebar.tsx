@@ -107,34 +107,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ${isCollapsed ? 'md:w-20' : 'md:w-72'}
       `}>
         
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-purple-600">
-          <div className="flex items-center justify-between">
-            {!isCollapsed && (
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <Icon name="users" className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-white">الكاهن الرقمي</h1>
-                  <p className="text-blue-100 text-sm">نظام إدارة الكنيسة</p>
-                </div>
-              </div>
-            )}
-            
-            {isCollapsed && (
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm mx-auto">
+        {/* Header - Match main header height */}
+        <div className="h-[73px] p-4 lg:px-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-between">
+          {!isCollapsed && (
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
                 <Icon name="users" className="w-6 h-6 text-white" />
               </div>
-            )}
-            
-            <button 
-              onClick={onClose} 
-              className="md:hidden p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
-            >
-              <Icon name="close" className="w-5 h-5 text-white" />
-            </button>
-          </div>
+              <div>
+                <h1 className="text-xl font-bold text-white">الكاهن الرقمي</h1>
+                <p className="text-blue-100 text-sm">نظام إدارة الكنيسة</p>
+              </div>
+            </div>
+          )}
+          
+          {isCollapsed && (
+            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm mx-auto">
+              <Icon name="users" className="w-6 h-6 text-white" />
+            </div>
+          )}
+          
+          <button 
+            onClick={onClose} 
+            className="md:hidden p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+          >
+            <Icon name="close" className="w-5 h-5 text-white" />
+          </button>
         </div>
 
         {/* Navigation */}

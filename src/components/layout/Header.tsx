@@ -32,8 +32,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   return (
     <>
-      <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-md bg-white/95 dark:bg-gray-900/95">
-        <div className="flex items-center justify-between p-4 lg:px-6">
+      <header className="h-[73px] bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-md bg-white/95 dark:bg-gray-900/95">
+        <div className="flex items-center justify-between h-full p-4 lg:px-6">
           {/* Left Section - Mobile Menu & Page Title */}
           <div className="flex items-center gap-4">
             <button 
@@ -143,26 +143,6 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">
             {currentPageLabel}
           </h2>
-        </div>
-
-        {/* Quick Stats Bar (Optional) */}
-        <div className="hidden xl:flex items-center justify-center gap-8 py-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-600 dark:text-gray-400">النظام متصل</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Icon name="users" className="w-4 h-4 text-blue-500" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">80 معترف نشط</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Icon name="log" className="w-4 h-4 text-purple-500" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">200 سجل اعتراف</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Icon name="bell" className="w-4 h-4 text-yellow-500" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">{notifications.length} تنبيه</span>
-          </div>
         </div>
       </header>
       
