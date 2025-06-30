@@ -6,7 +6,7 @@ export const initDatabase = async () => {
     try {
       // استيراد sql.js بطريقة ديناميكية
       const sqlModule = await import('sql.js');
-      const initSqlJs = sqlModule.default || sqlModule;
+      const { initSqlJs } = sqlModule;
       
       SQL = await initSqlJs({
         locateFile: (file: string) => `https://sql.js.org/dist/${file}`
