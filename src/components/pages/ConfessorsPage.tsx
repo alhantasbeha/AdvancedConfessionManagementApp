@@ -3,6 +3,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import { useSQLiteConfessors } from '../../hooks/useSQLiteConfessors';
 import { Icon } from '../ui/Icon';
 import { ConfessorModal } from '../modals/ConfessorModal';
+import { ConfessorProfilePage } from './ConfessorProfilePage';
 import { Confessor } from '../../types';
 
 export const ConfessorsPage: React.FC = () => {
@@ -13,6 +14,7 @@ export const ConfessorsPage: React.FC = () => {
   const [editingConfessor, setEditingConfessor] = useState<Confessor | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showArchived, setShowArchived] = useState(false);
+  const [selectedConfessorId, setSelectedConfessorId] = useState<string | null>(null);
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return '';
@@ -54,6 +56,24 @@ export const ConfessorsPage: React.FC = () => {
       isArchived: !confessor.isArchived
     });
   };
+
+  const handleViewProfile = (confessorId: string) => {
+    setSelectedConfessorId(confessorId);
+  };
+
+  const handleBackToList = () => {
+    setSelectedConfessorId(null);
+  };
+
+  // If a confessor is selected, show their profile page
+  if (selectedConfessorId) {
+    return (
+      <ConfessorProfilePage 
+        confessorId={selectedConfessorId}
+        onBack={handleBackToList}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -113,7 +133,12 @@ export const ConfessorsPage: React.FC = () => {
               <tr key={confessor.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="p-3 font-semibold">
                   <div>
-                    {`${confessor.firstName || ''} ${confessor.fatherName || ''} ${confessor.familyName || ''}`}
+                    <button
+                      onClick={() => handleViewProfile(confessor.id!)}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 hover:underline font-semibold"
+                    >
+                      {`${confessor.firstName || ''} ${confessor.fatherName || ''} ${confessor.familyName || ''}`}
+                    </button>
                     {confessor.isDeacon && (
                       <span className="mr-2 text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded">
                         شماس
@@ -156,15 +181,22 @@ export const ConfessorsPage: React.FC = () => {
                 </td>
                 <td className="p-3 flex items-center gap-2">
                   <button 
+                    onClick={() => handleViewProfile(confessor.id!)}
+                    className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full"
+                    title="عرض الملف الشخصي"
+                  >
+                    <Icon name="search" className="w-4 h-4" />
+                  </button>
+                  <button 
                     onClick={() => handleEdit(confessor)} 
-                    className="p-2 text-blue-500 hover:bg-blue-100 rounded-full"
+                    className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full"
                     title="تعديل"
                   >
                     <Icon name="edit" className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => handleArchive(confessor)} 
-                    className="p-2 text-yellow-500 hover:bg-yellow-100 rounded-full"
+                    className="p-2 text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-full"
                     title={confessor.isArchived ? 'إلغاء الأرشفة' : 'أرشفة'}
                   >
                     <Icon name={confessor.isArchived ? 'unarchive' : 'archive'} className="w-4 h-4" />
