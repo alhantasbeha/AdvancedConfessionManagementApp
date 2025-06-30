@@ -399,6 +399,23 @@ table tr:hover {
   background: var(--text-tertiary);
 }
 
+/* Custom scrollbar classes for sidebar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-gray-300 {
+  scrollbar-color: #d1d5db transparent;
+}
+
+.dark .scrollbar-thumb-gray-600 {
+  scrollbar-color: #4b5563 transparent;
+}
+
+.scrollbar-track-transparent {
+  scrollbar-color: transparent transparent;
+}
+
 /* تحسين الرسوم المتحركة */
 @keyframes fadeIn {
   from {
