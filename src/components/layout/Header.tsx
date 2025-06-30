@@ -22,7 +22,6 @@ const NAV_ITEMS = [
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { currentPage, isDarkMode, setIsDarkMode, notifications, user } = useAppContext();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const currentPageLabel = NAV_ITEMS.find(item => item.id === currentPage)?.label || 'لوحة المعلومات';
 
@@ -53,37 +52,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             </div>
           </div>
 
-          {/* Center Section - Search Bar (Desktop) */}
-          <div className="hidden lg:flex flex-1 max-w-lg mx-8">
-            <div className={`
-              relative w-full transition-all duration-300
-              ${isSearchFocused ? 'transform scale-105' : ''}
-            `}>
-              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                <Icon name="search" className="w-6 h-6 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="البحث في النظام... (Ctrl+K)"
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                className="w-full pl-6 pr-12 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-base font-medium shadow-sm hover:shadow-md focus:shadow-lg"
-              />
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <kbd className="hidden sm:inline-flex items-center px-2 py-1 border border-gray-200 dark:border-gray-600 rounded text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700">
-                  Ctrl K
-                </kbd>
-              </div>
-            </div>
-          </div>
-
           {/* Right Section - Actions */}
           <div className="flex items-center gap-3">
-            {/* Search Button (Mobile) */}
-            <button className="lg:hidden p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group">
-              <Icon name="search" className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-            </button>
-
             {/* Notifications */}
             <div className="relative">
               <button 
