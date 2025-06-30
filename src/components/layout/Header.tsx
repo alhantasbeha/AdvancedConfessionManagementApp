@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header className="h-[73px] bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 backdrop-blur-md bg-white/95 dark:bg-gray-900/95">
         <div className="flex items-center justify-between h-full px-6 lg:px-8">
-          {/* Left Section - Mobile Menu, App Name & Collapse Toggle */}
+          {/* Left Section - Mobile Menu & Collapse Toggle */}
           <div className="flex items-center gap-4">
             {/* Mobile Menu Button */}
             <button 
@@ -48,21 +48,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Icon name="menu" className="w-7 h-7 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
             </button>
-
-            {/* App Name & Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <Icon name="users" className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                  الكاهن الرقمي
-                </h1>
-                <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                  نظام إدارة الكنيسة
-                </p>
-              </div>
-            </div>
 
             {/* Desktop Sidebar Collapse Toggle */}
             {onToggleCollapse && (
@@ -82,9 +67,6 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
             )}
-
-            {/* Divider */}
-            <div className="hidden md:block w-px h-8 bg-gray-200 dark:bg-gray-700"></div>
 
             {/* Page Title */}
             <div className="hidden md:block">
