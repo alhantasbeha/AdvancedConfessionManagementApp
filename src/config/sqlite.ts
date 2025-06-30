@@ -1,28 +1,13 @@
+import initSqlJs from 'sql.js';
+
 let SQL: any = null;
 let db: any = null;
 
 export const initDatabase = async () => {
   if (!SQL) {
-    // استخدام CDN بدلاً من الحزمة المحلية
-    const sqlPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://sql.js.org/dist/sql-wasm.js';
-      script.onload = () => {
-        // @ts-ignore
-        if (window.initSqlJs) {
-          // @ts-ignore
-          window.initSqlJs({
-            locateFile: (file: string) => `https://sql.js.org/dist/${file}`
-          }).then(resolve).catch(reject);
-        } else {
-          reject(new Error('sql.js not loaded'));
-        }
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
+    SQL = await initSqlJs({
+      locateFile: (file: string) => `https://sql.js.org/dist/${file}`
     });
-    
-    SQL = await sqlPromise;
   }
 
   if (!db) {
@@ -33,6 +18,21 @@ export const initDatabase = async () => {
         const uint8Array = new Uint8Array(JSON.parse(savedDb));
         db = new SQL.Database(uint8Array);
         console.log('تم تحميل قاعدة البيانات من التخزين المحلي');
+        
+        // التحقق من وجود البيانات
+        const countStmt = db.prepare('SELECT COUNT(*) as count FROM confessors');
+        countStmt.step();
+        const result = countStmt.getAsObject();
+        countStmt.free();
+        
+        console.log(`عدد المعترفين الموجودين: ${result.count}`);
+        
+        // إذا كان العدد أقل من 50، أضف المزيد من البيانات
+        if (result.count < 50) {
+          console.log('إضافة المزيد من البيانات الوهمية...');
+          insertComprehensiveFakeData();
+          saveDatabase();
+        }
       } catch (error) {
         console.error('خطأ في تحميل قاعدة البيانات المحفوظة:', error);
         db = new SQL.Database();
@@ -156,28 +156,39 @@ const createTables = async () => {
 };
 
 const insertComprehensiveFakeData = () => {
+  console.log('بدء إدراج البيانات الوهمية...');
+  
+  // مسح البيانات الموجودة أولاً
+  db.exec('DELETE FROM confession_logs');
+  db.exec('DELETE FROM confessors');
+  db.exec('DELETE FROM message_templates');
+  
   // أسماء مصرية شائعة
   const maleFirstNames = [
     'أحمد', 'محمد', 'علي', 'حسن', 'محمود', 'عبدالله', 'يوسف', 'إبراهيم', 'عمر', 'خالد',
     'مصطفى', 'طارق', 'سامح', 'هشام', 'وائل', 'أسامة', 'كريم', 'تامر', 'شريف', 'عادل',
-    'ماجد', 'فادي', 'مينا', 'جورج', 'بيتر', 'مارك', 'أندرو', 'ديفيد', 'مايكل', 'جون'
+    'ماجد', 'فادي', 'مينا', 'جورج', 'بيتر', 'مارك', 'أندرو', 'ديفيد', 'مايكل', 'جون',
+    'مارتن', 'ألبرت', 'إميل', 'نبيل', 'سمير', 'رامي', 'عماد', 'باسم', 'شادي', 'كيرلس'
   ];
 
   const femaleFirstNames = [
     'فاطمة', 'عائشة', 'خديجة', 'زينب', 'مريم', 'سارة', 'نور', 'هدى', 'أمل', 'رانيا',
     'دينا', 'منى', 'سمر', 'نادية', 'ليلى', 'سلمى', 'ياسمين', 'نهى', 'إيمان', 'هالة',
-    'مارينا', 'كريستينا', 'نانسي', 'فيرونيا', 'مريانا', 'إيرين', 'جيهان', 'سوزان', 'نيفين', 'سيلفيا'
+    'مارينا', 'كريستينا', 'نانسي', 'فيرونيا', 'مريانا', 'إيرين', 'جيهان', 'سوزان', 'نيفين', 'سيلفيا',
+    'إيفيت', 'جوليا', 'ماجدة', 'سميرة', 'نجلاء', 'عبير', 'رشا', 'داليا', 'هبة', 'شيماء'
   ];
 
   const fatherNames = [
     'محمد', 'أحمد', 'علي', 'حسن', 'إبراهيم', 'عبدالله', 'محمود', 'يوسف', 'عمر', 'خالد',
-    'مصطفى', 'طارق', 'سامح', 'هشام', 'وائل', 'أسامة', 'كريم', 'عادل', 'ماجد', 'فادي'
+    'مصطفى', 'طارق', 'سامح', 'هشام', 'وائل', 'أسامة', 'كريم', 'عادل', 'ماجد', 'فادي',
+    'جورج', 'بيتر', 'مارك', 'نبيل', 'سمير', 'رامي', 'عماد', 'باسم', 'شادي', 'كيرلس'
   ];
 
   const familyNames = [
     'محمد', 'أحمد', 'علي', 'حسن', 'إبراهيم', 'السيد', 'عبدالرحمن', 'الشريف', 'النجار', 'الطيب',
     'المصري', 'القاهري', 'الإسكندراني', 'الصعيدي', 'البحيري', 'الدمياطي', 'المنوفي', 'الغربي', 'الشرقي', 'القليوبي',
-    'جرجس', 'يوسف', 'إبراهيم', 'عبدالملك', 'فهمي', 'زكي', 'رزق', 'عطية', 'بشارة', 'منصور'
+    'جرجس', 'يوسف', 'إبراهيم', 'عبدالملك', 'فهمي', 'زكي', 'رزق', 'عطية', 'بشارة', 'منصور',
+    'حنا', 'عبدالمسيح', 'فانوس', 'صليب', 'عزيز', 'حبيب', 'نصيف', 'شحاتة', 'عوض', 'سليمان'
   ];
 
   const churches = [
@@ -195,7 +206,10 @@ const insertComprehensiveFakeData = () => {
     'كنيسة مار جرجس - مدينة نصر',
     'كنيسة الأنبا موسى - المقطم',
     'كنيسة العذراء والأنبا أبرام - الهرم',
-    'كنيسة الأنبا بيشوي - العبور'
+    'كنيسة الأنبا بيشوي - العبور',
+    'كنيسة الأنبا رويس - العباسية',
+    'كنيسة مار مينا - الزمالك',
+    'كنيسة الأنبا تكلا - الإسكندرية'
   ];
 
   const professions = [
@@ -206,7 +220,8 @@ const insertComprehensiveFakeData = () => {
 
   const services = [
     'خدمة مدارس الأحد', 'خدمة شباب', 'كورال', 'خدمة اجتماعية', 'خدمة الشمامسة',
-    'خدمة الكشافة', 'خدمة المرأة', 'خدمة كبار السن', 'خدمة الأطفال', 'خدمة الزيارات'
+    'خدمة الكشافة', 'خدمة المرأة', 'خدمة كبار السن', 'خدمة الأطفال', 'خدمة الزيارات',
+    'خدمة الإعلام', 'خدمة التنظيف', 'خدمة الاستقبال', 'خدمة الأمن', 'خدمة الصوتيات'
   ];
 
   const personalTags = [
@@ -217,11 +232,6 @@ const insertComprehensiveFakeData = () => {
   const confessionTags = [
     'نمو روحي', 'مشاكل أسرية', 'مشاكل شخصية', 'ضعف عام', 'توبة', 'إرشاد',
     'تشجيع', 'صلاة', 'دراسة كتابية', 'خدمة', 'علاقات', 'عمل', 'دراسة', 'صحة'
-  ];
-
-  const childrenNames = [
-    'محمد', 'أحمد', 'علي', 'فاطمة', 'عائشة', 'مريم', 'يوسف', 'إبراهيم', 'سارة', 'نور',
-    'مينا', 'مارينا', 'جورج', 'كريستينا', 'بيتر', 'فيرونيا', 'مارك', 'مريانا', 'أندرو', 'إيرين'
   ];
 
   // دالة مساعدة لتوليد تاريخ عشوائي
@@ -246,8 +256,8 @@ const insertComprehensiveFakeData = () => {
     return shuffled.slice(0, count);
   };
 
-  // إنشاء 100 معترف وهمي
-  for (let i = 0; i < 100; i++) {
+  // إنشاء 120 معترف وهمي
+  for (let i = 0; i < 120; i++) {
     const gender = Math.random() > 0.5 ? 'ذكر' : 'أنثى';
     const firstName = gender === 'ذكر' 
       ? maleFirstNames[Math.floor(Math.random() * maleFirstNames.length)]
@@ -260,6 +270,7 @@ const insertComprehensiveFakeData = () => {
     const birthDate = getRandomDate(1950, 2005);
     const age = new Date().getFullYear() - new Date(birthDate).getFullYear();
     
+    // تحديد الحالة الاجتماعية بناءً على العمر
     const socialStatuses = ['أعزب', 'متزوج', 'أرمل', 'مطلق'];
     const weights = age < 25 ? [0.8, 0.15, 0.03, 0.02] : 
                    age < 40 ? [0.3, 0.6, 0.05, 0.05] :
@@ -349,96 +360,110 @@ const insertComprehensiveFakeData = () => {
       'مغترب ويحتاج للتواصل المستمر.',
       'متزوج حديثاً ويحتاج لإرشاد أسري.',
       'والد مثالي ومهتم بتربية أطفاله روحياً.',
-      'يخدم في عدة أنشطة ومتطوع نشط.'
+      'يخدم في عدة أنشطة ومتطوع نشط.',
+      'يحب القراءة والدراسة الكتابية.',
+      'له مواهب فنية ويشارك في الكورال.',
+      'يساعد في تنظيم الأنشطة الكنسية.',
+      'شخص هادئ ومتأمل في كلمة الله.',
+      'يحتاج لتشجيع في الثقة بالنفس.'
     ];
     
     const notes = Math.random() > 0.4 ? noteTemplates[Math.floor(Math.random() * noteTemplates.length)] : '';
     
-    // إدراج المعترف
-    const stmt = db.prepare(`
-      INSERT INTO confessors (
-        firstName, fatherName, grandFatherName, familyName,
-        phone1, phone1Whatsapp, phone2, phone2Whatsapp,
-        gender, birthDate, socialStatus, marriageDate,
-        church, confessionStartDate, profession,
-        services, personalTags, isDeacon, isDeceased,
-        notes, spouseName, spousePhone, children, isArchived
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-    
-    stmt.run([
-      firstName,
-      fatherName,
-      grandFatherName,
-      familyName,
-      phone1,
-      phone1Whatsapp ? 1 : 0,
-      phone2,
-      phone2Whatsapp ? 1 : 0,
-      gender,
-      birthDate,
-      socialStatus,
-      marriageDate,
-      church,
-      confessionStartDate,
-      profession,
-      JSON.stringify(selectedServices),
-      JSON.stringify(selectedTags),
-      isDeacon ? 1 : 0,
-      isDeceased ? 1 : 0,
-      notes,
-      spouseName,
-      spousePhone,
-      JSON.stringify(children),
-      0 // isArchived
-    ]);
-    
-    stmt.free();
-    
-    // إضافة سجلات اعتراف عشوائية
-    if (confessionStartDate && !isDeceased) {
-      const confessorId = i + 1; // ID المعترف (بدءاً من 1)
-      const startDate = new Date(confessionStartDate);
-      const currentDate = new Date();
+    try {
+      // إدراج المعترف
+      const stmt = db.prepare(`
+        INSERT INTO confessors (
+          firstName, fatherName, grandFatherName, familyName,
+          phone1, phone1Whatsapp, phone2, phone2Whatsapp,
+          gender, birthDate, socialStatus, marriageDate,
+          church, confessionStartDate, profession,
+          services, personalTags, isDeacon, isDeceased,
+          notes, spouseName, spousePhone, children, isArchived
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
       
-      // إضافة 1-5 سجلات اعتراف عشوائية
-      const numLogs = Math.floor(Math.random() * 5) + 1;
+      stmt.run([
+        firstName,
+        fatherName,
+        grandFatherName,
+        familyName,
+        phone1,
+        phone1Whatsapp ? 1 : 0,
+        phone2,
+        phone2Whatsapp ? 1 : 0,
+        gender,
+        birthDate,
+        socialStatus,
+        marriageDate,
+        church,
+        confessionStartDate,
+        profession,
+        JSON.stringify(selectedServices),
+        JSON.stringify(selectedTags),
+        isDeacon ? 1 : 0,
+        isDeceased ? 1 : 0,
+        notes,
+        spouseName,
+        spousePhone,
+        JSON.stringify(children),
+        0 // isArchived
+      ]);
       
-      for (let j = 0; j < numLogs; j++) {
-        const logDate = new Date(startDate.getTime() + Math.random() * (currentDate.getTime() - startDate.getTime()));
-        const logDateStr = logDate.toISOString().split('T')[0];
+      stmt.free();
+      
+      // إضافة سجلات اعتراف عشوائية
+      if (confessionStartDate && !isDeceased) {
+        const confessorId = i + 1; // ID المعترف (بدءاً من 1)
+        const startDate = new Date(confessionStartDate);
+        const currentDate = new Date();
         
-        const selectedConfessionTags = getRandomItems(confessionTags, Math.floor(Math.random() * 3) + 1);
+        // إضافة 1-8 سجلات اعتراف عشوائية
+        const numLogs = Math.floor(Math.random() * 8) + 1;
         
-        const logNotes = [
-          'جلسة اعتراف مثمرة، نمو روحي ملحوظ.',
-          'مناقشة حول التحديات الشخصية والصلاة.',
-          'تشجيع في الخدمة والمشاركة الكنسية.',
-          'إرشاد حول العلاقات الأسرية.',
-          'صلاة من أجل النجاح في العمل/الدراسة.',
-          'تأمل في كلمة الله وتطبيقها العملي.',
-          'مناقشة حول الهدف من الحياة المسيحية.',
-          'تشجيع في أوقات الضعف والتجارب.',
-          'شكر لله على البركات والنعم.',
-          'طلب الصلاة من أجل قرارات مهمة.'
-        ];
-        
-        const logNote = Math.random() > 0.3 ? logNotes[Math.floor(Math.random() * logNotes.length)] : '';
-        
-        const logStmt = db.prepare(`
-          INSERT INTO confession_logs (confessorId, date, notes, tags) 
-          VALUES (?, ?, ?, ?)
-        `);
-        
-        logStmt.run([
-          confessorId,
-          logDateStr,
-          logNote,
-          JSON.stringify(selectedConfessionTags)
-        ]);
-        
-        logStmt.free();
+        for (let j = 0; j < numLogs; j++) {
+          const logDate = new Date(startDate.getTime() + Math.random() * (currentDate.getTime() - startDate.getTime()));
+          const logDateStr = logDate.toISOString().split('T')[0];
+          
+          const selectedConfessionTags = getRandomItems(confessionTags, Math.floor(Math.random() * 3) + 1);
+          
+          const logNotes = [
+            'جلسة اعتراف مثمرة، نمو روحي ملحوظ.',
+            'مناقشة حول التحديات الشخصية والصلاة.',
+            'تشجيع في الخدمة والمشاركة الكنسية.',
+            'إرشاد حول العلاقات الأسرية.',
+            'صلاة من أجل النجاح في العمل/الدراسة.',
+            'تأمل في كلمة الله وتطبيقها العملي.',
+            'مناقشة حول الهدف من الحياة المسيحية.',
+            'تشجيع في أوقات الضعف والتجارب.',
+            'شكر لله على البركات والنعم.',
+            'طلب الصلاة من أجل قرارات مهمة.',
+            'مناقشة حول التوبة والغفران.',
+            'تأمل في محبة الله ورحمته.',
+            'إرشاد حول التعامل مع الضغوط.',
+            'تشجيع في النمو الروحي.',
+            'صلاة من أجل الأسرة والأحباء.'
+          ];
+          
+          const logNote = Math.random() > 0.3 ? logNotes[Math.floor(Math.random() * logNotes.length)] : '';
+          
+          const logStmt = db.prepare(`
+            INSERT INTO confession_logs (confessorId, date, notes, tags) 
+            VALUES (?, ?, ?, ?)
+          `);
+          
+          logStmt.run([
+            confessorId,
+            logDateStr,
+            logNote,
+            JSON.stringify(selectedConfessionTags)
+          ]);
+          
+          logStmt.free();
+        }
       }
+    } catch (error) {
+      console.error(`خطأ في إدراج المعترف ${i + 1}:`, error);
     }
   }
 
@@ -475,19 +500,54 @@ const insertComprehensiveFakeData = () => {
     {
       title: 'تهنئة بالنجاح',
       body: 'مبروك يا {الاسم_الأول} على نجاحك وتفوقك! أسأل الله أن يبارك في مجهودك ويوفقك في كل خطواتك القادمة. نحن فخورون بك! 🎓✨'
+    },
+    {
+      title: 'دعوة للصلاة',
+      body: 'أخي الحبيب {الاسم_الأول}، ندعوك للمشاركة في صلاة خاصة من أجل [الموضوع] يوم [التاريخ]. صلاتك مهمة ونحتاج لها. بارك الله فيك! 🙏'
+    },
+    {
+      title: 'تذكير بالخدمة',
+      body: 'أخي الحبيب {الاسم_الأول}، نذكرك بموعد خدمتك يوم [التاريخ] في تمام الساعة [الوقت]. شكراً لك على خدمتك المباركة. الرب يعوضك! ⛪'
     }
   ];
 
   messageTemplates.forEach(template => {
-    const templateStmt = db.prepare(`
-      INSERT INTO message_templates (title, body) 
-      VALUES (?, ?)
-    `);
-    templateStmt.run([template.title, template.body]);
-    templateStmt.free();
+    try {
+      const templateStmt = db.prepare(`
+        INSERT INTO message_templates (title, body) 
+        VALUES (?, ?)
+      `);
+      templateStmt.run([template.title, template.body]);
+      templateStmt.free();
+    } catch (error) {
+      console.error('خطأ في إدراج قالب الرسالة:', error);
+    }
   });
 
-  console.log('تم إدراج 100 معترف وهمي مع بيانات شاملة وسجلات اعتراف وقوالب رسائل');
+  console.log('تم إدراج 120 معترف وهمي مع بيانات شاملة وسجلات اعتراف وقوالب رسائل');
+  
+  // التحقق من النتائج
+  try {
+    const countStmt = db.prepare('SELECT COUNT(*) as count FROM confessors');
+    countStmt.step();
+    const result = countStmt.getAsObject();
+    countStmt.free();
+    console.log(`إجمالي المعترفين في قاعدة البيانات: ${result.count}`);
+    
+    const logsCountStmt = db.prepare('SELECT COUNT(*) as count FROM confession_logs');
+    logsCountStmt.step();
+    const logsResult = logsCountStmt.getAsObject();
+    logsCountStmt.free();
+    console.log(`إجمالي سجلات الاعتراف: ${logsResult.count}`);
+    
+    const templatesCountStmt = db.prepare('SELECT COUNT(*) as count FROM message_templates');
+    templatesCountStmt.step();
+    const templatesResult = templatesCountStmt.getAsObject();
+    templatesCountStmt.free();
+    console.log(`إجمالي قوالب الرسائل: ${templatesResult.count}`);
+  } catch (error) {
+    console.error('خطأ في التحقق من النتائج:', error);
+  }
 };
 
 export const saveDatabase = () => {
