@@ -20,6 +20,7 @@ export const ConfessorsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [sortBy, setSortBy] = useState<'name' | 'age' | 'church' | 'recent'>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [showFilters, setShowFilters] = useState(false);
 
   // إضافة الصور الوهمية للمعترفين
   const confessors = useMemo(() => {
@@ -54,7 +55,6 @@ export const ConfessorsPage: React.FC = () => {
           comparison = (a.church || '').localeCompare(b.church || '');
           break;
         case 'recent':
-          // Sort by creation date or ID (most recent first)
           comparison = (parseInt(b.id || '0') || 0) - (parseInt(a.id || '0') || 0);
           break;
         default:
@@ -69,7 +69,7 @@ export const ConfessorsPage: React.FC = () => {
 
   // Pagination - تحديد العدد الافتراضي بناءً على وضع العرض
   const getDefaultItemsPerPage = () => {
-    return viewMode === 'cards' ? 18 : 25;
+    return viewMode === 'cards' ? 12 : 20;
   };
 
   const {
@@ -142,7 +142,6 @@ export const ConfessorsPage: React.FC = () => {
 
   const handleViewModeChange = (newViewMode: 'table' | 'cards') => {
     setViewMode(newViewMode);
-    // سيتم تحديث itemsPerPage تلقائياً عبر useEffect
   };
 
   // If a confessor is selected, show their profile page
@@ -164,14 +163,14 @@ export const ConfessorsPage: React.FC = () => {
   }
 
   const renderCardView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6">
       {paginatedConfessors.map(confessor => (
         <div key={confessor.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 card-hover">
           {/* Card Header with Profile Image */}
           <div className="relative">
-            <div className="h-32 bg-gradient-to-r from-blue-500 to-purple-600"></div>
-            <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
-              <div className="w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-800 shadow-lg">
+            <div className="h-24 sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600"></div>
+            <div className="absolute -bottom-8 sm:-bottom-12 left-1/2 transform -translate-x-1/2">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-800 shadow-lg">
                 {confessor.profileImage ? (
                   <img
                     src={confessor.profileImage}
@@ -184,7 +183,7 @@ export const ConfessorsPage: React.FC = () => {
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                    <Icon name="users" className="w-8 h-8 text-white" />
+                    <Icon name="users" className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                   </div>
                 )}
               </div>
@@ -192,17 +191,17 @@ export const ConfessorsPage: React.FC = () => {
           </div>
 
           {/* Card Content */}
-          <div className="pt-16 pb-6 px-6">
+          <div className="pt-12 sm:pt-16 pb-4 sm:pb-6 px-4 sm:px-6">
             {/* Name and Status */}
-            <div className="text-center mb-4">
+            <div className="text-center mb-3 sm:mb-4">
               <button
                 onClick={() => handleViewProfile(confessor.id!)}
-                className="text-lg font-bold text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2"
               >
                 {`${confessor.firstName} ${confessor.familyName}`}
               </button>
               
-              <div className="flex justify-center gap-2 mt-2">
+              <div className="flex justify-center gap-1 sm:gap-2 mt-2 flex-wrap">
                 {confessor.isDeacon && (
                   <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">
                     شماس
@@ -222,29 +221,29 @@ export const ConfessorsPage: React.FC = () => {
             </div>
 
             {/* Basic Info */}
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+            <div className="space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
               <div className="flex items-center gap-2">
-                <Icon name="calendar" className="w-4 h-4 text-blue-500" />
-                <span>{calculateAge(confessor.birthDate)} سنة</span>
+                <Icon name="calendar" className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 flex-shrink-0" />
+                <span className="truncate">{calculateAge(confessor.birthDate)} سنة</span>
               </div>
               
               <div className="flex items-center gap-2">
-                <Icon name="users" className="w-4 h-4 text-green-500" />
-                <span>{confessor.socialStatus}</span>
+                <Icon name="users" className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
+                <span className="truncate">{confessor.socialStatus}</span>
               </div>
               
               <div className="flex items-center gap-2">
-                <Icon name="messages" className="w-4 h-4 text-purple-500" />
-                <span className="truncate">{confessor.phone1}</span>
+                <Icon name="messages" className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500 flex-shrink-0" />
+                <span className="truncate flex-1">{confessor.phone1}</span>
                 {confessor.phone1Whatsapp && (
-                  <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1 rounded">
+                  <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1 rounded flex-shrink-0">
                     واتساب
                   </span>
                 )}
               </div>
               
               <div className="flex items-center gap-2">
-                <Icon name="settings" className="w-4 h-4 text-orange-500" />
+                <Icon name="settings" className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0" />
                 <span className="truncate">{confessor.church}</span>
               </div>
             </div>
@@ -254,7 +253,7 @@ export const ConfessorsPage: React.FC = () => {
               <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900 rounded-lg">
                 <div className="text-xs text-blue-800 dark:text-blue-200">
                   {confessor.spouseName && (
-                    <div>الزوج/ة: {confessor.spouseName}</div>
+                    <div className="truncate">الزوج/ة: {confessor.spouseName}</div>
                   )}
                   {confessor.children && confessor.children.length > 0 && (
                     <div>الأطفال: {confessor.children.length}</div>
@@ -267,17 +266,17 @@ export const ConfessorsPage: React.FC = () => {
             {(confessor.services?.length > 0 || confessor.personalTags?.length > 0) && (
               <div className="mt-3">
                 <div className="flex flex-wrap gap-1">
-                  {confessor.services?.slice(0, 2).map(service => (
-                    <span key={service} className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded">
+                  {confessor.services?.slice(0, 1).map(service => (
+                    <span key={service} className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded truncate">
                       {service}
                     </span>
                   ))}
                   {confessor.personalTags?.slice(0, 1).map(tag => (
-                    <span key={tag} className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                    <span key={tag} className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded truncate">
                       {tag}
                     </span>
                   ))}
-                  {(confessor.services?.length > 2 || confessor.personalTags?.length > 1) && (
+                  {(confessor.services?.length > 1 || confessor.personalTags?.length > 1) && (
                     <span className="text-xs text-gray-500">+المزيد</span>
                   )}
                 </div>
@@ -285,10 +284,10 @@ export const ConfessorsPage: React.FC = () => {
             )}
 
             {/* Action Buttons */}
-            <div className="flex justify-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-center gap-1 sm:gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <button 
                 onClick={() => handleViewProfile(confessor.id!)}
-                className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full transition-colors"
+                className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full transition-colors touch-manipulation"
                 title="عرض الملف الشخصي"
               >
                 <Icon name="search" className="w-4 h-4" />
@@ -296,7 +295,7 @@ export const ConfessorsPage: React.FC = () => {
               
               <button 
                 onClick={() => handleEdit(confessor)} 
-                className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full transition-colors"
+                className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full transition-colors touch-manipulation"
                 title="تعديل"
               >
                 <Icon name="edit" className="w-4 h-4" />
@@ -304,7 +303,7 @@ export const ConfessorsPage: React.FC = () => {
               
               <button 
                 onClick={() => handleArchive(confessor)} 
-                className="p-2 text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-full transition-colors"
+                className="p-2 text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-full transition-colors touch-manipulation"
                 title={confessor.isArchived ? 'إلغاء الأرشفة' : 'أرشفة'}
               >
                 <Icon name={confessor.isArchived ? 'unarchive' : 'archive'} className="w-4 h-4" />
@@ -315,7 +314,7 @@ export const ConfessorsPage: React.FC = () => {
                   href={`https://wa.me/${confessor.phone1}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-green-600 hover:bg-green-100 dark:hover:bg-green-900 rounded-full transition-colors"
+                  className="p-2 text-green-600 hover:bg-green-100 dark:hover:bg-green-900 rounded-full transition-colors touch-manipulation"
                   title="واتساب"
                 >
                   <Icon name="messages" className="w-4 h-4" />
@@ -329,259 +328,289 @@ export const ConfessorsPage: React.FC = () => {
   );
 
   const renderTableView = () => (
-    <div className="overflow-x-auto">
-      <table className="w-full text-right">
-        <thead>
-          <tr className="border-b dark:border-gray-700">
-            <th className="p-3">الصورة</th>
-            <th className="p-3">
-              <button
-                onClick={() => handleSort('name')}
-                className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
-              >
-                الاسم بالكامل
-                {sortBy === 'name' && (
-                  <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
-                )}
-              </button>
-            </th>
-            <th className="p-3">
-              <button
-                onClick={() => handleSort('age')}
-                className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
-              >
-                العمر
-                {sortBy === 'age' && (
-                  <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
-                )}
-              </button>
-            </th>
-            <th className="p-3">رقم الهاتف</th>
-            <th className="p-3">
-              <button
-                onClick={() => handleSort('church')}
-                className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
-              >
-                الكنيسة
-                {sortBy === 'church' && (
-                  <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
-                )}
-              </button>
-            </th>
-            <th className="p-3">الأسرة</th>
-            <th className="p-3">إجراءات</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedConfessors.map(confessor => (
-            <tr key={confessor.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-              <td className="p-3">
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                  {confessor.profileImage ? (
-                    <img
-                      src={confessor.profileImage}
-                      alt={`${confessor.firstName} ${confessor.familyName}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = `https://ui-avatars.com/api/?name=${confessor.firstName}+${confessor.familyName}&background=random&color=fff&size=200&rounded=true&bold=true`;
-                      }}
-                    />
-                  ) : (
-                    <Icon name="users" className="w-6 h-6 text-gray-400" />
+    <div className="overflow-x-auto -mx-4 sm:mx-0">
+      <div className="inline-block min-w-full align-middle">
+        <table className="min-w-full text-right">
+          <thead>
+            <tr className="border-b dark:border-gray-700">
+              <th className="p-2 sm:p-3 text-xs sm:text-sm">الصورة</th>
+              <th className="p-2 sm:p-3 text-xs sm:text-sm">
+                <button
+                  onClick={() => handleSort('name')}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 text-xs sm:text-sm"
+                >
+                  الاسم بالكامل
+                  {sortBy === 'name' && (
+                    <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-3 h-3 sm:w-4 sm:h-4 transform rotate-90" />
                   )}
-                </div>
-              </td>
-              <td className="p-3 font-semibold">
-                <div>
-                  <button
-                    onClick={() => handleViewProfile(confessor.id!)}
-                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 hover:underline font-semibold"
-                  >
-                    {`${confessor.firstName || ''} ${confessor.fatherName || ''} ${confessor.familyName || ''}`}
-                  </button>
-                  {confessor.isDeacon && (
-                    <span className="mr-2 text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-1 rounded">
-                      شماس
-                    </span>
+                </button>
+              </th>
+              <th className="p-2 sm:p-3 text-xs sm:text-sm hidden sm:table-cell">
+                <button
+                  onClick={() => handleSort('age')}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+                >
+                  العمر
+                  {sortBy === 'age' && (
+                    <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
                   )}
-                </div>
-              </td>
-              <td className="p-3">{calculateAge(confessor.birthDate)}</td>
-              <td className="p-3">
-                <div>
-                  {confessor.phone1}
-                  {confessor.phone1Whatsapp && (
-                    <span className="mr-1 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1 rounded">
-                      واتساب
-                    </span>
+                </button>
+              </th>
+              <th className="p-2 sm:p-3 text-xs sm:text-sm hidden md:table-cell">رقم الهاتف</th>
+              <th className="p-2 sm:p-3 text-xs sm:text-sm hidden lg:table-cell">
+                <button
+                  onClick={() => handleSort('church')}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+                >
+                  الكنيسة
+                  {sortBy === 'church' && (
+                    <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
                   )}
-                </div>
-              </td>
-              <td className="p-3">{confessor.church}</td>
-              <td className="p-3">
-                <div className="text-sm">
-                  {confessor.socialStatus === 'متزوج' && (
-                    <div>
-                      {confessor.spouseName && (
-                        <div className="text-blue-600 dark:text-blue-400">
-                          الزوج/ة: {confessor.spouseName}
-                        </div>
-                      )}
-                      {confessor.children && confessor.children.length > 0 && (
-                        <div className="text-green-600 dark:text-green-400">
-                          الأطفال: {confessor.children.length}
-                        </div>
+                </button>
+              </th>
+              <th className="p-2 sm:p-3 text-xs sm:text-sm hidden xl:table-cell">الأسرة</th>
+              <th className="p-2 sm:p-3 text-xs sm:text-sm">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedConfessors.map(confessor => (
+              <tr key={confessor.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td className="p-2 sm:p-3">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                    {confessor.profileImage ? (
+                      <img
+                        src={confessor.profileImage}
+                        alt={`${confessor.firstName} ${confessor.familyName}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://ui-avatars.com/api/?name=${confessor.firstName}+${confessor.familyName}&background=random&color=fff&size=200&rounded=true&bold=true`;
+                        }}
+                      />
+                    ) : (
+                      <Icon name="users" className="w-4 h-4 sm:w-6 sm:h-6 text-gray-400" />
+                    )}
+                  </div>
+                </td>
+                <td className="p-2 sm:p-3 font-semibold">
+                  <div>
+                    <button
+                      onClick={() => handleViewProfile(confessor.id!)}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 hover:underline font-semibold text-xs sm:text-sm line-clamp-2"
+                    >
+                      {`${confessor.firstName || ''} ${confessor.fatherName || ''} ${confessor.familyName || ''}`}
+                    </button>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {confessor.isDeacon && (
+                        <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-1 py-0.5 rounded">
+                          شماس
+                        </span>
                       )}
                     </div>
-                  )}
-                  {confessor.socialStatus !== 'متزوج' && (
-                    <span className="text-gray-500">{confessor.socialStatus}</span>
-                  )}
-                </div>
-              </td>
-              <td className="p-3 flex items-center gap-2">
-                <button 
-                  onClick={() => handleViewProfile(confessor.id!)}
-                  className="p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full"
-                  title="عرض الملف الشخصي"
-                >
-                  <Icon name="search" className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => handleEdit(confessor)} 
-                  className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full"
-                  title="تعديل"
-                >
-                  <Icon name="edit" className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => handleArchive(confessor)} 
-                  className="p-2 text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-full"
-                  title={confessor.isArchived ? 'إلغاء الأرشفة' : 'أرشفة'}
-                >
-                  <Icon name={confessor.isArchived ? 'unarchive' : 'archive'} className="w-4 h-4" />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  </div>
+                </td>
+                <td className="p-2 sm:p-3 text-xs sm:text-sm hidden sm:table-cell">{calculateAge(confessor.birthDate)}</td>
+                <td className="p-2 sm:p-3 text-xs sm:text-sm hidden md:table-cell">
+                  <div>
+                    <div className="truncate">{confessor.phone1}</div>
+                    {confessor.phone1Whatsapp && (
+                      <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1 rounded">
+                        واتساب
+                      </span>
+                    )}
+                  </div>
+                </td>
+                <td className="p-2 sm:p-3 text-xs sm:text-sm hidden lg:table-cell">
+                  <div className="truncate">{confessor.church}</div>
+                </td>
+                <td className="p-2 sm:p-3 text-xs sm:text-sm hidden xl:table-cell">
+                  <div className="text-xs">
+                    {confessor.socialStatus === 'متزوج' && (
+                      <div>
+                        {confessor.spouseName && (
+                          <div className="text-blue-600 dark:text-blue-400 truncate">
+                            الزوج/ة: {confessor.spouseName}
+                          </div>
+                        )}
+                        {confessor.children && confessor.children.length > 0 && (
+                          <div className="text-green-600 dark:text-green-400">
+                            الأطفال: {confessor.children.length}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {confessor.socialStatus !== 'متزوج' && (
+                      <span className="text-gray-500">{confessor.socialStatus}</span>
+                    )}
+                  </div>
+                </td>
+                <td className="p-2 sm:p-3">
+                  <div className="flex items-center gap-1">
+                    <button 
+                      onClick={() => handleViewProfile(confessor.id!)}
+                      className="p-1.5 sm:p-2 text-green-500 hover:bg-green-100 dark:hover:bg-green-900 rounded-full touch-manipulation"
+                      title="عرض الملف الشخصي"
+                    >
+                      <Icon name="search" className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleEdit(confessor)} 
+                      className="p-1.5 sm:p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full touch-manipulation"
+                      title="تعديل"
+                    >
+                      <Icon name="edit" className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleArchive(confessor)} 
+                      className="p-1.5 sm:p-2 text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-full touch-manipulation"
+                      title={confessor.isArchived ? 'إلغاء الأرشفة' : 'أرشفة'}
+                    >
+                      <Icon name={confessor.isArchived ? 'unarchive' : 'archive'} className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
   
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md">
       {/* Header Controls */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
-          {/* Search */}
-          <div className="relative w-full sm:w-80">
+      <div className="flex flex-col gap-4 mb-6">
+        {/* Title and Main Actions */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h3 className="text-xl sm:text-2xl font-bold">المعترفين والأسر</h3>
+          
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+            <button 
+              onClick={handleAdd} 
+              className="flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-3 sm:py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm sm:text-base touch-manipulation"
+            >
+              <Icon name="add" className="w-5 h-5" />
+              إضافة معترف
+            </button>
+            
+            <button 
+              onClick={() => setShowArchived(!showArchived)} 
+              className="flex items-center justify-center gap-2 bg-gray-500 text-white px-4 py-3 sm:py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm sm:text-base touch-manipulation"
+            >
+              <Icon name={showArchived ? 'unarchive' : 'archive'} className="w-5 h-5" />
+              {showArchived ? 'عرض النشطين' : 'عرض الأرشيف'}
+            </button>
+          </div>
+        </div>
+
+        {/* Search and Filters Toggle */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
             <input 
               type="text" 
               placeholder="ابحث بالاسم أو اسم الزوج أو الأطفال..." 
-              className="w-full p-3 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Icon name="search" className="w-5 h-5 absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400" />
           </div>
-
-          {/* Sort Options */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600 dark:text-gray-300">ترتيب:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 text-sm"
-            >
-              <option value="name">الاسم</option>
-              <option value="age">العمر</option>
-              <option value="church">الكنيسة</option>
-              <option value="recent">الأحدث</option>
-            </select>
-            <button
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600"
-              title={sortOrder === 'asc' ? 'ترتيب تنازلي' : 'ترتيب تصاعدي'}
-            >
-              <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
-            </button>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          {/* View Mode Toggle */}
-          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-            <button
-              onClick={() => handleViewModeChange('cards')}
-              className={`p-2 rounded-md transition-colors ${
-                viewMode === 'cards' 
-                  ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' 
-                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
-              title="عرض البطاقات"
-            >
-              <Icon name="dashboard" className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => handleViewModeChange('table')}
-              className={`p-2 rounded-md transition-colors ${
-                viewMode === 'table' 
-                  ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm' 
-                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
-              title="عرض الجدول"
-            >
-              <Icon name="reports" className="w-5 h-5" />
-            </button>
-          </div>
-
-          <button 
-            onClick={handleAdd} 
-            className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            <Icon name="add" className="w-5 h-5" />
-            إضافة معترف
-          </button>
           
-          <button 
-            onClick={() => setShowArchived(!showArchived)} 
-            className="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base touch-manipulation sm:hidden"
           >
-            <Icon name={showArchived ? 'unarchive' : 'archive'} className="w-5 h-5" />
-            {showArchived ? 'عرض النشطين' : 'عرض الأرشيف'}
+            <Icon name="settings" className="w-5 h-5" />
+            فلاتر
           </button>
+        </div>
+
+        {/* Filters - Always visible on desktop, toggleable on mobile */}
+        <div className={`${showFilters ? 'block' : 'hidden'} sm:block`}>
+          <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 w-full">
+                {/* Sort Options */}
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <span className="text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">ترتيب:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                    className="flex-1 sm:flex-none px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 text-sm"
+                  >
+                    <option value="name">الاسم</option>
+                    <option value="age">العمر</option>
+                    <option value="church">الكنيسة</option>
+                    <option value="recent">الأحدث</option>
+                  </select>
+                  <button
+                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                    className="p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-600 touch-manipulation"
+                    title={sortOrder === 'asc' ? 'ترتيب تنازلي' : 'ترتيب تصاعدي'}
+                  >
+                    <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+                  </button>
+                </div>
+              </div>
+
+              {/* View Mode Toggle */}
+              <div className="flex items-center bg-white dark:bg-gray-700 rounded-lg p-1 w-full sm:w-auto">
+                <button
+                  onClick={() => handleViewModeChange('cards')}
+                  className={`flex-1 sm:flex-none p-2 rounded-md transition-colors touch-manipulation ${
+                    viewMode === 'cards' 
+                      ? 'bg-blue-500 text-white shadow-sm' 
+                      : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                  }`}
+                  title="عرض البطاقات"
+                >
+                  <Icon name="dashboard" className="w-5 h-5 mx-auto" />
+                </button>
+                <button
+                  onClick={() => handleViewModeChange('table')}
+                  className={`flex-1 sm:flex-none p-2 rounded-md transition-colors touch-manipulation ${
+                    viewMode === 'table' 
+                      ? 'bg-blue-500 text-white shadow-sm' 
+                      : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                  }`}
+                  title="عرض الجدول"
+                >
+                  <Icon name="reports" className="w-5 h-5 mx-auto" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Statistics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg text-center">
-          <Icon name="users" className="w-8 h-8 mx-auto text-blue-500 mb-2" />
-          <p className="text-2xl font-bold text-blue-700 dark:text-blue-200">{totalItems}</p>
-          <p className="text-blue-600 dark:text-blue-300 text-sm">{showArchived ? 'مؤرشف' : 'نشط'}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        <div className="bg-blue-50 dark:bg-blue-900 p-3 sm:p-4 rounded-lg text-center">
+          <Icon name="users" className="w-6 h-6 sm:w-8 sm:h-8 mx-auto text-blue-500 mb-2" />
+          <p className="text-lg sm:text-2xl font-bold text-blue-700 dark:text-blue-200">{totalItems}</p>
+          <p className="text-blue-600 dark:text-blue-300 text-xs sm:text-sm">{showArchived ? 'مؤرشف' : 'نشط'}</p>
         </div>
-        <div className="bg-green-50 dark:bg-green-900 p-4 rounded-lg text-center">
-          <Icon name="users" className="w-8 h-8 mx-auto text-green-500 mb-2" />
-          <p className="text-2xl font-bold text-green-700 dark:text-green-200">
+        <div className="bg-green-50 dark:bg-green-900 p-3 sm:p-4 rounded-lg text-center">
+          <Icon name="users" className="w-6 h-6 sm:w-8 sm:h-8 mx-auto text-green-500 mb-2" />
+          <p className="text-lg sm:text-2xl font-bold text-green-700 dark:text-green-200">
             {filteredAndSortedConfessors.filter(c => c.gender === 'ذكر').length}
           </p>
-          <p className="text-green-600 dark:text-green-300 text-sm">ذكور</p>
+          <p className="text-green-600 dark:text-green-300 text-xs sm:text-sm">ذكور</p>
         </div>
-        <div className="bg-pink-50 dark:bg-pink-900 p-4 rounded-lg text-center">
-          <Icon name="users" className="w-8 h-8 mx-auto text-pink-500 mb-2" />
-          <p className="text-2xl font-bold text-pink-700 dark:text-pink-200">
+        <div className="bg-pink-50 dark:bg-pink-900 p-3 sm:p-4 rounded-lg text-center">
+          <Icon name="users" className="w-6 h-6 sm:w-8 sm:h-8 mx-auto text-pink-500 mb-2" />
+          <p className="text-lg sm:text-2xl font-bold text-pink-700 dark:text-pink-200">
             {filteredAndSortedConfessors.filter(c => c.gender === 'أنثى').length}
           </p>
-          <p className="text-pink-600 dark:text-pink-300 text-sm">إناث</p>
+          <p className="text-pink-600 dark:text-pink-300 text-xs sm:text-sm">إناث</p>
         </div>
-        <div className="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg text-center">
-          <Icon name="users" className="w-8 h-8 mx-auto text-purple-500 mb-2" />
-          <p className="text-2xl font-bold text-purple-700 dark:text-purple-200">
+        <div className="bg-purple-50 dark:bg-purple-900 p-3 sm:p-4 rounded-lg text-center">
+          <Icon name="users" className="w-6 h-6 sm:w-8 sm:h-8 mx-auto text-purple-500 mb-2" />
+          <p className="text-lg sm:text-2xl font-bold text-purple-700 dark:text-purple-200">
             {filteredAndSortedConfessors.filter(c => c.socialStatus === 'متزوج').length}
           </p>
-          <p className="text-purple-600 dark:text-purple-300 text-sm">متزوجون</p>
+          <p className="text-purple-600 dark:text-purple-300 text-xs sm:text-sm">متزوجون</p>
         </div>
       </div>
 
@@ -595,7 +624,7 @@ export const ConfessorsPage: React.FC = () => {
           {!showArchived && (
             <button 
               onClick={handleAdd}
-              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors touch-manipulation"
             >
               إضافة أول معترف
             </button>
@@ -606,7 +635,7 @@ export const ConfessorsPage: React.FC = () => {
           {viewMode === 'cards' ? renderCardView() : renderTableView()}
           
           {/* Pagination */}
-          <div className="mt-8">
+          <div className="mt-6 sm:mt-8">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
