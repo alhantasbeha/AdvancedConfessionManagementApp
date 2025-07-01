@@ -166,211 +166,209 @@ export const ConfessionLogPage: React.FC = () => {
   }
 
   const renderCardView = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
-      {paginatedLogs.map(log => {
-        const confessorName = getConfessorNameById(log.confessorId);
-        const logDate = new Date(log.date);
-        
-        return (
-          <div key={log.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 card-hover w-full min-w-0">
-            {/* Card Header */}
-            <div className="bg-gradient-to-r from-purple-500 to-blue-500 p-4 rounded-t-xl">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Icon name="log" className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-white font-bold text-base line-clamp-1 break-words">
-                    {confessorName}
-                  </h4>
-                  <p className="text-white/80 text-sm">
-                    {logDate.toLocaleDateString('ar-EG', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Card Content */}
-            <div className="p-4 min-w-0">
-              {/* Tags */}
-              {log.tags && log.tags.length > 0 && (
-                <div className="mb-3 min-w-0">
-                  <div className="flex flex-wrap gap-1 min-w-0">
-                    {log.tags.slice(0, 3).map(tag => (
-                      <span key={tag} className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full break-words max-w-full">
-                        {tag}
-                      </span>
-                    ))}
-                    {log.tags.length > 3 && (
-                      <span className="text-gray-500 text-xs flex-shrink-0">+{log.tags.length - 3}</span>
-                    )}
+    <div className="w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {paginatedLogs.map(log => {
+          const confessorName = getConfessorNameById(log.confessorId);
+          const logDate = new Date(log.date);
+          
+          return (
+            <div key={log.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 card-hover">
+              {/* Card Header */}
+              <div className="bg-gradient-to-r from-purple-500 to-blue-500 p-4 rounded-t-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Icon name="log" className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white font-bold text-base truncate">
+                      {confessorName}
+                    </h4>
+                    <p className="text-white/80 text-sm">
+                      {logDate.toLocaleDateString('ar-EG', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
                   </div>
                 </div>
-              )}
-
-              {/* Notes */}
-              <div className="mb-4 min-w-0">
-                {log.notes ? (
-                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 break-words">
-                    {log.notes}
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-400 italic">لا توجد ملاحظات</p>
-                )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-center gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
-                <button 
-                  onClick={() => handleView(log)}
-                  className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full transition-colors touch-manipulation"
-                  title="عرض"
-                >
-                  <Icon name="search" className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => handleEdit(log)}
-                  className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full transition-colors touch-manipulation"
-                  title="تعديل"
-                >
-                  <Icon name="edit" className="w-4 h-4" />
-                </button>
-                <button 
-                  onClick={() => setShowDeleteConfirm(log.id!)}
-                  className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full transition-colors touch-manipulation"
-                  title="حذف"
-                >
-                  <Icon name="delete" className="w-4 h-4" />
-                </button>
+              {/* Card Content */}
+              <div className="p-4">
+                {/* Tags */}
+                {log.tags && log.tags.length > 0 && (
+                  <div className="mb-3">
+                    <div className="flex flex-wrap gap-1">
+                      {log.tags.slice(0, 3).map(tag => (
+                        <span key={tag} className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+                          {tag}
+                        </span>
+                      ))}
+                      {log.tags.length > 3 && (
+                        <span className="text-gray-500 text-xs">+{log.tags.length - 3}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes */}
+                <div className="mb-4">
+                  {log.notes ? (
+                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
+                      {log.notes}
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-400 italic">لا توجد ملاحظات</p>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-center gap-2 pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <button 
+                    onClick={() => handleView(log)}
+                    className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full transition-colors touch-manipulation"
+                    title="عرض"
+                  >
+                    <Icon name="search" className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => handleEdit(log)}
+                    className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full transition-colors touch-manipulation"
+                    title="تعديل"
+                  >
+                    <Icon name="edit" className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => setShowDeleteConfirm(log.id!)}
+                    className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full transition-colors touch-manipulation"
+                    title="حذف"
+                  >
+                    <Icon name="delete" className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 
   const renderTableView = () => (
-    <div className="w-full min-w-0">
-      <div className="overflow-x-auto -mx-4 sm:mx-0">
-        <div className="inline-block min-w-full align-middle">
-          <table className="min-w-full text-right">
-            <thead>
-              <tr className="border-b dark:border-gray-700">
-                <th className="p-3 text-right text-xs sm:text-sm whitespace-nowrap">
-                  <button
-                    onClick={() => handleSort('confessor')}
-                    className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
-                  >
-                    المعترف
-                    {sortBy === 'confessor' && (
-                      <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
-                    )}
-                  </button>
-                </th>
-                <th className="p-3 text-right text-xs sm:text-sm whitespace-nowrap">
-                  <button
-                    onClick={() => handleSort('date')}
-                    className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
-                  >
-                    تاريخ الاعتراف
-                    {sortBy === 'date' && (
-                      <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
-                    )}
-                  </button>
-                </th>
-                <th className="p-3 text-right text-xs sm:text-sm whitespace-nowrap hidden sm:table-cell">العلامات</th>
-                <th className="p-3 text-right text-xs sm:text-sm whitespace-nowrap hidden md:table-cell">ملاحظات</th>
-                <th className="p-3 text-right text-xs sm:text-sm whitespace-nowrap">إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedLogs.map(log => (
-                <tr key={log.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="p-3 font-semibold text-xs sm:text-sm">
-                    <div className="min-w-0 max-w-[120px] sm:max-w-none">
-                      <span className="block truncate">{getConfessorNameById(log.confessorId)}</span>
-                    </div>
-                  </td>
-                  <td className="p-3 text-xs sm:text-sm">
-                    <div className="min-w-0">
-                      <span className="block">
-                        {new Date(log.date).toLocaleDateString('ar-EG', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
+    <div className="w-full overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-right min-w-[600px]">
+          <thead>
+            <tr className="border-b dark:border-gray-700">
+              <th className="p-3 text-right text-sm">
+                <button
+                  onClick={() => handleSort('confessor')}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+                >
+                  المعترف
+                  {sortBy === 'confessor' && (
+                    <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+                  )}
+                </button>
+              </th>
+              <th className="p-3 text-right text-sm">
+                <button
+                  onClick={() => handleSort('date')}
+                  className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+                >
+                  تاريخ الاعتراف
+                  {sortBy === 'date' && (
+                    <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
+                  )}
+                </button>
+              </th>
+              <th className="p-3 text-right text-sm hidden sm:table-cell">العلامات</th>
+              <th className="p-3 text-right text-sm hidden md:table-cell">ملاحظات</th>
+              <th className="p-3 text-right text-sm">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedLogs.map(log => (
+              <tr key={log.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td className="p-3 font-semibold text-sm">
+                  <div className="max-w-[150px] truncate">
+                    {getConfessorNameById(log.confessorId)}
+                  </div>
+                </td>
+                <td className="p-3 text-sm">
+                  <div className="max-w-[120px]">
+                    {new Date(log.date).toLocaleDateString('ar-EG', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                  </div>
+                </td>
+                <td className="p-3 hidden sm:table-cell">
+                  <div className="flex flex-wrap gap-1 max-w-[150px]">
+                    {log.tags?.slice(0, 2).map(tag => (
+                      <span key={tag} className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">
+                        {tag}
                       </span>
-                    </div>
-                  </td>
-                  <td className="p-3 hidden sm:table-cell">
-                    <div className="flex flex-wrap gap-1 min-w-0 max-w-[150px]">
-                      {log.tags?.slice(0, 2).map(tag => (
-                        <span key={tag} className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full truncate max-w-full">
-                          {tag}
-                        </span>
-                      ))}
-                      {(log.tags?.length || 0) > 2 && (
-                        <span className="text-gray-500 text-xs flex-shrink-0">+{(log.tags?.length || 0) - 2}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-3 hidden md:table-cell">
-                    <div className="min-w-0 max-w-[200px]">
-                      {log.notes ? (
-                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 break-words">
-                          {log.notes}
-                        </p>
-                      ) : (
-                        <span className="text-gray-400 text-sm italic">لا توجد ملاحظات</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="p-3">
-                    <div className="flex items-center gap-1 justify-center">
-                      <button 
-                        onClick={() => handleView(log)}
-                        className="p-1.5 sm:p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full touch-manipulation"
-                        title="عرض"
-                      >
-                        <Icon name="search" className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleEdit(log)}
-                        className="p-1.5 sm:p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full touch-manipulation"
-                        title="تعديل"
-                      >
-                        <Icon name="edit" className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                      <button 
-                        onClick={() => setShowDeleteConfirm(log.id!)}
-                        className="p-1.5 sm:p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full touch-manipulation"
-                        title="حذف"
-                      >
-                        <Icon name="delete" className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    ))}
+                    {(log.tags?.length || 0) > 2 && (
+                      <span className="text-gray-500 text-xs">+{(log.tags?.length || 0) - 2}</span>
+                    )}
+                  </div>
+                </td>
+                <td className="p-3 hidden md:table-cell">
+                  <div className="max-w-[200px]">
+                    {log.notes ? (
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                        {log.notes}
+                      </p>
+                    ) : (
+                      <span className="text-gray-400 text-sm italic">لا توجد ملاحظات</span>
+                    )}
+                  </div>
+                </td>
+                <td className="p-3">
+                  <div className="flex items-center gap-1 justify-center">
+                    <button 
+                      onClick={() => handleView(log)}
+                      className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full touch-manipulation"
+                      title="عرض"
+                    >
+                      <Icon name="search" className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleEdit(log)}
+                      className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-full touch-manipulation"
+                      title="تعديل"
+                    >
+                      <Icon name="edit" className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => setShowDeleteConfirm(log.id!)}
+                      className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900 rounded-full touch-manipulation"
+                      title="حذف"
+                    >
+                      <Icon name="delete" className="w-4 h-4" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 
   return (
-    <div className="w-full min-w-0 overflow-hidden">
-      <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md w-full min-w-0">
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md">
         {/* Header */}
-        <div className="flex flex-col gap-4 mb-6 w-full min-w-0">
+        <div className="flex flex-col gap-4 mb-6">
           {/* Title and Main Actions */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full min-w-0">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h3 className="text-xl sm:text-2xl font-bold">سجل الاعترافات</h3>
             <button 
               onClick={handleAdd}
@@ -382,12 +380,12 @@ export const ConfessionLogPage: React.FC = () => {
           </div>
 
           {/* Search and Filters Toggle */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full min-w-0">
-            <div className="relative flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
               <input 
                 type="text" 
                 placeholder="البحث بالاسم أو الملاحظات..." 
-                className="w-full p-3 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base min-w-0"
+                className="w-full p-3 pr-10 rounded-lg border dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -403,16 +401,16 @@ export const ConfessionLogPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Advanced Filters - Always visible on desktop, toggleable on mobile */}
-          <div className={`${showFilters ? 'block' : 'hidden'} sm:block w-full min-w-0`}>
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg w-full min-w-0">
-              <div className="space-y-4 w-full min-w-0">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+          {/* Advanced Filters */}
+          <div className={`${showFilters ? 'block' : 'hidden'} sm:block`}>
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Confessor Filter */}
                   <select 
                     value={selectedConfessor}
                     onChange={(e) => setSelectedConfessor(e.target.value)}
-                    className="w-full p-2 rounded-lg border dark:bg-gray-600 dark:border-gray-500 text-sm min-w-0"
+                    className="w-full p-2 rounded-lg border dark:bg-gray-600 dark:border-gray-500 text-sm"
                   >
                     <option value="">جميع المعترفين</option>
                     {confessors.filter(c => !c.isArchived).map(c => (
@@ -429,7 +427,7 @@ export const ConfessionLogPage: React.FC = () => {
                     placeholder="من تاريخ"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="w-full p-2 rounded-lg border dark:bg-gray-600 dark:border-gray-500 dark:[color-scheme:dark] text-sm min-w-0"
+                    className="w-full p-2 rounded-lg border dark:bg-gray-600 dark:border-gray-500 dark:[color-scheme:dark] text-sm"
                   />
 
                   {/* Date To */}
@@ -438,22 +436,22 @@ export const ConfessionLogPage: React.FC = () => {
                     placeholder="إلى تاريخ"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="w-full p-2 rounded-lg border dark:bg-gray-600 dark:border-gray-500 dark:[color-scheme:dark] text-sm min-w-0"
+                    className="w-full p-2 rounded-lg border dark:bg-gray-600 dark:border-gray-500 dark:[color-scheme:dark] text-sm"
                   />
 
                   {/* Sort */}
-                  <div className="flex items-center gap-2 w-full min-w-0">
+                  <div className="flex items-center gap-2">
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                      className="flex-1 px-3 py-2 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-sm min-w-0"
+                      className="flex-1 px-3 py-2 border rounded-lg dark:bg-gray-600 dark:border-gray-500 text-sm"
                     >
                       <option value="date">التاريخ</option>
                       <option value="confessor">المعترف</option>
                     </select>
                     <button
                       onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                      className="p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 dark:border-gray-500 touch-manipulation flex-shrink-0"
+                      className="p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 dark:border-gray-500 touch-manipulation"
                       title={sortOrder === 'asc' ? 'ترتيب تنازلي' : 'ترتيب تصاعدي'}
                     >
                       <Icon name={sortOrder === 'asc' ? 'arrowLeft' : 'arrowRight'} className="w-4 h-4 transform rotate-90" />
@@ -463,14 +461,14 @@ export const ConfessionLogPage: React.FC = () => {
 
                 {/* Tags Filter */}
                 {allTags.length > 0 && (
-                  <div className="w-full min-w-0">
+                  <div>
                     <label className="block text-sm font-medium mb-2">فلترة بالعلامات:</label>
-                    <div className="flex flex-wrap gap-2 w-full min-w-0">
+                    <div className="flex flex-wrap gap-2">
                       {allTags.map(tag => (
                         <button
                           key={tag}
                           onClick={() => handleTagToggle(tag)}
-                          className={`px-3 py-1 rounded-full text-sm transition-colors break-words max-w-full ${
+                          className={`px-3 py-1 rounded-full text-sm transition-colors ${
                             selectedTags.includes(tag)
                               ? 'bg-blue-500 text-white'
                               : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
@@ -484,7 +482,7 @@ export const ConfessionLogPage: React.FC = () => {
                 )}
 
                 {/* Actions */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 w-full">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                   <button 
                     onClick={clearFilters}
                     className="flex items-center gap-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm touch-manipulation"
@@ -525,7 +523,7 @@ export const ConfessionLogPage: React.FC = () => {
         </div>
 
         {/* Statistics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 w-full">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
           <div className="bg-blue-50 dark:bg-blue-900 p-3 sm:p-4 rounded-lg">
             <p className="text-blue-600 dark:text-blue-300 text-xs sm:text-sm">إجمالي الاعترافات</p>
             <p className="text-lg sm:text-2xl font-bold text-blue-700 dark:text-blue-200">{totalItems}</p>
@@ -560,7 +558,7 @@ export const ConfessionLogPage: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="w-full min-w-0">
+        <div className="w-full overflow-hidden">
           {totalItems === 0 ? (
             <div className="text-center py-12">
               <Icon name="log" className="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -577,7 +575,7 @@ export const ConfessionLogPage: React.FC = () => {
               {viewMode === 'cards' ? renderCardView() : renderTableView()}
               
               {/* Pagination */}
-              <div className="mt-6 sm:mt-8 w-full">
+              <div className="mt-6 sm:mt-8">
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
