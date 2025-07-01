@@ -14,11 +14,15 @@ export const Header: React.FC<HeaderProps> = ({
   isCollapsed = false, 
   onToggleCollapse 
 }) => {
-  const { isDarkMode, setIsDarkMode, notifications, user } = useAppContext();
+  const { isDarkMode, setIsDarkMode, notifications, user, setCurrentPage } = useAppContext();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   const handleThemeToggle = () => {
     setIsDarkMode();
+  };
+
+  const handleSettingsClick = () => {
+    setCurrentPage('settings');
   };
 
   return (
@@ -106,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Settings Quick Access */}
             <button 
-              onClick={() => window.location.href = '#settings'}
+              onClick={handleSettingsClick}
               className="p-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
               title="الإعدادات السريعة"
             >
