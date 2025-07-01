@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   },
   { 
     id: 'confessors', 
-    label: 'المعترفين والأسر', 
+    label: 'قائمة المعترفين', 
     icon: 'users',
     color: 'green',
     gradient: 'from-green-500 to-green-600',
