@@ -107,29 +107,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
 
-      {/* Sidebar - Made Sticky */}
+      {/* Sidebar - Enhanced with consistent width */}
       <aside className={`
         fixed top-0 right-0 h-screen bg-white dark:bg-gray-900 shadow-2xl transition-all duration-300 ease-in-out z-40 
         flex flex-col border-l border-gray-200 dark:border-gray-700
         ${isOpen ? 'translate-x-0' : 'translate-x-full'} 
         md:relative md:translate-x-0 md:sticky md:top-0
-        ${isCollapsed ? 'md:w-20' : 'md:w-72'}
+        ${isCollapsed ? 'md:w-20' : 'md:w-80'}
+        w-80 sm:w-80
       `}>
         
-        {/* Header - Match main header height with enhanced styling */}
+        {/* Header - Enhanced with better spacing */}
         <div className="h-[73px] p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 flex items-center justify-between relative overflow-hidden flex-shrink-0">
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-indigo-600/20 backdrop-blur-sm"></div>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http://www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
           
           {!isCollapsed && (
-            <div className="flex items-center gap-3 relative z-10">
+            <div className="flex items-center gap-3 relative z-10 flex-1">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-lg">
                 <Icon name="users" className="w-5 h-5 text-white" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-white leading-tight">الكاهن الرقمي</h1>
-                <p className="text-blue-100 text-xs font-medium">نظام إدارة الكنيسة</p>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg font-bold text-white leading-tight truncate">الكاهن الرقمي</h1>
+                <p className="text-blue-100 text-xs font-medium truncate">نظام إدارة الكنيسة</p>
               </div>
             </div>
           )}
@@ -142,13 +143,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           
           <button 
             onClick={onClose} 
-            className="md:hidden p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors border border-white/30 relative z-10"
+            className="md:hidden p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors border border-white/30 relative z-10 ml-2"
           >
             <Icon name="close" className="w-5 h-5 text-white" />
           </button>
         </div>
 
-        {/* Navigation with medium spacing and typography - Made scrollable */}
+        {/* Navigation - Enhanced with consistent width and better responsiveness */}
         <nav className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
           <div className="space-y-2">
             {NAV_ITEMS.map(item => {
@@ -159,12 +160,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <button
                     onClick={() => handleNavigation(item.id)}
                     className={`
-                      w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300
-                      ${isCollapsed ? 'justify-center' : 'justify-start'}
+                      w-full flex items-center transition-all duration-300 rounded-xl relative overflow-hidden
+                      ${isCollapsed ? 'justify-center p-4' : 'justify-start p-4'}
                       ${isActive 
-                        ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg transform scale-[1.01] border border-white/20` 
+                        ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg transform scale-[1.02] border border-white/20` 
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white hover:shadow-md hover:scale-[1.01]'
                       }
+                      min-h-[64px] h-16
                     `}
                   >
                     {/* Active indicator */}
@@ -172,9 +174,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-white rounded-l-full shadow-lg"></div>
                     )}
                     
-                    {/* Icon Container */}
+                    {/* Icon Container - Enhanced with consistent sizing */}
                     <div className={`
-                      p-2 rounded-lg transition-all duration-300 flex-shrink-0
+                      flex-shrink-0 transition-all duration-300 rounded-lg flex items-center justify-center
+                      ${isCollapsed ? 'w-8 h-8' : 'w-10 h-10 mr-4'}
                       ${isActive 
                         ? 'bg-white/20 shadow-md backdrop-blur-sm border border-white/30' 
                         : `bg-${item.color}-100 dark:bg-${item.color}-900 group-hover:bg-${item.color}-200 dark:group-hover:bg-${item.color}-800 group-hover:shadow-sm`
@@ -182,7 +185,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     `}>
                       <Icon 
                         name={item.icon} 
-                        className={`w-5 h-5 transition-all duration-300 ${
+                        className={`transition-all duration-300 ${
+                          isCollapsed ? 'w-5 h-5' : 'w-6 h-6'
+                        } ${
                           isActive 
                             ? 'text-white' 
                             : `text-${item.color}-600 dark:text-${item.color}-400 group-hover:scale-105`
@@ -190,13 +195,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       />
                     </div>
                     
-                    {/* Label and Description */}
+                    {/* Label and Description - Enhanced with better text handling */}
                     {!isCollapsed && (
-                      <div className="flex-1 text-right">
-                        <div className="font-semibold text-sm leading-tight">
+                      <div className="flex-1 text-right min-w-0">
+                        <div className={`font-semibold leading-tight truncate ${
+                          isCollapsed ? 'text-sm' : 'text-base'
+                        }`}>
                           {item.label}
                         </div>
-                        <div className={`text-xs mt-0.5 leading-relaxed ${
+                        <div className={`mt-0.5 leading-relaxed truncate ${
+                          isCollapsed ? 'text-xs' : 'text-sm'
+                        } ${
                           isActive 
                             ? 'text-white/80' 
                             : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'
@@ -210,7 +219,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   {/* Enhanced Tooltip for collapsed state */}
                   {isCollapsed && (
                     <div className="absolute right-full mr-4 top-1/2 transform -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none">
-                      <div className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-600 min-w-[200px]">
+                      <div className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-600 min-w-[220px] max-w-[280px]">
                         {/* Main Label */}
                         <div className="font-bold text-sm mb-1 text-white">
                           {item.label}
@@ -239,21 +248,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
         
-        {/* Footer with user profile and Bolt.new badge - Fixed at bottom */}
+        {/* Footer - Enhanced with better responsive behavior */}
         <div className="flex-shrink-0">
           {/* User Profile Section */}
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
             {!isCollapsed && (
               <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 rounded-xl border border-blue-200 dark:border-blue-700">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                     <Icon name="users" className="w-5 h-5 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight truncate">
                       المستخدم المحلي
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 font-medium truncate">
                       قاعدة بيانات SQLite
                     </p>
                     <div className="flex items-center gap-1 mt-1">
@@ -265,28 +274,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </div>
             )}
             
-            {/* Quick Stats for collapsed state with tooltip */}
+            {/* Quick Stats for collapsed state with enhanced tooltip */}
             {isCollapsed && (
               <div className="space-y-2 relative group">
-                <div className="text-center p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                <div className="text-center p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
                   <div className="text-sm font-bold text-blue-700 dark:text-blue-300">150</div>
                   <div className="text-xs text-blue-600 dark:text-blue-400">معترف</div>
                 </div>
-                <div className="text-center p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                <div className="text-center p-3 bg-green-100 dark:bg-green-900 rounded-lg">
                   <div className="text-sm font-bold text-green-700 dark:text-green-300">25</div>
                   <div className="text-xs text-green-600 dark:text-green-400">اعتراف</div>
                 </div>
                 
-                {/* User Profile Tooltip for collapsed state */}
+                {/* Enhanced User Profile Tooltip for collapsed state */}
                 <div className="absolute right-full mr-4 bottom-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none">
-                  <div className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-600 min-w-[180px]">
+                  <div className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-600 min-w-[200px]">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                         <Icon name="users" className="w-4 h-4 text-white" />
                       </div>
-                      <div>
-                        <div className="font-bold text-sm text-white">المستخدم المحلي</div>
-                        <div className="text-xs text-gray-300">قاعدة بيانات SQLite</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-sm text-white truncate">المستخدم المحلي</div>
+                        <div className="text-xs text-gray-300 truncate">قاعدة بيانات SQLite</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 pt-2 border-t border-gray-600">
@@ -303,7 +312,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </div>
 
-          {/* Built with Bolt.new Badge */}
+          {/* Built with Bolt.new Badge - Enhanced responsive design */}
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
             {!isCollapsed ? (
               <a 
@@ -312,16 +321,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group"
               >
-                <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm flex-shrink-0">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M13 3L4 14h7v7l9-11h-7V3z"/>
                   </svg>
                 </div>
-                <div className="text-center">
-                  <div className="text-sm font-bold leading-tight">Built with Bolt.new</div>
-                  <div className="text-xs opacity-90 leading-tight">AI-Powered Development</div>
+                <div className="text-center flex-1 min-w-0">
+                  <div className="text-sm font-bold leading-tight truncate">Built with Bolt.new</div>
+                  <div className="text-xs opacity-90 leading-tight truncate">AI-Powered Development</div>
                 </div>
-                <Icon name="arrowLeft" className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                <Icon name="arrowLeft" className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
               </a>
             ) : (
               <a 
@@ -334,9 +343,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <path d="M13 3L4 14h7v7l9-11h-7V3z"/>
                 </svg>
                 
-                {/* Tooltip for collapsed state */}
+                {/* Enhanced Tooltip for collapsed state */}
                 <div className="absolute right-full mr-4 top-1/2 transform -translate-y-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none">
-                  <div className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-600 min-w-[160px]">
+                  <div className="bg-gray-900 dark:bg-gray-700 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-700 dark:border-gray-600 min-w-[180px]">
                     <div className="text-center">
                       <div className="font-bold text-sm text-white mb-1">Built with Bolt.new</div>
                       <div className="text-xs text-gray-300">AI-Powered Development</div>
