@@ -9,27 +9,13 @@ interface HeaderProps {
   onToggleCollapse?: () => void;
 }
 
-const NAV_ITEMS = [
-  { id: 'dashboard', label: 'لوحة المعلومات' },
-  { id: 'confessors', label: 'المعترفين والأسر' },
-  { id: 'confession-log', label: 'سجل الاعترافات' },
-  { id: 'birthdays', label: 'أعياد الميلاد' },
-  { id: 'anniversaries', label: 'أعياد الزواج' },
-  { id: 'calendar', label: 'التقويم والمواعيد' },
-  { id: 'reports', label: 'التقارير والتحليلات' },
-  { id: 'messages', label: 'الرسائل والقوالب' },
-  { id: 'settings', label: 'الإعدادات' },
-];
-
 export const Header: React.FC<HeaderProps> = ({ 
   onMenuClick, 
   isCollapsed = false, 
   onToggleCollapse 
 }) => {
-  const { currentPage, isDarkMode, setIsDarkMode, notifications, user } = useAppContext();
+  const { isDarkMode, setIsDarkMode, notifications, user } = useAppContext();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-
-  const currentPageLabel = NAV_ITEMS.find(item => item.id === currentPage)?.label || 'لوحة المعلومات';
 
   const handleThemeToggle = () => {
     setIsDarkMode();
@@ -62,16 +48,6 @@ export const Header: React.FC<HeaderProps> = ({
                 />
               </button>
             )}
-
-            {/* Page Title */}
-            <div className="hidden md:block">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
-                {currentPageLabel}
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                إدارة شؤون الكنيسة والمعترفين بكفاءة عالية
-              </p>
-            </div>
           </div>
 
           {/* Right Section - Actions */}
@@ -137,16 +113,6 @@ export const Header: React.FC<HeaderProps> = ({
               <Icon name="settings" className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
             </button>
           </div>
-        </div>
-
-        {/* Mobile Page Title */}
-        <div className="md:hidden px-6 pb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
-            {currentPageLabel}
-          </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mt-1">
-            إدارة شؤون الكنيسة والمعترفين
-          </p>
         </div>
       </header>
       
