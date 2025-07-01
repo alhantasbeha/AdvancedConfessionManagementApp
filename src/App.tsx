@@ -20,7 +20,7 @@ const AppContent: React.FC = () => {
   // Show loading while checking authentication
   if (!isAuthReady) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-theme overflow-hidden">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-theme">
         <div className="text-center animate-fadeIn">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-300 font-medium">جاري تحميل التطبيق...</p>
@@ -56,8 +56,8 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans transition-theme overflow-hidden w-full max-w-full">
-      <div className="flex w-full max-w-full overflow-hidden">
+    <div dir="rtl" className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans transition-theme">
+      <div className="flex">
         <Sidebar 
           isOpen={isSidebarOpen}
           isCollapsed={isSidebarCollapsed}
@@ -65,15 +65,15 @@ const AppContent: React.FC = () => {
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        <main className="flex-1 transition-all duration-300 w-full max-w-full overflow-hidden min-w-0">
+        <main className="flex-1 transition-all duration-300">
           <Header 
             onMenuClick={() => setIsSidebarOpen(true)}
             isCollapsed={isSidebarCollapsed}
             onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           />
           
-          <div className="p-4 md:p-6 w-full max-w-full overflow-hidden">
-            <div className="animate-fadeIn w-full max-w-full overflow-hidden">
+          <div className="p-4 md:p-6">
+            <div className="animate-fadeIn">
               {renderPage()}
             </div>
           </div>
