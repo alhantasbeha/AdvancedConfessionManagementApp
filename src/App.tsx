@@ -56,8 +56,8 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div dir="rtl" className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans transition-theme">
-      <div className="flex">
+    <div className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen font-sans transition-theme w-full max-w-full overflow-x-hidden">
+      <div className="flex w-full max-w-full overflow-x-hidden">
         <Sidebar 
           isOpen={isSidebarOpen}
           isCollapsed={isSidebarCollapsed}
@@ -65,15 +65,15 @@ const AppContent: React.FC = () => {
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        <main className="flex-1 transition-all duration-300">
+        <main className="flex-1 transition-all duration-300 w-full max-w-full overflow-x-hidden min-w-0">
           <Header 
             onMenuClick={() => setIsSidebarOpen(true)}
             isCollapsed={isSidebarCollapsed}
             onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           />
           
-          <div className="p-4 md:p-6">
-            <div className="animate-fadeIn">
+          <div className="p-4 md:p-6 w-full max-w-full overflow-x-hidden">
+            <div className="animate-fadeIn w-full max-w-full overflow-x-hidden">
               {renderPage()}
             </div>
           </div>
