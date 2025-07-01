@@ -19,10 +19,7 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 16px;
-  /* منع التمرير الأفقي */
-  overflow-x: hidden;
-  max-width: 100vw;
+  font-size: 16px; /* زيادة الحجم الأساسي */
 }
 
 html.dark {
@@ -32,14 +29,9 @@ html.dark {
 
 body {
   font-family: var(--font-body);
-  line-height: 1.7;
+  line-height: 1.7; /* زيادة المسافة بين الأسطر */
   font-weight: 400;
-  font-size: 1rem;
-  /* منع التمرير الأفقي */
-  overflow-x: hidden;
-  max-width: 100vw;
-  margin: 0;
-  padding: 0;
+  font-size: 1rem; /* 16px */
 }
 
 /* تحسين الخطوط للعناوين مع أحجام أكبر */
@@ -51,67 +43,67 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.75rem;
+  font-size: 2.75rem; /* زيادة من 2.25rem */
   font-weight: 800;
 }
 
 h2 {
-  font-size: 2.25rem;
+  font-size: 2.25rem; /* زيادة من 1.875rem */
   font-weight: 700;
 }
 
 h3 {
-  font-size: 1.875rem;
+  font-size: 1.875rem; /* زيادة من 1.5rem */
   font-weight: 600;
 }
 
 h4 {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* زيادة من 1.25rem */
   font-weight: 600;
 }
 
 h5 {
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* زيادة من 1.125rem */
   font-weight: 500;
 }
 
 h6 {
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* زيادة من 1rem */
   font-weight: 500;
 }
 
 /* تحسين الخطوط للنصوص مع أحجام أكبر */
 p {
   font-family: var(--font-body);
-  line-height: 1.8;
+  line-height: 1.8; /* زيادة المسافة */
   font-weight: 400;
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* زيادة من 1rem */
 }
 
 /* تحسين الخطوط لعناصر الواجهة مع أحجام أكبر */
 button, input, select, textarea {
   font-family: var(--font-ui);
   font-weight: 400;
-  font-size: 1rem;
+  font-size: 1rem; /* زيادة الحجم الأساسي */
 }
 
 /* تحسين الخطوط للنصوص الصغيرة - جعلها أكبر */
 .text-xs {
   font-family: var(--font-ui);
   font-weight: 400;
-  font-size: 0.875rem !important;
+  font-size: 0.875rem !important; /* زيادة من 0.75rem */
   line-height: 1.6;
 }
 
 .text-sm {
   font-family: var(--font-ui);
   font-weight: 400;
-  font-size: 1rem !important;
+  font-size: 1rem !important; /* زيادة من 0.875rem */
   line-height: 1.7;
 }
 
 .text-base {
-  font-size: 1.125rem !important;
+  font-size: 1.125rem !important; /* زيادة من 1rem */
   line-height: 1.8;
 }
 
@@ -119,28 +111,28 @@ button, input, select, textarea {
 .text-lg {
   font-family: var(--font-headings);
   font-weight: 500;
-  font-size: 1.25rem !important;
+  font-size: 1.25rem !important; /* زيادة من 1.125rem */
   line-height: 1.7;
 }
 
 .text-xl {
   font-family: var(--font-headings);
   font-weight: 600;
-  font-size: 1.5rem !important;
+  font-size: 1.5rem !important; /* زيادة من 1.25rem */
   line-height: 1.6;
 }
 
 .text-2xl {
   font-family: var(--font-headings);
   font-weight: 700;
-  font-size: 1.875rem !important;
+  font-size: 1.875rem !important; /* زيادة من 1.5rem */
   line-height: 1.5;
 }
 
 .text-3xl {
   font-family: var(--font-headings);
   font-weight: 800;
-  font-size: 2.25rem !important;
+  font-size: 2.25rem !important; /* زيادة من 1.875rem */
   line-height: 1.4;
 }
 
@@ -183,8 +175,6 @@ html.dark {
 /* تحسين الانتقال بين الأوضاع */
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  /* منع التمرير الأفقي للعناصر */
-  box-sizing: border-box;
 }
 
 /* متغيرات CSS للوضع النهاري */
@@ -290,8 +280,8 @@ body {
 button {
   transition: all 0.2s ease;
   font-family: var(--font-ui);
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.75rem 1.5rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
   line-height: 1.5;
 }
 
@@ -306,8 +296,8 @@ input, select, textarea {
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
   font-family: var(--font-ui);
-  padding: 0.875rem 1rem;
-  font-size: 1rem;
+  padding: 0.875rem 1rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
   line-height: 1.6;
 }
 
@@ -354,7 +344,7 @@ input:focus, select:focus, textarea:focus {
   background-color: var(--bg-primary) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: 0.75rem;
-  padding: 2rem;
+  padding: 2rem; /* زيادة الـ padding */
   box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color);
 }
 
@@ -369,28 +359,21 @@ table {
   border-spacing: 0;
   background-color: var(--bg-primary) !important;
   font-family: var(--font-ui);
-  /* منع التمرير الأفقي */
-  width: 100%;
-  max-width: 100%;
-  table-layout: fixed;
 }
 
 table th,
 table td {
   border-bottom: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
-  /* منع النص من الخروج */
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  padding: 1rem 1.5rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
 }
 
 table th {
   background-color: var(--bg-secondary) !important;
   font-weight: 600;
   font-family: var(--font-headings);
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* زيادة حجم خط العناوين */
 }
 
 table tr:hover {
@@ -399,7 +382,7 @@ table tr:hover {
 
 /* تحسين شريط التمرير */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 12px; /* زيادة العرض */
   height: 12px;
 }
 
@@ -409,7 +392,7 @@ table tr:hover {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 6px;
+  border-radius: 6px; /* زيادة الانحناء */
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1186,7 +1169,7 @@ img:hover {
 /* تحسين النصوص في الجداول */
 table .arabic-text {
   font-family: var(--font-ui);
-  font-size: 1rem;
+  font-size: 1rem; /* زيادة الحجم */
 }
 
 /* تحسين النصوص في النماذج */
@@ -1235,1055 +1218,83 @@ nav .arabic-text {
 
 /* تحسينات خاصة للشريط الجانبي */
 .sidebar-item {
-  padding: 1rem 1.5rem;
-  font-size: 1.125rem;
+  padding: 1rem 1.5rem; /* زيادة الـ padding */
+  font-size: 1.125rem; /* زيادة حجم الخط */
   line-height: 1.6;
 }
 
 .sidebar-icon {
-  width: 1.5rem;
+  width: 1.5rem; /* زيادة حجم الأيقونات */
   height: 1.5rem;
 }
 
 /* تحسينات خاصة للهيدر */
 .header-item {
-  padding: 0.875rem 1.25rem;
-  font-size: 1rem;
+  padding: 0.875rem 1.25rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
 }
 
 /* تحسينات خاصة للبطاقات */
 .dashboard-card {
-  padding: 2rem;
+  padding: 2rem; /* زيادة الـ padding */
 }
 
 .dashboard-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* زيادة حجم عناوين البطاقات */
 }
 
 .dashboard-card .stat-value {
-  font-size: 2.5rem;
+  font-size: 2.5rem; /* زيادة حجم القيم الإحصائية */
   font-weight: 800;
 }
 
 /* تحسينات للقوائم المنسدلة */
 select {
-  padding: 1rem 1.25rem;
-  font-size: 1rem;
+  padding: 1rem 1.25rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
 }
 
 /* تحسينات للنوافذ المنبثقة */
 .modal-content {
-  padding: 2.5rem;
+  padding: 2.5rem; /* زيادة الـ padding */
 }
 
 .modal-title {
-  font-size: 1.75rem;
+  font-size: 1.75rem; /* زيادة حجم عناوين النوافذ */
 }
 
 /* تحسينات للتنبيهات */
 .notification-item {
-  padding: 1.25rem;
-  font-size: 1rem;
+  padding: 1.25rem; /* زيادة الـ padding */
+  font-size: 1rem; /* زيادة حجم الخط */
 }
 
 /* تحسينات للأزرار الصغيرة */
 .btn-sm {
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
+  padding: 0.75rem 1.25rem; /* زيادة الـ padding */
+  font-size: 0.875rem; /* زيادة حجم الخط */
 }
 
 /* تحسينات للأزرار الكبيرة */
 .btn-lg {
-  padding: 1.25rem 2rem;
-  font-size: 1.125rem;
+  padding: 1.25rem 2rem; /* زيادة الـ padding */
+  font-size: 1.125rem; /* زيادة حجم الخط */
 }
 
 /* تحسينات للنصوص في الجداول */
 .table-text {
-  font-size: 1rem;
+  font-size: 1rem; /* زيادة حجم النص في الجداول */
   line-height: 1.6;
 }
 
 /* تحسينات للعناوين الفرعية */
 .subtitle {
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* زيادة حجم العناوين الفرعية */
   line-height: 1.7;
 }
 
 /* تحسينات للنصوص التوضيحية */
 .description-text {
-  font-size: 1rem;
+  font-size: 1rem; /* زيادة حجم النصوص التوضيحية */
   line-height: 1.8;
-}
-
-/* ===== تحسينات RTL لمنع التمرير الأفقي ===== */
-
-/* منع التمرير الأفقي على مستوى الجذر */
-#root {
-  overflow-x: hidden;
-  max-width: 100vw;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* تحسين الحاويات الرئيسية */
-.container, .main-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الشبكات */
-.grid {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الفليكس */
-.flex {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الجداول للاستجابة */
-.table-container {
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* تحسين النصوص الطويلة */
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-}
-
-.text-break {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-}
-
-/* تحسين الصور */
-img {
-  max-width: 100%;
-  height: auto;
-  box-sizing: border-box;
-}
-
-/* تحسين الفيديو */
-video {
-  max-width: 100%;
-  height: auto;
-  box-sizing: border-box;
-}
-
-/* تحسين العناصر المضمنة */
-iframe, embed, object {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* تحسين النماذج */
-form {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-input, select, textarea {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* تحسين الأزرار */
-button {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* تحسين البطاقات */
-.card, .card-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين النوافذ المنبثقة */
-.modal, .modal-content {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الشريط الجانبي */
-.sidebar {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الهيدر */
-.header {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين المحتوى الرئيسي */
-main {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الأقسام */
-section {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الفقرات */
-article {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين القوائم */
-ul, ol {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين عناصر القائمة */
-li {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الروابط */
-a {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* تحسين العناوين */
-h1, h2, h3, h4, h5, h6 {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* تحسين الفقرات */
-p {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* تحسين الأكواد */
-pre, code {
-  max-width: 100%;
-  overflow-x: auto;
-  box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* تحسين الاقتباسات */
-blockquote {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الخطوط الفاصلة */
-hr {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* تحسين العناصر المخصصة */
-.custom-element {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الحاويات المرنة */
-.flex-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين عناصر الشبكة */
-.grid-item {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الحاويات المطلقة */
-.absolute-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الحاويات الثابتة */
-.fixed-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين الحاويات اللاصقة */
-.sticky-container {
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* تحسين خاص للشاشات الصغيرة */
-@media (max-width: 768px) {
-  * {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-  
-  .container {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .flex {
-    flex-wrap: wrap !important;
-  }
-  
-  table {
-    font-size: 0.875rem !important;
-  }
-  
-  th, td {
-    padding: 0.5rem !important;
-  }
-}
-
-/* تحسين خاص للشاشات الصغيرة جداً */
-@media (max-width: 480px) {
-  * {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-  
-  .container {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-  }
-  
-  .text-lg {
-    font-size: 1rem !important;
-  }
-  
-  .text-xl {
-    font-size: 1.125rem !important;
-  }
-  
-  .text-2xl {
-    font-size: 1.25rem !important;
-  }
-  
-  .p-6 {
-    padding: 1rem !important;
-  }
-  
-  .p-4 {
-    padding: 0.75rem !important;
-  }
-  
-  .gap-6 {
-    gap: 1rem !important;
-  }
-  
-  .gap-4 {
-    gap: 0.75rem !important;
-  }
-}
-
-/* تحسين خاص للطباعة */
-@media print {
-  * {
-    max-width: 100% !important;
-    overflow-x: visible !important;
-    box-sizing: border-box !important;
-  }
-}
-
-/* تحسين خاص للشاشات عالية الدقة */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  * {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-}
-
-/* تحسين خاص للوضع الأفقي على الهواتف */
-@media (max-height: 500px) and (orientation: landscape) {
-  * {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-  
-  .container {
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-  }
-}
-
-/* تحسين خاص للشاشات الكبيرة */
-@media (min-width: 1920px) {
-  .container {
-    max-width: 1800px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-}
-
-/* تحسين نهائي لضمان عدم وجود تمرير أفقي */
-html, body, #root, * {
-  max-width: 100vw !important;
-  overflow-x: hidden !important;
-}
-
-/* تحسين خاص للعناصر التي قد تسبب تمرير أفقي */
-.w-screen {
-  width: 100vw !important;
-  max-width: 100vw !important;
-}
-
-.min-w-screen {
-  min-width: 100vw !important;
-  max-width: 100vw !important;
-}
-
-.max-w-screen {
-  max-width: 100vw !important;
-}
-
-/* تحسين للعناصر ذات العرض الثابت */
-.w-full {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-.min-w-full {
-  min-width: 100% !important;
-  max-width: 100% !important;
-}
-
-.max-w-full {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر المرنة */
-.flex-1 {
-  flex: 1 1 0% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-}
-
-.flex-auto {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-}
-
-.flex-none {
-  flex: none !important;
-  max-width: 100% !important;
-}
-
-/* تحسين للشبكات */
-.col-span-full {
-  grid-column: 1 / -1 !important;
-  max-width: 100% !important;
-}
-
-.row-span-full {
-  grid-row: 1 / -1 !important;
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر المطلقة والثابتة */
-.absolute {
-  max-width: 100% !important;
-}
-
-.fixed {
-  max-width: 100% !important;
-}
-
-.relative {
-  max-width: 100% !important;
-}
-
-.sticky {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر العائمة */
-.float-left {
-  max-width: 100% !important;
-}
-
-.float-right {
-  max-width: 100% !important;
-}
-
-.float-none {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر المخفية والظاهرة */
-.hidden {
-  max-width: 100% !important;
-}
-
-.block {
-  max-width: 100% !important;
-}
-
-.inline {
-  max-width: 100% !important;
-}
-
-.inline-block {
-  max-width: 100% !important;
-}
-
-/* تحسين نهائي شامل */
-* {
-  box-sizing: border-box !important;
-}
-
-*:before,
-*:after {
-  box-sizing: border-box !important;
-}
-
-/* تحسين للعناصر التي قد تتجاوز الحدود */
-.overflow-hidden {
-  overflow: hidden !important;
-}
-
-.overflow-x-hidden {
-  overflow-x: hidden !important;
-}
-
-.overflow-y-auto {
-  overflow-y: auto !important;
-}
-
-.overflow-auto {
-  overflow: auto !important;
-}
-
-/* تحسين للنصوص الطويلة */
-.whitespace-nowrap {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  max-width: 100% !important;
-}
-
-.whitespace-normal {
-  white-space: normal !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-  max-width: 100% !important;
-}
-
-.break-words {
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-  word-break: break-word !important;
-  max-width: 100% !important;
-}
-
-.break-all {
-  word-break: break-all !important;
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر التفاعلية */
-.cursor-pointer {
-  max-width: 100% !important;
-}
-
-.cursor-default {
-  max-width: 100% !important;
-}
-
-.cursor-not-allowed {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر المحددة */
-.select-none {
-  max-width: 100% !important;
-}
-
-.select-text {
-  max-width: 100% !important;
-}
-
-.select-all {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر القابلة للتمرير */
-.scroll-smooth {
-  max-width: 100% !important;
-}
-
-.scroll-auto {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات الحدود */
-.border {
-  max-width: 100% !important;
-}
-
-.border-0 {
-  max-width: 100% !important;
-}
-
-.border-2 {
-  max-width: 100% !important;
-}
-
-.border-4 {
-  max-width: 100% !important;
-}
-
-.border-8 {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات الظلال */
-.shadow {
-  max-width: 100% !important;
-}
-
-.shadow-sm {
-  max-width: 100% !important;
-}
-
-.shadow-md {
-  max-width: 100% !important;
-}
-
-.shadow-lg {
-  max-width: 100% !important;
-}
-
-.shadow-xl {
-  max-width: 100% !important;
-}
-
-.shadow-2xl {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات التدوير */
-.transform {
-  max-width: 100% !important;
-}
-
-.rotate-0 {
-  max-width: 100% !important;
-}
-
-.rotate-45 {
-  max-width: 100% !important;
-}
-
-.rotate-90 {
-  max-width: 100% !important;
-}
-
-.rotate-180 {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات التحجيم */
-.scale-0 {
-  max-width: 100% !important;
-}
-
-.scale-50 {
-  max-width: 100% !important;
-}
-
-.scale-75 {
-  max-width: 100% !important;
-}
-
-.scale-90 {
-  max-width: 100% !important;
-}
-
-.scale-95 {
-  max-width: 100% !important;
-}
-
-.scale-100 {
-  max-width: 100% !important;
-}
-
-.scale-105 {
-  max-width: 100% !important;
-}
-
-.scale-110 {
-  max-width: 100% !important;
-}
-
-.scale-125 {
-  max-width: 100% !important;
-}
-
-.scale-150 {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات الترجمة */
-.translate-x-0 {
-  max-width: 100% !important;
-}
-
-.translate-y-0 {
-  max-width: 100% !important;
-}
-
-.-translate-x-1 {
-  max-width: 100% !important;
-}
-
-.-translate-y-1 {
-  max-width: 100% !important;
-}
-
-.translate-x-1 {
-  max-width: 100% !important;
-}
-
-.translate-y-1 {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات الانحراف */
-.skew-x-0 {
-  max-width: 100% !important;
-}
-
-.skew-y-0 {
-  max-width: 100% !important;
-}
-
-.skew-x-1 {
-  max-width: 100% !important;
-}
-
-.skew-y-1 {
-  max-width: 100% !important;
-}
-
-/* تحسين للعناصر ذات الأصل */
-.origin-center {
-  max-width: 100% !important;
-}
-
-.origin-top {
-  max-width: 100% !important;
-}
-
-.origin-top-right {
-  max-width: 100% !important;
-}
-
-.origin-right {
-  max-width: 100% !important;
-}
-
-.origin-bottom-right {
-  max-width: 100% !important;
-}
-
-.origin-bottom {
-  max-width: 100% !important;
-}
-
-.origin-bottom-left {
-  max-width: 100% !important;
-}
-
-.origin-left {
-  max-width: 100% !important;
-}
-
-.origin-top-left {
-  max-width: 100% !important;
-}
-
-/* تحسين نهائي لضمان عدم وجود أي تمرير أفقي */
-html {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-}
-
-body {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-#root {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-}
-
-/* تحسين خاص للعناصر التي قد تسبب مشاكل في RTL */
-[dir="rtl"] * {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
-}
-
-[dir="rtl"] .flex {
-  flex-wrap: wrap !important;
-}
-
-[dir="rtl"] .grid {
-  overflow-x: hidden !important;
-}
-
-[dir="rtl"] table {
-  table-layout: fixed !important;
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-[dir="rtl"] th,
-[dir="rtl"] td {
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-  max-width: 0 !important;
-}
-
-/* تحسين خاص للنصوص العربية */
-[dir="rtl"] p,
-[dir="rtl"] h1,
-[dir="rtl"] h2,
-[dir="rtl"] h3,
-[dir="rtl"] h4,
-[dir="rtl"] h5,
-[dir="rtl"] h6 {
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-  hyphens: auto !important;
-  max-width: 100% !important;
-}
-
-/* تحسين خاص للنماذج في RTL */
-[dir="rtl"] input,
-[dir="rtl"] select,
-[dir="rtl"] textarea {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* تحسين خاص للأزرار في RTL */
-[dir="rtl"] button {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* تحسين خاص للصور في RTL */
-[dir="rtl"] img {
-  max-width: 100% !important;
-  height: auto !important;
-  box-sizing: border-box !important;
-}
-
-/* تحسين خاص للفيديو في RTL */
-[dir="rtl"] video {
-  max-width: 100% !important;
-  height: auto !important;
-  box-sizing: border-box !important;
-}
-
-/* تحسين خاص للعناصر المضمنة في RTL */
-[dir="rtl"] iframe,
-[dir="rtl"] embed,
-[dir="rtl"] object {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* تحسين خاص للقوائم في RTL */
-[dir="rtl"] ul,
-[dir="rtl"] ol {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
-}
-
-[dir="rtl"] li {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-/* تحسين خاص للروابط في RTL */
-[dir="rtl"] a {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-/* تحسين خاص للأكواد في RTL */
-[dir="rtl"] pre,
-[dir="rtl"] code {
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  box-sizing: border-box !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-/* تحسين خاص للاقتباسات في RTL */
-[dir="rtl"] blockquote {
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-/* تحسين نهائي شامل لـ RTL */
-[dir="rtl"] {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* تحسين خاص للشاشات الصغيرة مع RTL */
-@media (max-width: 768px) {
-  [dir="rtl"] * {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-  
-  [dir="rtl"] .container {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-  
-  [dir="rtl"] .grid {
-    grid-template-columns: 1fr !important;
-  }
-  
-  [dir="rtl"] .flex {
-    flex-wrap: wrap !important;
-  }
-  
-  [dir="rtl"] table {
-    font-size: 0.875rem !important;
-  }
-  
-  [dir="rtl"] th,
-  [dir="rtl"] td {
-    padding: 0.5rem !important;
-  }
-}
-
-/* تحسين خاص للشاشات الصغيرة جداً مع RTL */
-@media (max-width: 480px) {
-  [dir="rtl"] * {
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-  
-  [dir="rtl"] .container {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-  }
-  
-  [dir="rtl"] .text-lg {
-    font-size: 1rem !important;
-  }
-  
-  [dir="rtl"] .text-xl {
-    font-size: 1.125rem !important;
-  }
-  
-  [dir="rtl"] .text-2xl {
-    font-size: 1.25rem !important;
-  }
-  
-  [dir="rtl"] .p-6 {
-    padding: 1rem !important;
-  }
-  
-  [dir="rtl"] .p-4 {
-    padding: 0.75rem !important;
-  }
-  
-  [dir="rtl"] .gap-6 {
-    gap: 1rem !important;
-  }
-  
-  [dir="rtl"] .gap-4 {
-    gap: 0.75rem !important;
-  }
 }
