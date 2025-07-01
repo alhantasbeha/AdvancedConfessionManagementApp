@@ -328,8 +328,8 @@ export const ConfessorsPage: React.FC = () => {
   );
 
   const renderTableView = () => (
-    <div className="overflow-x-auto -mx-4 sm:mx-0">
-      <div className="inline-block min-w-full align-middle">
+    <div className="w-full overflow-hidden">
+      <div className="overflow-x-auto">
         <table className="min-w-full text-right">
           <thead>
             <tr className="border-b dark:border-gray-700">
@@ -478,12 +478,12 @@ export const ConfessorsPage: React.FC = () => {
   );
   
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md">
+    <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-md max-w-full overflow-hidden">
       {/* Header Controls */}
       <div className="flex flex-col gap-4 mb-6">
         {/* Title and Main Actions */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h3 className="text-xl sm:text-2xl font-bold">المعترفين والأسر</h3>
+          <h3 className="text-xl sm:text-2xl font-bold">قائمة المعترفين</h3>
           
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <button 
