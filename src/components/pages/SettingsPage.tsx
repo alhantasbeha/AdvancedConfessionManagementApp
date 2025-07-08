@@ -113,10 +113,10 @@ export const SettingsPage: React.FC = () => {
 
   const getColorClasses = (color: string) => {
     const colorMap: Record<string, string> = {
-      blue: 'bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700',
-      green: 'bg-green-50 dark:bg-green-900 border-green-200 dark:border-green-700',
-      purple: 'bg-purple-50 dark:bg-purple-900 border-purple-200 dark:border-purple-700',
-      orange: 'bg-orange-50 dark:bg-orange-900 border-orange-200 dark:border-orange-700'
+      blue: 'bg-blue-50 dark:bg-blue-800/30 border-blue-200 dark:border-blue-600',
+      green: 'bg-green-50 dark:bg-green-800/30 border-green-200 dark:border-green-600',
+      purple: 'bg-purple-50 dark:bg-purple-800/30 border-purple-200 dark:border-purple-600',
+      orange: 'bg-orange-50 dark:bg-orange-800/30 border-orange-200 dark:border-orange-600'
     };
     return colorMap[color] || colorMap.blue;
   };
@@ -173,12 +173,12 @@ export const SettingsPage: React.FC = () => {
                 {items.map(item => (
                   <span 
                     key={item} 
-                    className={`bg-${color}-100 dark:bg-${color}-800 text-${color}-800 dark:text-${color}-200 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2`}
+                    className={`bg-${color}-100 dark:bg-${color}-700/50 text-${color}-800 dark:text-${color}-100 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2 border border-${color}-200 dark:border-${color}-500`}
                   >
                     {item}
                     <button 
                       onClick={() => handleRemoveItem(key, item)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                     >
                       <Icon name="x" className="w-4 h-4" />
                     </button>

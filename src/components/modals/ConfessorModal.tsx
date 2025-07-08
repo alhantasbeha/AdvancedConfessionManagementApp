@@ -874,10 +874,10 @@ export const ConfessorModal: React.FC<ConfessorModalProps> = ({
                         key={tag} 
                         onClick={() => handleMultiSelectChange('personalTags', tag)} 
                         disabled={isSubmitting || isSubmitted}
-                        className={`px-3 py-2 text-sm rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                        className={`px-3 py-2 text-sm rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border ${
                           formData.personalTags?.includes(tag) 
-                            ? 'bg-purple-500 text-white shadow-md transform scale-105' 
-                            : 'bg-gray-200 dark:bg-gray-600 hover:bg-purple-200 dark:hover:bg-purple-700'
+                            ? 'bg-purple-500 text-white shadow-md transform scale-105 border-purple-500' 
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-purple-200 dark:hover:bg-purple-800/50 border-gray-300 dark:border-gray-600'
                         }`}
                       >
                         {tag}
